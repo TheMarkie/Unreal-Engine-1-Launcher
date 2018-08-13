@@ -8,6 +8,9 @@ Revision history:
 
 #pragma DISABLE_OPTIMIZATION /* Avoid VC++ code generation bug */
 
+// Markie
+#include "Helper.h"
+
 /*-----------------------------------------------------------------------------
 	Splash screen.
 -----------------------------------------------------------------------------*/
@@ -285,12 +288,24 @@ class WConfigPageDetail : public WWizardPage
 
 		// Resolution.
 		// DEUS_EX CNN - no support for less than 640x480
-		GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportX"),  TEXT("640") );
-		GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportY"),  TEXT("480") );
-		GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedColorBits"),  TEXT("16") );
-		GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportX"), TEXT("640") );
-		GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportY"), TEXT("480") );
-		GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenColorBits"), TEXT("16") );
+		//GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportX"),  TEXT("640") );
+		//GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportY"),  TEXT("480") );
+		//GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedColorBits"),  TEXT("16") );
+		//GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportX"), TEXT("640") );
+		//GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportY"), TEXT("480") );
+		//GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenColorBits"), TEXT("16") );
+
+		// Markie: Snap the full screen resolution to native resolution.
+		int width = 640;
+		int height = 480;
+		GetDesktopResolution( width, height );
+
+		GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), Min( 1280, width ) );
+		GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportY" ), Min( 720, height ) );
+		GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedColorBits" ), 32 );
+		GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), Max( width, 640 ) );
+		GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), Max( height, 480 ) );
+		GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenColorBits" ), 32 );
 /*
 		if( (!GIsMMX || !GIsPentiumPro) && Driver==TEXT("SoftDrv.SoftwareRenderDevice") )
 		{

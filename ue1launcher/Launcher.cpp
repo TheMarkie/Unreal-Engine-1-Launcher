@@ -102,7 +102,9 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
 		UBOOL ShowLog = ParseParam( CmdLine, TEXT( "LOG" ) );
 		FString Filename = FString( TEXT( "..\\Help" ) ) * GPackage + TEXT( "Logo.bmp" );
 		if ( GFileManager->FileSize( *Filename )<0 )
-			Filename = TEXT( "..\\Help\\Logo.bmp" );
+			//Filename = TEXT( "..\\Help\\Logo.bmp" );
+			// Markie
+			Filename = TEXT( "..\\..\\Help\\Logo.bmp" );
 		appStrcpy( GPackage, appPackage() );
 		if ( !ShowLog && !ParseParam( CmdLine, TEXT( "server" ) ) && !appStrfind( CmdLine, TEXT( "TestRenDev" ) ) )
 			InitSplash( *Filename );
