@@ -136,6 +136,11 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
 					Engine->Client->Viewports( 0 )->Exec( *Temp, *GLogWindow );
 			}
 
+			// Markie: Init raw input.
+			if ( Engine->Client->Viewports.Num() > 0 ) {
+				RegisterRawInput( ( const HWND ) Engine->Client->Viewports( 0 )->GetWindow() );
+			}
+
 			// Start main engine loop, including the Windows message pump.
 			if ( !GIsRequestingExit ) {
 				// if ( !GIsEditor && Engine->Client && Engine->Client->Viewports.Num() && Engine->Client->Viewports( 0 ) && !appStrstr( appCmdLine(), TEXT( "Autoplay.xcm" ) ) && !appStrstr( appCmdLine(), TEXT( "NOMENUS" ) ) )

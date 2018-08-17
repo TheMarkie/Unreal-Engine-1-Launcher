@@ -876,6 +876,15 @@ static void MainLoop( UEngine* Engine )
 		GLogWindow->SetExec( Engine );
 	unguard;
 
+	// Markie
+	UViewport* vp;
+	if ( Engine->Client->Viewports.Num() > 0 ) {
+		vp = Engine->Client->Viewports( 0 );
+	}
+	else {
+		vp = nullptr;
+	}
+
 	// Loop while running.
 	GIsRunning = 1;
 	DWORD ThreadId = GetCurrentThreadId();
@@ -912,13 +921,64 @@ static void MainLoop( UEngine* Engine )
 		}
 		unguard;
 
+		// Markie
+		if ( Engine->Client->Viewports.Num() <= 0 ) {
+			vp = nullptr;
+		}
+
+		HWND hWnd = vp ? ( const HWND ) vp->GetWindow() : GetActiveWindow();
+		bool focused = GetFocus() == hWnd;
+
 		// Handle all incoming messages.
 		guard(MessagePump);
 		MSG Msg;
 		while( PeekMessageX(&Msg,NULL,0,0,PM_REMOVE) )
 		{
+			bool processed = false;
+
 			if( Msg.message == WM_QUIT )
 				GIsRequestingExit = 1;
+			// Markie: Blocks vanilla mouse movement.
+			else if ( Msg.message == WM_MOUSEMOVE ) {
+				if ( focused && vp ) {
+					processed = true;
+				}
+			}
+			// Markie: Adds raw input mouse movement.
+			else if ( Msg.message == WM_INPUT ) {
+				if ( focused && vp ) {
+					UINT dwSize;
+
+					GetRawInputData( ( HRAWINPUT ) Msg.lParam, RID_INPUT, NULL, &dwSize, sizeof( RAWINPUTHEADER ) );
+
+					LPBYTE lpb = new BYTE[dwSize];
+
+					GetRawInputData( ( HRAWINPUT ) Msg.lParam, RID_INPUT, lpb, &dwSize, sizeof( RAWINPUTHEADER ) );
+
+					if ( lpb != NULL ) {
+						RAWINPUT* raw = ( RAWINPUT* ) lpb;
+
+						// Markie: Camera movement in-game.
+						if ( raw->data.mouse.lLastX != 0 ) {
+							Engine->InputEvent( vp, EInputKey::IK_MouseX, EInputAction::IST_Axis, raw->data.mouse.lLastX );
+						}
+						if ( raw->data.mouse.lLastY != 0 ) {
+							Engine->InputEvent( vp, EInputKey::IK_MouseY, EInputAction::IST_Axis, - raw->data.mouse.lLastY );
+						}
+
+						// Markie: Sync mouse movement with the cursor when in menus.
+						Engine->MouseDelta( vp, 0, raw->data.mouse.lLastX, raw->data.mouse.lLastY );
+
+						processed = true;
+					}
+
+					delete[] lpb;
+				}
+			}
+
+			if ( processed ) {
+				continue;
+			}
 
 			guard(TranslateMessage);
 			TranslateMessage( &Msg );
