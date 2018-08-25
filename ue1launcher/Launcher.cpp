@@ -102,12 +102,18 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
 		UBOOL ShowLog = ParseParam( CmdLine, TEXT( "LOG" ) );
 		FString Filename = FString( TEXT( "..\\Help" ) ) * GPackage + TEXT( "Logo.bmp" );
 		if ( GFileManager->FileSize( *Filename )<0 )
-			//Filename = TEXT( "..\\Help\\Logo.bmp" );
-			// Markie
-			Filename = TEXT( "..\\..\\Help\\Logo.bmp" );
+			Filename = TEXT( "..\\Help\\Logo.bmp" );
 		appStrcpy( GPackage, appPackage() );
-		if ( !ShowLog && !ParseParam( CmdLine, TEXT( "server" ) ) && !appStrfind( CmdLine, TEXT( "TestRenDev" ) ) )
-			InitSplash( *Filename );
+		//if ( !ShowLog && !ParseParam( CmdLine, TEXT( "server" ) ) && !appStrfind( CmdLine, TEXT( "TestRenDev" ) ) )
+		//	InitSplash( *Filename );
+
+		// Markie: Init my settings.
+		InitHelper();
+
+		// Markie: If borderless, prevent the game from going real full screen.
+		if ( UsesBorderless() ) {
+			GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", FALSE );
+		}
 
 		// Init windowing.
 		InitWindowing();
@@ -136,11 +142,6 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
 					Engine->Client->Viewports( 0 )->Exec( *Temp, *GLogWindow );
 			}
 
-			// Markie: Init raw input.
-			if ( Engine->Client->Viewports.Num() > 0 ) {
-				RegisterRawInput( ( const HWND ) Engine->Client->Viewports( 0 )->GetWindow() );
-			}
-
 			// Start main engine loop, including the Windows message pump.
 			if ( !GIsRequestingExit ) {
 				// if ( !GIsEditor && Engine->Client && Engine->Client->Viewports.Num() && Engine->Client->Viewports( 0 ) && !appStrstr( appCmdLine(), TEXT( "Autoplay.xcm" ) ) && !appStrstr( appCmdLine(), TEXT( "NOMENUS" ) ) )
@@ -151,6 +152,9 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
 
 		// Delete is-running semaphore file.
 		GFileManager->Delete( TEXT( "Running.ini" ), 0, 0 );
+
+		// Markie: Clean up our stuff.
+		CleanUpHelper();
 
 		// Clean shutdown.
 		RemovePropX( *GLogWindow, TEXT( "IsBrowser" ) );
@@ -166,7 +170,6 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
 		Error.HandleError();
 	}
 #endif
-
 	// Reset timer resolution.
 	timeEndPeriod( 1 );
 

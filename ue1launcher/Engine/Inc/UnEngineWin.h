@@ -679,6 +679,43 @@ private:
 			appLaunchURL( TEXT("GotoHEAT.exe"), TEXT("5193") );
 			return 1;			
 		}
+		// Markie: Intercept ToggleFullScreen and SetRes to make them work with borderless.
+		else if ( ParseCommand( &Cmd, TEXT( "ToggleFullScreen" ) ) ) {
+			if ( UsesBorderless() ) {
+				ToggleWindowMode();
+
+				return 1;
+			}
+			
+			return 0;
+		}
+		else if ( ParseCommand( &Cmd, TEXT( "SetRes" ) ) ) {
+			if ( UsesBorderless() ) {
+				int w, h;
+				if ( StringToResolution( Cmd, w, h ) ) {
+					SetResolution( w, h, IsFullScreen() );
+
+					if ( IsFullScreen() ) {
+						GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), w );
+						GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), h );
+					}
+					else {
+						GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), w );
+						GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportY" ), h );
+					}
+				}
+
+				return 1;
+			}
+
+			return 0;
+		}
+		// Markie: We create a new command to fetch hardcoded default resolutions, in case the renderer gives no resolutions to choose from in-game.
+		else if ( ParseCommand( &Cmd, TEXT( "GetDefaultRes" ) ) ) {
+			Ar.Logf( L"800x600 1024x768 1024x576 1280x720 1280x960 1280x800 1366x768 1440x900 1440x1080 1600x900 1680x1050 1600x1200 1920x1080 1920x1200 1920x1440" );
+
+			return 1;
+		}
 		else return 0;
 		unguard;
 	}
@@ -876,13 +913,24 @@ static void MainLoop( UEngine* Engine )
 		GLogWindow->SetExec( Engine );
 	unguard;
 
-	// Markie
+	// Markie: Set up all the necessary stuff that we're gonna use during the game.
 	UViewport* vp;
 	if ( Engine->Client->Viewports.Num() > 0 ) {
 		vp = Engine->Client->Viewports( 0 );
 	}
 	else {
 		vp = nullptr;
+	}
+
+	// Markie: Get the window pointer.
+	SetMainWindow( vp ? ( HWND ) vp->GetWindow() : GetActiveWindow() );
+
+	// Markie: Init raw input.
+	RegisterRawInput();
+
+	// Markie: Apply borderless mode appropriately.
+	if ( UsesBorderless() ) {
+		ToggleWindowMode( UsesFullScreen() );
 	}
 
 	// Loop while running.
@@ -895,7 +943,7 @@ static void MainLoop( UEngine* Engine )
 	while( GIsRunning && !GIsRequestingExit )
 	{
 		// Update the world.
-		guard(UpdateWorld);
+		/*guard(UpdateWorld);
 		DOUBLE NewTime   = appSeconds();
 		FLOAT  DeltaTime = NewTime - OldTime;
 		Engine->Tick( DeltaTime );
@@ -909,15 +957,35 @@ static void MainLoop( UEngine* Engine )
 			SecondStartTime = OldTime;
 			TickCount = 0;
 		}
-		unguard;
+		unguard;*/
 
 		// Enforce optional maximum tick rate.
-		guard(EnforceTickRate);
+		/*guard(EnforceTickRate);
 		FLOAT MaxTickRate = Engine->GetMaxTickRate();
 		if( MaxTickRate>0.0 )
 		{
 			FLOAT Delta = (1.0/MaxTickRate) - (appSeconds()-OldTime);
 			appSleep( Max(0.f,Delta) );
+		}
+		unguard;*/
+
+		// Markie: Rewrite the code that updates the game to add FPS capping.
+		guard( UpdateWorld );
+
+		DOUBLE newTime = appSeconds();
+		FLOAT deltaTime = newTime - OldTime;
+
+		FLOAT cap = Engine->GetMaxTickRate();
+		cap = cap > 0 ? cap : GetFPSCap();
+		if ( cap <= 0 || deltaTime >= ( 1.0f / cap ) ) {
+			Engine->Tick( deltaTime );
+
+			if ( GWindowManager ) {
+				GWindowManager->Tick( deltaTime );
+			}
+
+			OldTime = newTime;
+			TickCount = TickCount + 1;
 		}
 		unguard;
 
@@ -926,8 +994,15 @@ static void MainLoop( UEngine* Engine )
 			vp = nullptr;
 		}
 
-		HWND hWnd = vp ? ( const HWND ) vp->GetWindow() : GetActiveWindow();
-		bool focused = GetFocus() == hWnd;
+		bool focused = GetFocus() == GetMainWindow() && GetForegroundWindow() == GetMainWindow();
+
+		// Markie: Snap in-game cursor to real cursor.
+		if ( focused ) {
+			POINT mP;
+			GetCursorPos( &mP );
+			ScreenToClient( GetMainWindow(), &mP );
+			Engine->MousePosition( vp, 0, mP.x, mP.y );
+		}
 
 		// Handle all incoming messages.
 		guard(MessagePump);
@@ -940,13 +1015,13 @@ static void MainLoop( UEngine* Engine )
 				GIsRequestingExit = 1;
 			// Markie: Blocks vanilla mouse movement.
 			else if ( Msg.message == WM_MOUSEMOVE ) {
-				if ( focused && vp ) {
+				if ( focused ) {
 					processed = true;
 				}
 			}
 			// Markie: Adds raw input mouse movement.
 			else if ( Msg.message == WM_INPUT ) {
-				if ( focused && vp ) {
+				if ( focused ) {
 					UINT dwSize;
 
 					GetRawInputData( ( HRAWINPUT ) Msg.lParam, RID_INPUT, NULL, &dwSize, sizeof( RAWINPUTHEADER ) );
@@ -966,13 +1041,19 @@ static void MainLoop( UEngine* Engine )
 							Engine->InputEvent( vp, EInputKey::IK_MouseY, EInputAction::IST_Axis, - raw->data.mouse.lLastY );
 						}
 
-						// Markie: Sync mouse movement with the cursor when in menus.
-						Engine->MouseDelta( vp, 0, raw->data.mouse.lLastX, raw->data.mouse.lLastY );
-
 						processed = true;
 					}
 
 					delete[] lpb;
+				}
+			}
+			else if ( Msg.message == WM_SYSKEYDOWN ) {
+				if ( focused && UsesBorderless() ) {
+					if ( Msg.wParam == VK_RETURN && ( HIWORD( Msg.lParam ) & KF_ALTDOWN ) ) {
+						ToggleWindowMode();
+
+						processed = true;
+					}
 				}
 			}
 
@@ -989,6 +1070,19 @@ static void MainLoop( UEngine* Engine )
 			unguardf(( TEXT("%08X %i"), (INT)Msg.hwnd, Msg.message ));
 		}
 		unguard;
+
+		// Markie: When focused, clip cursor and hide it.
+		if ( focused ) {
+			RECT rect;
+			GetClientRect( GetMainWindow(), &rect );
+
+			POINT points[] = { { rect.left, rect.top },{ rect.right, rect.bottom } };
+			MapWindowPoints( GetMainWindow(), NULL, points, 2 );
+
+			RECT clip = { points[0].x, points[0].y, points[1].x, points[1].y };
+
+			ClipCursor( &clip );
+		}
 
 		// If editor thread doesn't have the focus, don't suck up too much CPU time.
 		if( GIsEditor )
