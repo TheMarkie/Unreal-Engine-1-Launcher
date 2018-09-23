@@ -1,6 +1,6 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by LaunchRes.rc
+// Microsoft Visual C++ generated include file.
+// Used by Resource.rc
 //
 #define IDB_Logo                        101
 #define IDDIALOG_Splash                 119

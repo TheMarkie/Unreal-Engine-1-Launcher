@@ -1,5 +1,7 @@
 #include "Helper.h"
 
+#include <sstream>
+
 #include <Core.h>
 
 #define BORDER_STYLE ( WS_CAPTION | WS_THICKFRAME )
@@ -19,10 +21,10 @@ HWND mainWnd;
 bool isFullScreen;
 
 void InitHelper() {
-	GConfig->GetBool( L"VanillaMatters", L"BorderlessWindowed", usesBorderless );
+	GConfig->GetBool( appPackage(), L"BorderlessWindowed", usesBorderless );
 	GConfig->GetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", usesFullScreen );
 
-	GConfig->GetInt( L"VanillaMatters", L"FPSCap", fpsCap );
+	GConfig->GetInt( appPackage(), L"FPSCap", fpsCap );
 
 	GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", fW );
 	GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportY", fH );
@@ -39,9 +41,7 @@ void SetMainWindow( const HWND hWnd ) {
 }
 
 void CleanUpHelper() {
-	if ( UsesFullScreen() ) {
-		GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", UsesFullScreen() );
-	}
+	GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", IsFullScreen() );
 
 	if ( UsesBorderless() ) {
 		GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), wW );
@@ -67,17 +67,23 @@ void SetResolution( const int w, const int h, bool fullScreen ) {
 }
 
 void SetWindowMode( const bool borderless, int w, int h ) {
-	int offsetX, offsetY;
-	offsetX = Max( ( dW - w ) / 2, 0 );
-	offsetY = Max( ( dH - h ) / 2, 0 );
-
 	LONG_PTR style = GetWindowLongPtr( mainWnd, GWL_STYLE );
 	if ( borderless ) {
 		style = style & ~BORDER_STYLE;
 	}
 	else {
 		style = style | BORDER_STYLE;
+
+		RECT rect = { 0, 0, w, h };
+		AdjustWindowRect( &rect, style, TRUE );
+
+		w = rect.right - rect.left;
+		h = rect.bottom - rect.top - 20;
 	}
+
+	int offsetX, offsetY;
+	offsetX = Max( ( dW - w ) / 2, 0 );
+	offsetY = Max( ( dH - h ) / 2, 0 );
 
 	SetWindowLongPtr( mainWnd, GWL_STYLE, style );
 	SetWindowPos( mainWnd, NULL, offsetX, offsetY, w, h, SWP_FRAMECHANGED );
@@ -145,8 +151,8 @@ void GetDesktopResolution( int& width, int& height ) {
 
 bool StringToResolution( const TCHAR* str, int& w, int& h ) {
 	FString fstr( str );
-	FString fstrW = fstr.Left( fstr.InStr( L"x", 0 ) );
-	FString fstrH = fstr.Right( fstr.InStr( L"x", 1 ) - 1 );
+	FString fstrW = fstr.Left( fstr.InStr( L"x" ) );
+	FString fstrH = fstr.Right( fstr.Len() - fstr.InStr( L"x" ) - 1 );
 
 	w = -1;
 	h = -1;

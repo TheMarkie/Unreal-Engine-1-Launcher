@@ -684,6 +684,8 @@ private:
 			if ( UsesBorderless() ) {
 				ToggleWindowMode();
 
+				GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", IsFullScreen() );
+
 				return 1;
 			}
 			
@@ -712,7 +714,15 @@ private:
 		}
 		// Markie: We create a new command to fetch hardcoded default resolutions, in case the renderer gives no resolutions to choose from in-game.
 		else if ( ParseCommand( &Cmd, TEXT( "GetDefaultRes" ) ) ) {
-			Ar.Logf( L"800x600 1024x768 1024x576 1280x720 1280x960 1280x800 1366x768 1440x900 1440x1080 1600x900 1680x1050 1600x1200 1920x1080 1920x1200 1920x1440" );
+			Ar.Logf( L"800x600 1024x576 1024x768 1280x720 1280x800 1280x960 1366x768 1440x900 1440x1080 1600x900 1680x1050 1600x1200 1920x1080 1920x1200 1920x1440" );
+
+			return 1;
+		}
+		else if ( ParseCommand( &Cmd, TEXT( "FlushLighting" ) ) ) {
+			GCache.Flush( MakeCacheID( CID_ShadowMap, 0, 0 ), MakeCacheID( CID_MAX, 0, 0, NULL ) );
+			GCache.Flush( MakeCacheID( CID_IlluminationMap, 0, 0 ), MakeCacheID( CID_MAX, 0, 0, NULL ) );
+			GCache.Flush( MakeCacheID( CID_StaticMap, 0, 0 ), MakeCacheID( CID_MAX, 0, 0, NULL ) );
+			GCache.Flush( MakeCacheID( CID_DynamicMap, 0, 0 ), MakeCacheID( CID_MAX, 0, 0, NULL ) );
 
 			return 1;
 		}
@@ -996,14 +1006,6 @@ static void MainLoop( UEngine* Engine )
 
 		bool focused = GetFocus() == GetMainWindow() && GetForegroundWindow() == GetMainWindow();
 
-		// Markie: Snap in-game cursor to real cursor.
-		if ( focused ) {
-			POINT mP;
-			GetCursorPos( &mP );
-			ScreenToClient( GetMainWindow(), &mP );
-			Engine->MousePosition( vp, 0, mP.x, mP.y );
-		}
-
 		// Handle all incoming messages.
 		guard(MessagePump);
 		MSG Msg;
@@ -1041,6 +1043,21 @@ static void MainLoop( UEngine* Engine )
 							Engine->InputEvent( vp, EInputKey::IK_MouseY, EInputAction::IST_Axis, - raw->data.mouse.lLastY );
 						}
 
+						// Markie: Add support for more mouse buttons.
+						if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_UP ) {
+							Engine->InputEvent( vp, EInputKey::IK_Unknown05, EInputAction::IST_Release );
+						}
+						else if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_DOWN ) {
+							Engine->InputEvent( vp, EInputKey::IK_Unknown05, EInputAction::IST_Press );
+						}
+
+						if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_UP ) {
+							Engine->InputEvent( vp, EInputKey::IK_Unknown06, EInputAction::IST_Release );
+						}
+						else if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_DOWN ) {
+							Engine->InputEvent( vp, EInputKey::IK_Unknown06, EInputAction::IST_Press );
+						}
+
 						processed = true;
 					}
 
@@ -1071,6 +1088,9 @@ static void MainLoop( UEngine* Engine )
 		}
 		unguard;
 
+		POINT mP;
+		GetCursorPos( &mP );
+
 		// Markie: When focused, clip cursor and hide it.
 		if ( focused ) {
 			RECT rect;
@@ -1082,6 +1102,20 @@ static void MainLoop( UEngine* Engine )
 			RECT clip = { points[0].x, points[0].y, points[1].x, points[1].y };
 
 			ClipCursor( &clip );
+
+			// Markie: Hide cursor only when we know we're in the game window, so that "preferences" and other external menus can have the cursor.
+			if ( GetCapture() == GetMainWindow() || WindowFromPoint( mP ) == GetMainWindow() ) {
+				while ( ShowCursor( false ) > 0 );
+			}
+			else {
+				while ( ShowCursor( true ) <= 0 );
+			}
+		}
+
+		// Markie: Snap in-game cursor to real cursor.
+		if ( focused ) {
+			ScreenToClient( GetMainWindow(), &mP );
+			Engine->MousePosition( vp, 0, mP.x, mP.y );
 		}
 
 		// If editor thread doesn't have the focus, don't suck up too much CPU time.

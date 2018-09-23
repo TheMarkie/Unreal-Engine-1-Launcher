@@ -128,6 +128,11 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
 		// Init engine.
 		UEngine* Engine = InitEngine();
 
+		// Markie: Restore full screen option.
+		if ( UsesFullScreen() ) {
+			GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", TRUE );
+		}
+
 		if ( Engine ) {
 			GLogWindow->Log( NAME_Title, LocalizeGeneral( "Run" ) );
 
