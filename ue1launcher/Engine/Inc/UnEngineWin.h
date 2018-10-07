@@ -1103,12 +1103,19 @@ static void MainLoop( UEngine* Engine )
 
 			ClipCursor( &clip );
 
+			CURSORINFO curInfo = { 0 };
+			curInfo.cbSize = sizeof( curInfo );
+
+			GetCursorInfo( &curInfo );
+
 			// Markie: Hide cursor only when we know we're in the game window, so that "preferences" and other external menus can have the cursor.
 			if ( GetCapture() == GetMainWindow() || WindowFromPoint( mP ) == GetMainWindow() ) {
-				while ( ShowCursor( false ) > 0 );
+				if ( curInfo.flags == CURSOR_SHOWING ) {
+					ShowCursor( false );
+				}
 			}
-			else {
-				while ( ShowCursor( true ) <= 0 );
+			else if ( curInfo.flags == 0 ) {
+				ShowCursor( true );
 			}
 		}
 
