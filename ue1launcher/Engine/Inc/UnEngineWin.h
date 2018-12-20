@@ -726,6 +726,14 @@ private:
 
 			return 1;
 		}
+		else if ( ParseCommand( &Cmd, TEXT( "UIScale" ) ) ) {
+			int scale = appAtoi( Cmd );
+			if ( scale >= 1 ) {
+				SetUIScale( scale );
+			}
+
+			return 1;
+		}
 		else return 0;
 		unguard;
 	}
@@ -924,7 +932,6 @@ static void MainLoop( UEngine* Engine )
 	unguard;
 
 	// Markie: Set up all the necessary stuff that we're gonna use during the game.
-	UViewport* vp;
 	if ( Engine->Client->Viewports.Num() > 0 ) {
 		vp = Engine->Client->Viewports( 0 );
 	}
@@ -933,7 +940,10 @@ static void MainLoop( UEngine* Engine )
 	}
 
 	// Markie: Get the window pointer.
-	SetMainWindow( vp ? ( HWND ) vp->GetWindow() : GetActiveWindow() );
+	mainWnd = vp ? ( HWND ) vp->GetWindow() : GetActiveWindow();
+
+	// Markie: Override native functions.
+	InitNativeHooks();
 
 	// Markie: Init raw input.
 	RegisterRawInput();
@@ -1004,7 +1014,7 @@ static void MainLoop( UEngine* Engine )
 			vp = nullptr;
 		}
 
-		bool focused = GetFocus() == GetMainWindow() && GetForegroundWindow() == GetMainWindow();
+		bool focused = GetFocus() == mainWnd && GetForegroundWindow() == mainWnd;
 
 		// Handle all incoming messages.
 		guard(MessagePump);
@@ -1035,7 +1045,7 @@ static void MainLoop( UEngine* Engine )
 					if ( lpb != NULL ) {
 						RAWINPUT* raw = ( RAWINPUT* ) lpb;
 
-						// Markie: Camera movement in-game.
+						// Markie: Camera movement in-game. Lifted from kentie's.
 						if ( raw->data.mouse.lLastX != 0 ) {
 							Engine->InputEvent( vp, EInputKey::IK_MouseX, EInputAction::IST_Axis, raw->data.mouse.lLastX );
 						}
@@ -1043,7 +1053,7 @@ static void MainLoop( UEngine* Engine )
 							Engine->InputEvent( vp, EInputKey::IK_MouseY, EInputAction::IST_Axis, - raw->data.mouse.lLastY );
 						}
 
-						// Markie: Add support for more mouse buttons.
+						// Markie: Add support for more mouse buttons. Lifted from kentie's.
 						if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_UP ) {
 							Engine->InputEvent( vp, EInputKey::IK_Unknown05, EInputAction::IST_Release );
 						}
@@ -1094,10 +1104,10 @@ static void MainLoop( UEngine* Engine )
 		// Markie: When focused, clip cursor and hide it.
 		if ( focused ) {
 			RECT rect;
-			GetClientRect( GetMainWindow(), &rect );
+			GetClientRect( mainWnd, &rect );
 
 			POINT points[] = { { rect.left, rect.top },{ rect.right, rect.bottom } };
-			MapWindowPoints( GetMainWindow(), NULL, points, 2 );
+			MapWindowPoints( mainWnd, NULL, points, 2 );
 
 			RECT clip = { points[0].x, points[0].y, points[1].x, points[1].y };
 
@@ -1109,7 +1119,7 @@ static void MainLoop( UEngine* Engine )
 			GetCursorInfo( &curInfo );
 
 			// Markie: Hide cursor only when we know we're in the game window, so that "preferences" and other external menus can have the cursor.
-			if ( GetCapture() == GetMainWindow() || WindowFromPoint( mP ) == GetMainWindow() ) {
+			if ( GetCapture() == mainWnd || WindowFromPoint( mP ) == mainWnd ) {
 				if ( curInfo.flags == CURSOR_SHOWING ) {
 					ShowCursor( false );
 				}
@@ -1121,7 +1131,7 @@ static void MainLoop( UEngine* Engine )
 
 		// Markie: Snap in-game cursor to real cursor.
 		if ( focused ) {
-			ScreenToClient( GetMainWindow(), &mP );
+			ScreenToClient( mainWnd, &mP );
 			Engine->MousePosition( vp, 0, mP.x, mP.y );
 		}
 

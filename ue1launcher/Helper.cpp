@@ -1,13 +1,15 @@
 #include "Helper.h"
 
-#include <sstream>
-
-#include <Core.h>
-
 #define BORDER_STYLE ( WS_CAPTION | WS_THICKFRAME )
 
 typedef signed int UBOOL;
 
+HWND mainWnd;
+UViewport* vp;
+
+// ==============================================
+// Markie: Global settings.
+// ==============================================
 UBOOL usesBorderless;
 UBOOL usesFullScreen;
 
@@ -16,15 +18,22 @@ int wW, wH, fW, fH;
 
 int dW, dH;
 
-HWND mainWnd;
+int scale;
 
 bool isFullScreen;
 
+bool resolutionChanged;
+
+// ==============================================
+// Markie: Functions to set stuff.
+// ==============================================
 void InitHelper() {
 	GConfig->GetBool( appPackage(), L"BorderlessWindowed", usesBorderless );
 	GConfig->GetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", usesFullScreen );
 
 	GConfig->GetInt( appPackage(), L"FPSCap", fpsCap );
+
+	GConfig->GetInt( appPackage(), L"UIScale", scale );
 
 	GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", fW );
 	GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportY", fH );
@@ -36,8 +45,8 @@ void InitHelper() {
 	GetDesktopResolution( dW, dH );
 }
 
-void SetMainWindow( const HWND hWnd ) {
-	mainWnd = hWnd;
+void InitNativeHooks() {
+	PRWHook prwHook;
 }
 
 void CleanUpHelper() {
@@ -50,11 +59,12 @@ void CleanUpHelper() {
 }
 
 void SetResolution( const int w, const int h, bool fullScreen ) {
+	int offsetX, offsetY;
+
 	if ( fullScreen ) {
 		fW = w > 0 ? w : fW;
 		fH = h > 0 ? h : fH;
 
-		int offsetX, offsetY;
 		offsetX = max( ( dW - w ) / 2, 0 );
 		offsetY = max( ( dH - h ) / 2, 0 );
 
@@ -63,13 +73,30 @@ void SetResolution( const int w, const int h, bool fullScreen ) {
 	else {
 		wW = w > 0 ? w : wW;
 		wH = h > 0 ? h : wH;
+
+		RECT rect = { 0, 0, w, h };
+		LONG_PTR style = GetWindowLongPtr( mainWnd, GWL_STYLE );
+
+		AdjustWindowRect( &rect, style, TRUE );
+
+		int aW = rect.right - rect.left;
+		int aH = rect.bottom - rect.top - 20;
+
+		offsetX = max( ( dW - aW ) / 2, 0 );
+		offsetY = max( ( dH - aH - 22 ) / 2, 0 );
+
+		SetWindowPos( mainWnd, NULL, offsetX, offsetY, wW, wH, 0 );
 	}
 }
 
 void SetWindowMode( const bool borderless, int w, int h ) {
+	int offsetX, offsetY;
+
 	LONG_PTR style = GetWindowLongPtr( mainWnd, GWL_STYLE );
 	if ( borderless ) {
 		style = style & ~BORDER_STYLE;
+
+		offsetY = Max( ( dH - h ) / 2, 0 );
 	}
 	else {
 		style = style | BORDER_STYLE;
@@ -79,11 +106,11 @@ void SetWindowMode( const bool borderless, int w, int h ) {
 
 		w = rect.right - rect.left;
 		h = rect.bottom - rect.top - 20;
+		
+		offsetY = Max( ( dH - h - 22 ) / 2, 0 );
 	}
 
-	int offsetX, offsetY;
 	offsetX = Max( ( dW - w ) / 2, 0 );
-	offsetY = Max( ( dH - h ) / 2, 0 );
 
 	SetWindowLongPtr( mainWnd, GWL_STYLE, style );
 	SetWindowPos( mainWnd, NULL, offsetX, offsetY, w, h, SWP_FRAMECHANGED );
@@ -104,6 +131,17 @@ void ToggleWindowMode() {
 	ToggleWindowMode( !IsFullScreen() );
 }
 
+void SetUIScale( int n ) {
+	if ( n >= 1 ) {
+		scale = n;
+
+		GConfig->SetInt( appPackage(), L"UIScale", scale );
+	}
+}
+
+// ==============================================
+// Markie: Miscellaneous functions.
+// ==============================================
 void RegisterRawInput() {
 	if ( !mainWnd ) {
 		return;
@@ -119,12 +157,15 @@ void RegisterRawInput() {
 	RegisterRawInputDevices( Rid, 1, sizeof( Rid[0] ) );
 }
 
-HWND GetMainWindow() {
-	return mainWnd;
-}
-
+// ==============================================
+// Markie: Functions to get stuff.
+// ==============================================
 int GetFPSCap() {
 	return fpsCap;
+}
+
+int GetUIScale() {
+	return scale;
 }
 
 bool UsesBorderless() {
