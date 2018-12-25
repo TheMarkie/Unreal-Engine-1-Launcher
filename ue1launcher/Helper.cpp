@@ -10,6 +10,8 @@ UViewport* vp;
 // ==============================================
 // Markie: Global settings.
 // ==============================================
+const TCHAR* settingsPackage;
+
 UBOOL usesBorderless;
 UBOOL usesFullScreen;
 
@@ -28,12 +30,30 @@ bool resolutionChanged;
 // Markie: Functions to set stuff.
 // ==============================================
 void InitHelper() {
-	GConfig->GetBool( appPackage(), L"BorderlessWindowed", usesBorderless );
+	FString package( appPackage() );
+	package = package + L"Launcher";
+	settingsPackage = *package;
+
+	if ( !GConfig->GetBool( settingsPackage, L"BorderlessWindowed", usesBorderless ) ) {
+		usesBorderless = true;
+
+		GConfig->SetBool( settingsPackage, L"BorderlessWindowed", usesBorderless );
+	}
 	GConfig->GetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", usesFullScreen );
 
-	GConfig->GetInt( appPackage(), L"FPSCap", fpsCap );
+	if ( !GConfig->GetInt( settingsPackage, L"FPSCap", fpsCap ) ) {
+		fpsCap = 120;
 
-	GConfig->GetInt( appPackage(), L"UIScale", scale );
+		GConfig->SetInt( settingsPackage, L"FPSCap", fpsCap );
+	}
+
+	if ( !GConfig->GetInt( settingsPackage, L"UIScale", scale ) ) {
+		scale = 1;
+
+		GConfig->SetInt( settingsPackage, L"UIScale", scale );
+	}
+
+	scale = Max( scale, 1 );
 
 	GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", fW );
 	GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportY", fH );
@@ -135,7 +155,7 @@ void SetUIScale( int n ) {
 	if ( n >= 1 ) {
 		scale = n;
 
-		GConfig->SetInt( appPackage(), L"UIScale", scale );
+		GConfig->SetInt( settingsPackage, L"UIScale", scale );
 	}
 }
 
@@ -165,6 +185,8 @@ int GetFPSCap() {
 }
 
 int GetUIScale() {
+	scale = Max( scale, 1 );
+
 	return scale;
 }
 

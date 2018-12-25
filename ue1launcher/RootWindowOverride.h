@@ -8,7 +8,7 @@ public:
 		float y = canvas->Y;
 		bool resolutionChanged = ( x / hMultiplier ) != width || ( y / vMultiplier ) != height;
 
-		if ( scale >= 1 && ( resolutionChanged || scale != hMultiplier || scale != vMultiplier ) ) {
+		if ( resolutionChanged || scale != hMultiplier || scale != vMultiplier ) {
 			ResizeRoot( canvas );
 
 			const float fScale = static_cast< float >( scale );
