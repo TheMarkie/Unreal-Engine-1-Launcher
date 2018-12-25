@@ -726,6 +726,14 @@ private:
 
 			return 1;
 		}
+		else if ( ParseCommand( &Cmd, TEXT( "FPSCap" ) ) ) {
+			int cap = appAtoi( Cmd );
+			if ( cap >= 0 ) {
+				SetFPSCap( cap );
+			}
+
+			return 1;
+		}
 		else if ( ParseCommand( &Cmd, TEXT( "UIScale" ) ) ) {
 			int scale = appAtoi( Cmd );
 			if ( scale >= 1 ) {

@@ -10,7 +10,7 @@ UViewport* vp;
 // ==============================================
 // Markie: Global settings.
 // ==============================================
-const TCHAR* settingsPackage;
+TCHAR settingsPackage[72];
 
 UBOOL usesBorderless;
 UBOOL usesFullScreen;
@@ -32,7 +32,7 @@ bool resolutionChanged;
 void InitHelper() {
 	FString package( appPackage() );
 	package = package + L"Launcher";
-	settingsPackage = *package;
+	appStrcpy( settingsPackage, *package );
 
 	if ( !GConfig->GetBool( settingsPackage, L"BorderlessWindowed", usesBorderless ) ) {
 		usesBorderless = true;
@@ -151,7 +151,15 @@ void ToggleWindowMode() {
 	ToggleWindowMode( !IsFullScreen() );
 }
 
-void SetUIScale( int n ) {
+void SetFPSCap( const int cap ) {
+	if ( cap >= 0 ) {
+		fpsCap = cap;
+
+		GConfig->SetInt( settingsPackage, L"FPSCap", fpsCap );
+	}
+}
+
+void SetUIScale( const int n ) {
 	if ( n >= 1 ) {
 		scale = n;
 

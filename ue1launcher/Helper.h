@@ -22,7 +22,8 @@ void SetResolution( const int, const int, bool );
 void SetWindowMode( const bool, int, int );
 void ToggleWindowMode( const bool );
 void ToggleWindowMode();
-void SetUIScale( int );
+void SetFPSCap( const int );
+void SetUIScale( const int );
 
 void RegisterRawInput();
 
