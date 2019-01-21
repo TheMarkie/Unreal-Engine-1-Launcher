@@ -734,6 +734,11 @@ private:
 
 			return 1;
 		}
+		else if ( ParseCommand( &Cmd, TEXT( "GetFPSCap" ) ) ) {
+			Ar.Logf( L"%i", GetFPSCap() );
+
+			return 1;
+		}
 		else if ( ParseCommand( &Cmd, TEXT( "UIScale" ) ) ) {
 			int scale = appAtoi( Cmd );
 			if ( scale >= 1 ) {
