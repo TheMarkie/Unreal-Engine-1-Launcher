@@ -15,6 +15,7 @@ extern UViewport* vp;
 extern HWND mainWnd;
 
 void InitHelper();
+void InitRedirects();
 void InitNativeHooks();
 void CleanUpHelper();
 
@@ -35,8 +36,5 @@ bool IsFullScreen();
 
 void GetDesktopResolution( int&, int& );
 bool StringToResolution( const TCHAR*, int&, int& );
-
-#include "RootWindowOverride.h"
-#include "HookHelper.h"
 
 #endif // !HELPER_H

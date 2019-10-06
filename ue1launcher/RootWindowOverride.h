@@ -6,7 +6,7 @@ public:
 	void SetScale( const int scale, UCanvas* canvas ) {
 		float x = canvas->X;
 		float y = canvas->Y;
-		bool resolutionChanged = ( x / hMultiplier ) != width || ( y / vMultiplier ) != height;
+		bool resolutionChanged = ( ( x / hMultiplier ) != width ) || ( ( y / vMultiplier ) != height );
 
 		if ( resolutionChanged || scale != hMultiplier || scale != vMultiplier ) {
 			ResizeRoot( canvas );

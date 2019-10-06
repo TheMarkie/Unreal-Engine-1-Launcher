@@ -1,4 +1,5 @@
 #include "Helper.h"
+#include "HookHelper.h"
 
 #define BORDER_STYLE ( WS_CAPTION | WS_THICKFRAME )
 
@@ -8,7 +9,7 @@ HWND mainWnd;
 UViewport* vp;
 
 // ==============================================
-// Markie: Global settings.
+// Markie: Global settings
 // ==============================================
 TCHAR settingsPackage[72];
 
@@ -27,9 +28,12 @@ bool isFullScreen;
 bool resolutionChanged;
 
 // ==============================================
-// Markie: Functions to set stuff.
+// Markie: Functions to set stuff
 // ==============================================
 void InitHelper() {
+	// Redirect all the necessary functions before we do anything.
+	InitRedirects();
+
 	FString package( appPackage() );
 	package = package + L"Launcher";
 	appStrcpy( settingsPackage, *package );
@@ -63,6 +67,31 @@ void InitHelper() {
 	isFullScreen = usesFullScreen;
 
 	GetDesktopResolution( dW, dH );
+}
+
+void InitRedirects() {
+	// UCommandlet
+	SUBSTITUTE_NATIVE_FUNCTION( Core, UCommandlet, execMain, Stub, execStub );
+
+	// AStatLog
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execGetMapFileName, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execGetGMTRef, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execGetPlayerChecksum, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execLogMutator, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execInitialCheck, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execBrowseRelativeLocalURL, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execExecuteWorldLogBatcher, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execBatchLocal, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execExecuteSilentLogBatcher, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execExecuteLocalLogBatcher, Stub, execStub );
+
+	// AStatLogFile
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execFileLog, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execFileFlush, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execGetChecksum, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execWatermark, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execCloseLog, Stub, execStub );
+	SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execOpenLog, Stub, execStub );
 }
 
 void InitNativeHooks() {
@@ -186,7 +215,7 @@ void RegisterRawInput() {
 }
 
 // ==============================================
-// Markie: Functions to get stuff.
+// Markie: Functions to get stuff
 // ==============================================
 int GetFPSCap() {
 	return fpsCap;
