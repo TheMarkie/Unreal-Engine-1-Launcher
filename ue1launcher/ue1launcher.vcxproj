@@ -58,6 +58,7 @@
     <ClCompile Include="Launcher.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="Engine\Inc\UnEngineWin.h" />
     <ClInclude Include="Helper.h" />
     <ClInclude Include="HookHelper.h" />

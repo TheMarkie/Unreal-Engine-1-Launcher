@@ -3,75 +3,74 @@
 #ifndef HOOKHELPER_H
 #define HOOKHELPER_H
 
+// ==============================================
+// Native hooks
+// ==============================================
+#define TO_NATIVE_FUNCTION( cls, func ) reinterpret_cast< Native >( &cls##::##func )
+#define DECLARE_NATIVE_HOOK( index, cls, func ) { index, TO_NATIVE_FUNCTION( cls, func ) }
+
+struct NativeHookData {
+    size_t ID;
+    Native Function;
+
+    NativeHookData() {}
+
+    NativeHookData( size_t id, Native function ) {
+        ID = id;
+        Function = function;
+    }
+};
+
+void HookNativeFunction( size_t id, Native function ) {
+        GNatives[id] = function;
+    }
+
+void HookNativeFunctions( NativeHookData data[], size_t count ) {
+    for ( size_t i = 0; i < count; i++ ) {
+        GNatives[data[i].ID] = data[i].Function;
+    }
+}
+
+// PreRenderWindows hook
 #include "RootWindowOverride.h"
 
-// ==============================================
-// Markie: Native hooks
-// ==============================================
-// Markie: Base native hook class
-class NativeHook {
-public:
-	NativeHook( size_t id, Native nf ) {
-		GNatives[id] = nf;
-	}
-};
-
-// Markie: PreRenderWindows hook
-class PRWHook : NativeHook {
-public:
-	PRWHook() : NativeHook( EXTENSION_PreRenderWindows, reinterpret_cast< Native >( &PRWHook::execPreRenderWindows ) ) {};
-
-	void execPreRenderWindows( FFrame& Stack, RESULT_DECL ) {
-		UNREFERENCED_PARAMETER( Result );
-
-		P_GET_OBJECT( UCanvas, canvas );
-		P_FINISH;
-
-		PreRenderWindows( canvas );
-	}
-private:
-	void PreRenderWindows( UCanvas* canvas ) {
-		APlayerPawnExt* pp = static_cast< APlayerPawnExt* >( canvas->Viewport->Actor );
-		RootWindowOverride* rwo = static_cast< RootWindowOverride* >( pp->rootWindow );
-
-		rwo->SetScale( GetUIScale(), canvas );
-	}
-};
+// Dynamic Array support
+#include "DynamicArray.h"
 
 // ==============================================
-// Markie: Redirects
+// Redirects
 // ==============================================
 // Courtesy of Hanfling.
 void RedirectCall( void* Address, void* JumpAddress ) {
-	guard( RedirectCall );
+    guard( RedirectCall );
 
-	struct FRedirectCode {
-		BYTE  _Pad[3];
-		BYTE  Jump;
-		DWORD Offset;
-	};
+    struct FRedirectCode {
+        BYTE  _Pad[3];
+        BYTE  Jump;
+        DWORD Offset;
+    };
 
-	DWORD OldProtect;
+    DWORD OldProtect;
 
-	// Make function start writeable.
-	verify( VirtualProtect( ( LPVOID ) Address, 5, PAGE_EXECUTE_READWRITE, &OldProtect ) );
+    // Make function start writeable.
+    verify( VirtualProtect( ( LPVOID ) Address, 5, PAGE_EXECUTE_READWRITE, &OldProtect ) );
 
-	// Create replacement code.
-	FRedirectCode RedirectCode;
+    // Create replacement code.
+    FRedirectCode RedirectCode;
 
-	RedirectCode.Jump = 0xE9;
-	RedirectCode.Offset = ( DWORD ) JumpAddress - ( DWORD ) Address - 5;
+    RedirectCode.Jump = 0xE9;
+    RedirectCode.Offset = ( DWORD ) JumpAddress - ( DWORD ) Address - 5;
 
-	// Copy in replacement.
-	appMemcpy( Address, ( ( BYTE* ) &RedirectCode ) + 3, 5 );
+    // Copy in replacement.
+    appMemcpy( Address, ( ( BYTE* ) &RedirectCode ) + 3, 5 );
 
-	// Restore old protection.
-	verify( VirtualProtect( ( LPVOID ) Address, 5, OldProtect, &OldProtect ) );
+    // Restore old protection.
+    verify( VirtualProtect( ( LPVOID ) Address, 5, OldProtect, &OldProtect ) );
 
-	// https://docs.microsoft.com/en-us/windows/desktop/api/processthreadsapi/nf-processthreadsapi-flushinstructioncache
-	FlushInstructionCache( GetCurrentProcess(), NULL, 0 );
+    // https://docs.microsoft.com/en-us/windows/desktop/api/processthreadsapi/nf-processthreadsapi-flushinstructioncache
+    FlushInstructionCache( GetCurrentProcess(), NULL, 0 );
 
-	unguard;
+    unguard;
 }
 
 // Courtesy of Hanfling.
@@ -90,9 +89,9 @@ void RedirectCall( void* Address, void* JumpAddress ) {
 // Stub to redirect to
 class Stub {
 public:
-	void execStub( FFrame& Stack, RESULT_DECL ) {
-		// Do nothing because it's a stub.
-	}
+    void execStub( FFrame& Stack, RESULT_DECL ) {
+        // Do nothing because it's a stub.
+    }
 };
 
 #endif // !HOOKHELPER_H
