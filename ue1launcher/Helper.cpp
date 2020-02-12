@@ -50,13 +50,13 @@ void InitHelper() {
 
         GConfig->SetInt( settingsPackage, L"FPSCap", fpsCap );
     }
+    fpsCap = Max( fpsCap, 0 );
 
     if ( !GConfig->GetInt( settingsPackage, L"UIScale", scale ) ) {
         scale = 1;
 
         GConfig->SetInt( settingsPackage, L"UIScale", scale );
     }
-
     scale = Max( scale, 1 );
 
     GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", fW );
@@ -69,7 +69,7 @@ void InitHelper() {
     GetDesktopResolution( dW, dH );
 
     // Override native functions.
-    InitNativeHooks();
+    InitNativeFunctions();
 }
 
 void InitRedirects() {
@@ -97,9 +97,9 @@ void InitRedirects() {
     SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execOpenLog, Stub, execStub );
 }
 
-void InitNativeHooks() {
+void InitNativeFunctions() {
     PreRenderWindowsHook preRenderWindowsHook;
-    DynamicArrayHook dynamicArrayHook;
+    DynamicArray dynamicArray;
 }
 
 void CleanUpHelper() {
@@ -226,8 +226,6 @@ int GetFPSCap() {
 }
 
 int GetUIScale() {
-    scale = Max( scale, 1 );
-
     return scale;
 }
 

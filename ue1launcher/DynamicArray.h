@@ -4,37 +4,19 @@
 #define P_GET_TARRAY_REF( type, var ) TArray<type> var##T; GPropAddr = 0; Stack.Step( Stack.Object, &var##T ); TArray<type>* var = GPropAddr ? ( TArray<type>* ) GPropAddr : &var##T;
 
 // Dynamic Array hook
-class DynamicArrayHook {
+class DynamicArray {
     enum DynamicArrayFunction {
-        // Count
-        IntArrayCount = 3200,
-        ByteArrayCount = 3201,
-        FloatArrayCount = 3202,
-        StringArrayCount = 3203,
-        NameArrayCount = 3204,
-        ObjectArrayCount = 3205,
-        StructArrayCount = 3206,
+        ArrayCount = 3200
     };
 
-#define DECLARE_DYNAMIC_ARRAY_FUNCTION( type, func ) DECLARE_NATIVE_HOOK( type##Array##func, DynamicArrayHook, exec##type##Array##func )
-#define IMPLEMENT_DYNAMIC_ARRAY_FUNCTION( type, func ) void exec##type##Array##func( FFrame& Stack, RESULT_DECL ) { execIntArray##func( Stack, Result ); }
-
 public:
-    DynamicArrayHook() {
-        NativeHookData data[] = {
-            DECLARE_NATIVE_HOOK( EX_DynArrayElement, DynamicArrayHook, execDynArrayElement ),
-
-            // Count
-            DECLARE_DYNAMIC_ARRAY_FUNCTION( Int, Count ),
-            DECLARE_DYNAMIC_ARRAY_FUNCTION( Byte, Count ),
-            DECLARE_DYNAMIC_ARRAY_FUNCTION( Float, Count ),
-            DECLARE_DYNAMIC_ARRAY_FUNCTION( String, Count ),
-            DECLARE_DYNAMIC_ARRAY_FUNCTION( Name, Count ),
-            DECLARE_DYNAMIC_ARRAY_FUNCTION( Object, Count ),
-            DECLARE_DYNAMIC_ARRAY_FUNCTION( Struct, Count ),
+    DynamicArray() {
+        NativeFunctionData data[] = {
+            DECLARE_NATIVE_FUNCTION( EX_DynArrayElement, DynamicArray, execDynArrayElement ),
+            DECLARE_NATIVE_FUNCTION( ArrayCount, DynamicArray, execArrayCount ),
         };
 
-        HookNativeFunctions( data, 8 );
+        AddNativeFunctions( data, 2 );
     }
 
     // Hanfling's code with my modification
@@ -117,17 +99,10 @@ public:
         }
     }
 
-    // Count
-    void execIntArrayCount( FFrame& Stack, RESULT_DECL ) {
+    void execArrayCount( FFrame& Stack, RESULT_DECL ) {
         P_GET_TARRAY_REF( INT, Array )
         P_FINISH;
 
         *( INT* ) Result = Array->Num();
     }
-    IMPLEMENT_DYNAMIC_ARRAY_FUNCTION( Byte, Count )
-    IMPLEMENT_DYNAMIC_ARRAY_FUNCTION( Float, Count )
-    IMPLEMENT_DYNAMIC_ARRAY_FUNCTION( String, Count )
-    IMPLEMENT_DYNAMIC_ARRAY_FUNCTION( Name, Count )
-    IMPLEMENT_DYNAMIC_ARRAY_FUNCTION( Object, Count )
-    IMPLEMENT_DYNAMIC_ARRAY_FUNCTION( Struct, Count )
 };

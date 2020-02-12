@@ -34,7 +34,7 @@ public:
 class PreRenderWindowsHook {
 public:
     PreRenderWindowsHook() {
-        HookNativeFunction( EXTENSION_PreRenderWindows, TO_NATIVE_FUNCTION( PreRenderWindowsHook, execPreRenderWindows ) );
+        AddNativeFunction( EXTENSION_PreRenderWindows, TO_NATIVE_FUNCTION( PreRenderWindowsHook, execPreRenderWindows ) );
     }
 
     void execPreRenderWindows( FFrame& Stack, RESULT_DECL ) {

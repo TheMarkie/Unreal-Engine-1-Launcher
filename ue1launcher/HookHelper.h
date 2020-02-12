@@ -7,25 +7,25 @@
 // Native hooks
 // ==============================================
 #define TO_NATIVE_FUNCTION( cls, func ) reinterpret_cast< Native >( &cls##::##func )
-#define DECLARE_NATIVE_HOOK( index, cls, func ) { index, TO_NATIVE_FUNCTION( cls, func ) }
+#define DECLARE_NATIVE_FUNCTION( index, cls, func ) { index, TO_NATIVE_FUNCTION( cls, func ) }
 
-struct NativeHookData {
+struct NativeFunctionData {
     size_t ID;
     Native Function;
 
-    NativeHookData() {}
+    NativeFunctionData() {}
 
-    NativeHookData( size_t id, Native function ) {
+    NativeFunctionData( size_t id, Native function ) {
         ID = id;
         Function = function;
     }
 };
 
-void HookNativeFunction( size_t id, Native function ) {
+void AddNativeFunction( size_t id, Native function ) {
         GNatives[id] = function;
     }
 
-void HookNativeFunctions( NativeHookData data[], size_t count ) {
+void AddNativeFunctions( NativeFunctionData data[], size_t count ) {
     for ( size_t i = 0; i < count; i++ ) {
         GNatives[data[i].ID] = data[i].Function;
     }

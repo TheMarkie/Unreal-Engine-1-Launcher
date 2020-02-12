@@ -16,7 +16,7 @@ extern HWND mainWnd;
 
 void InitHelper();
 void InitRedirects();
-void InitNativeHooks();
+void InitNativeFunctions();
 void CleanUpHelper();
 
 void SetResolution( const int, const int, bool );
