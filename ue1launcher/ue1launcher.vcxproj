@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
@@ -7,33 +7,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{B69D15E3-2F91-4D3C-B043-1AB24FE7B511}</ProjectGuid>
+    <VCProjectVersion>16.0</VCProjectVersion>
     <RootNamespace>ue1launcher</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+  <PropertyGroup Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="Shared">
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(ProjectDir)Extension\Inc;$(IncludePath)</IncludePath>
+  <PropertyGroup>
+    <IncludePath>$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(ProjectDir)Extension\Inc;$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Resources;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Core\Lib;$(ProjectDir)Engine\Lib;$(ProjectDir)Window\Lib;$(ProjectDir)Extension\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
@@ -54,164 +44,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Helper.cpp" />
-    <ClCompile Include="Launcher.cpp" />
+    <ClCompile Include="Launcher\Sources\Helper.cpp" />
+    <ClCompile Include="Launcher\Sources\Launcher.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Core\Inc\Core.h" />
-    <ClInclude Include="Core\Inc\DbgInfoCpp.h" />
-    <ClInclude Include="Core\Inc\FCodec.h" />
-    <ClInclude Include="Core\Inc\FConfigCacheIni.h" />
-    <ClInclude Include="Core\Inc\FFeedbackContextAnsi.h" />
-    <ClInclude Include="Core\Inc\FFeedbackContextWindows.h" />
-    <ClInclude Include="Core\Inc\FFileManagerAnsi.h" />
-    <ClInclude Include="Core\Inc\FFileManagerGeneric.h" />
-    <ClInclude Include="Core\Inc\FFileManagerLinux.h" />
-    <ClInclude Include="Core\Inc\FFileManagerWindows.h" />
-    <ClInclude Include="Core\Inc\FMallocAnsi.h" />
-    <ClInclude Include="Core\Inc\FMallocDebug.h" />
-    <ClInclude Include="Core\Inc\FMallocWindows.h" />
-    <ClInclude Include="Core\Inc\FOutputDeviceAnsiError.h" />
-    <ClInclude Include="Core\Inc\FOutputDeviceFile.h" />
-    <ClInclude Include="Core\Inc\FOutputDeviceNull.h" />
-    <ClInclude Include="Core\Inc\FOutputDeviceStdout.h" />
-    <ClInclude Include="Core\Inc\FOutputDeviceWindowsError.h" />
-    <ClInclude Include="Core\Inc\FRiffChunk.h" />
-    <ClInclude Include="Core\Inc\SerialNumber.h" />
-    <ClInclude Include="Core\Inc\UDebugInfo.h" />
-    <ClInclude Include="Core\Inc\UExporter.h" />
-    <ClInclude Include="Core\Inc\UFactory.h" />
-    <ClInclude Include="Core\Inc\UnArc.h" />
-    <ClInclude Include="Core\Inc\UnBits.h" />
-    <ClInclude Include="Core\Inc\UnBuild.h" />
-    <ClInclude Include="Core\Inc\UnCache.h" />
-    <ClInclude Include="Core\Inc\UnCId.h" />
-    <ClInclude Include="Core\Inc\UnClass.h" />
-    <ClInclude Include="Core\Inc\UnCoreNet.h" />
-    <ClInclude Include="Core\Inc\UnCorObj.h" />
-    <ClInclude Include="Core\Inc\UnFile.h" />
-    <ClInclude Include="Core\Inc\UnGnuG.h" />
-    <ClInclude Include="Core\Inc\UnMath.h" />
-    <ClInclude Include="Core\Inc\UnMem.h" />
-    <ClInclude Include="Core\Inc\UnName.h" />
-    <ClInclude Include="Core\Inc\UnNames.h" />
-    <ClInclude Include="Core\Inc\UnObjBas.h" />
-    <ClInclude Include="Core\Inc\UnObjVer.h" />
-    <ClInclude Include="Core\Inc\UnScript.h" />
-    <ClInclude Include="Core\Inc\UnStack.h" />
-    <ClInclude Include="Core\Inc\UnTemplate.h" />
-    <ClInclude Include="Core\Inc\UnType.h" />
-    <ClInclude Include="Core\Inc\UnUnix.h" />
-    <ClInclude Include="Core\Inc\UnVcWin32.h" />
-    <ClInclude Include="Core\Inc\UnVcWn32SSE.h" />
-    <ClInclude Include="Core\Src\CorePrivate.h" />
-    <ClInclude Include="Core\Src\UnLinker.h" />
-    <ClInclude Include="DynamicArray.h" />
-    <ClInclude Include="Engine\Inc\AActor.h" />
-    <ClInclude Include="Engine\Inc\ABrush.h" />
-    <ClInclude Include="Engine\Inc\ACamera.h" />
-    <ClInclude Include="Engine\Inc\AGameReplicationInfo.h" />
-    <ClInclude Include="Engine\Inc\AInventory.h" />
-    <ClInclude Include="Engine\Inc\AMover.h" />
-    <ClInclude Include="Engine\Inc\APawn.h" />
-    <ClInclude Include="Engine\Inc\APlayerPawn.h" />
-    <ClInclude Include="Engine\Inc\APlayerReplicationInfo.h" />
-    <ClInclude Include="Engine\Inc\AZoneInfo.h" />
-    <ClInclude Include="Engine\Inc\Engine.h" />
-    <ClInclude Include="Engine\Inc\EngineClasses.h" />
-    <ClInclude Include="Engine\Inc\Palette.h" />
-    <ClInclude Include="Engine\Inc\S3tc.h" />
-    <ClInclude Include="Engine\Inc\ULevelSummary.h" />
-    <ClInclude Include="Engine\Inc\UnActor.h" />
-    <ClInclude Include="Engine\Inc\UnAudio.h" />
-    <ClInclude Include="Engine\Inc\UnBunch.h" />
-    <ClInclude Include="Engine\Inc\UnCamera.h" />
-    <ClInclude Include="Engine\Inc\UnChan.h" />
-    <ClInclude Include="Engine\Inc\UnCon.h" />
-    <ClInclude Include="Engine\Inc\UnConn.h" />
-    <ClInclude Include="Engine\Inc\UnDDraw.h" />
-    <ClInclude Include="Engine\Inc\UnDemoPenLev.h" />
-    <ClInclude Include="Engine\Inc\UnDemoRec.h" />
-    <ClInclude Include="Engine\Inc\UnDynBsp.h" />
-    <ClInclude Include="Engine\Inc\UnEngine.h" />
-    <ClInclude Include="Engine\Inc\UnEngineGnuG.h" />
-    <ClInclude Include="Engine\Inc\UnEngineWin.h" />
-    <ClInclude Include="Engine\Inc\UnEventManager.h" />
-    <ClInclude Include="Engine\Inc\UnGame.h" />
-    <ClInclude Include="Engine\Inc\UnIn.h" />
-    <ClInclude Include="Engine\Inc\UnLevel.h" />
-    <ClInclude Include="Engine\Inc\UnMesh.h" />
-    <ClInclude Include="Engine\Inc\UnModel.h" />
-    <ClInclude Include="Engine\Inc\UnNet.h" />
-    <ClInclude Include="Engine\Inc\UnNetDrv.h" />
-    <ClInclude Include="Engine\Inc\UnObj.h" />
-    <ClInclude Include="Engine\Inc\UnPenLev.h" />
-    <ClInclude Include="Engine\Inc\UnPlayer.h" />
-    <ClInclude Include="Engine\Inc\UnPrim.h" />
-    <ClInclude Include="Engine\Inc\UnReach.h" />
-    <ClInclude Include="Engine\Inc\UnRender.h" />
-    <ClInclude Include="Engine\Inc\UnRenderIterator.h" />
-    <ClInclude Include="Engine\Inc\UnRenDev.h" />
-    <ClInclude Include="Engine\Inc\UnScrTex.h" />
-    <ClInclude Include="Engine\Inc\UnTex.h" />
-    <ClInclude Include="Engine\Inc\UnURL.h" />
-    <ClInclude Include="Engine\Src\Amd3d.h" />
-    <ClInclude Include="Engine\Src\EnginePrivate.h" />
-    <ClInclude Include="Engine\Src\UnPath.h" />
-    <ClInclude Include="Extension\Inc\ExtBorder.h" />
-    <ClInclude Include="Extension\Inc\ExtButton.h" />
-    <ClInclude Include="Extension\Inc\ExtCheckbox.h" />
-    <ClInclude Include="Extension\Inc\ExtClipWindow.h" />
-    <ClInclude Include="Extension\Inc\ExtComputerWindow.h" />
-    <ClInclude Include="Extension\Inc\ExtEdit.h" />
-    <ClInclude Include="Extension\Inc\Extension.h" />
-    <ClInclude Include="Extension\Inc\ExtensionCore.h" />
-    <ClInclude Include="Extension\Inc\ExtFlag.h" />
-    <ClInclude Include="Extension\Inc\ExtFlagBase.h" />
-    <ClInclude Include="Extension\Inc\ExtGameEngine.h" />
-    <ClInclude Include="Extension\Inc\ExtGC.h" />
-    <ClInclude Include="Extension\Inc\ExtInput.h" />
-    <ClInclude Include="Extension\Inc\ExtLargeText.h" />
-    <ClInclude Include="Extension\Inc\ExtList.h" />
-    <ClInclude Include="Extension\Inc\ExtModal.h" />
-    <ClInclude Include="Extension\Inc\ExtObject.h" />
-    <ClInclude Include="Extension\Inc\ExtPlayerPawn.h" />
-    <ClInclude Include="Extension\Inc\ExtRadioBox.h" />
-    <ClInclude Include="Extension\Inc\ExtRoot.h" />
-    <ClInclude Include="Extension\Inc\ExtScale.h" />
-    <ClInclude Include="Extension\Inc\ExtScaleManager.h" />
-    <ClInclude Include="Extension\Inc\ExtScrollArea.h" />
-    <ClInclude Include="Extension\Inc\ExtString.h" />
-    <ClInclude Include="Extension\Inc\ExtTabGroup.h" />
-    <ClInclude Include="Extension\Inc\ExtText.h" />
-    <ClInclude Include="Extension\Inc\ExtTextLog.h" />
-    <ClInclude Include="Extension\Inc\ExtTile.h" />
-    <ClInclude Include="Extension\Inc\ExtToggle.h" />
-    <ClInclude Include="Extension\Inc\ExtViewport.h" />
-    <ClInclude Include="Extension\Inc\ExtWindow.h" />
-    <ClInclude Include="Extension\Inc\ExtWindowCore.h" />
-    <ClInclude Include="Helper.h" />
-    <ClInclude Include="HookHelper.h" />
-    <ClInclude Include="Launcher.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="RootWindowOverride.h" />
-    <ClInclude Include="ScriptUtilities.h" />
-    <ClInclude Include="Window\Inc\afxres.h" />
-    <ClInclude Include="Window\Inc\Window.h" />
+    <ResourceCompile Include="Launcher\Resources\Resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resource.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="Core\Lib\Core.lib" />
-    <Library Include="Engine\Lib\Engine.lib" />
-    <Library Include="Extension\Lib\Extension.lib" />
-    <Library Include="Window\Lib\Window.lib" />
+    <Image Include="Launcher\Resources\logo.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
 </Project>
