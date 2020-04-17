@@ -10,13 +10,13 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B69D15E3-2F91-4D3C-B043-1AB24FE7B511}</ProjectGuid>
     <RootNamespace>ue1launcher</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -30,7 +30,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(ProjectDir)Extension\Inc;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Sources;$(ProjectDir)Launcher\Resources;$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(ProjectDir)Extension\Inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Core\Lib;$(ProjectDir)Engine\Lib;$(ProjectDir)Window\Lib;$(ProjectDir)Extension\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -195,7 +195,6 @@
     <ClInclude Include="Launcher\Headers\Launcher.h" />
     <ClInclude Include="Launcher\Resources\resource.h" />
     <ClInclude Include="Launcher\Headers\RootWindowOverride.h" />
-    <ClInclude Include="Launcher\Headers\ScriptUtilities.h" />
     <ClInclude Include="Window\Inc\afxres.h" />
     <ClInclude Include="Window\Inc\Window.h" />
   </ItemGroup>

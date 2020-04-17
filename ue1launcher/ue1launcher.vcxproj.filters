@@ -465,9 +465,6 @@
     <ClInclude Include="Engine\Inc\UnEngineWin.h">
       <Filter>Engine\Inc</Filter>
     </ClInclude>
-    <ClInclude Include="Launcher\Headers\DynamicArray.h">
-      <Filter>Launcher\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Launcher\Headers\Helper.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
@@ -477,14 +474,14 @@
     <ClInclude Include="Launcher\Headers\Launcher.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Launcher\Resources\resource.h">
-      <Filter>Launcher\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Launcher\Headers\RootWindowOverride.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Launcher\Headers\ScriptUtilities.h">
+    <ClInclude Include="DynamicArray.h">
       <Filter>Launcher\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Launcher\Resources\resource.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
