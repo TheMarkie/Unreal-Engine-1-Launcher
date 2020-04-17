@@ -106,7 +106,6 @@
     <ClInclude Include="Core\Inc\UnVcWn32SSE.h" />
     <ClInclude Include="Core\Src\CorePrivate.h" />
     <ClInclude Include="Core\Src\UnLinker.h" />
-    <ClInclude Include="DynamicArray.h" />
     <ClInclude Include="Engine\Inc\AActor.h" />
     <ClInclude Include="Engine\Inc\ABrush.h" />
     <ClInclude Include="Engine\Inc\ACamera.h" />
@@ -190,11 +189,12 @@
     <ClInclude Include="Extension\Inc\ExtViewport.h" />
     <ClInclude Include="Extension\Inc\ExtWindow.h" />
     <ClInclude Include="Extension\Inc\ExtWindowCore.h" />
+    <ClInclude Include="Launcher\Headers\DynamicArray.h" />
     <ClInclude Include="Launcher\Headers\Helper.h" />
     <ClInclude Include="Launcher\Headers\HookHelper.h" />
     <ClInclude Include="Launcher\Headers\Launcher.h" />
-    <ClInclude Include="Launcher\Resources\resource.h" />
     <ClInclude Include="Launcher\Headers\RootWindowOverride.h" />
+    <ClInclude Include="Launcher\Resources\resource.h" />
     <ClInclude Include="Window\Inc\afxres.h" />
     <ClInclude Include="Window\Inc\Window.h" />
   </ItemGroup>

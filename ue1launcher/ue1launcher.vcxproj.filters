@@ -465,6 +465,9 @@
     <ClInclude Include="Engine\Inc\UnEngineWin.h">
       <Filter>Engine\Inc</Filter>
     </ClInclude>
+    <ClInclude Include="Launcher\Headers\DynamicArray.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
     <ClInclude Include="Launcher\Headers\Helper.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
@@ -475,9 +478,6 @@
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Launcher\Headers\RootWindowOverride.h">
-      <Filter>Launcher\Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="DynamicArray.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Launcher\Resources\resource.h">
