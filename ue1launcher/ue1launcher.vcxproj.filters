@@ -1,0 +1,514 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{d586f8a3-bae3-4526-95f4-11b40331efd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Inc">
+      <UniqueIdentifier>{285503c6-0c84-4d94-81cc-fac0d7664396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{f449afd7-73d2-44c4-bd82-8b3058da3607}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Inc">
+      <UniqueIdentifier>{8c2452df-aa2b-494b-814f-be06d81978a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Src">
+      <UniqueIdentifier>{3c9be7f8-5602-4949-8aab-aa05ef119e11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Src">
+      <UniqueIdentifier>{fb589b0b-f399-404d-aca2-39390096bdff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extension">
+      <UniqueIdentifier>{fb03923b-62b8-41c8-b283-73b94a5d0c26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extension\Inc">
+      <UniqueIdentifier>{3fda7bc0-c85c-40b9-a23d-71305448a538}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window">
+      <UniqueIdentifier>{6ff9cb66-d38d-4126-ab40-62b5af58b8f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window\Inc">
+      <UniqueIdentifier>{65c7bac7-b0f5-4e78-aa37-fdf396e1bd6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Launcher">
+      <UniqueIdentifier>{15afd536-58f7-457c-9720-7d7b864e8ba5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Launcher\Headers">
+      <UniqueIdentifier>{5247279f-9b74-4e71-8ccc-b02a7a403b75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Launcher\Sources">
+      <UniqueIdentifier>{f84daf80-f05d-439b-b3e0-0e0920c35c80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Lib">
+      <UniqueIdentifier>{111160bd-6555-4201-b460-012cf6777af6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Lib">
+      <UniqueIdentifier>{9478b3f9-6ccb-4b4b-a6ae-ec7edd9e08a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Extension\Lib">
+      <UniqueIdentifier>{476453d0-920e-4d56-a67b-00606bad0981}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Window\Lib">
+      <UniqueIdentifier>{0832c68a-e974-450b-9b57-99a4cc267557}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Helper.cpp">
+      <Filter>Launcher\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Launcher.cpp">
+      <Filter>Launcher\Sources</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Core\Inc\Core.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\DbgInfoCpp.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FCodec.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FConfigCacheIni.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FFeedbackContextAnsi.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FFeedbackContextWindows.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FFileManagerAnsi.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FFileManagerGeneric.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FFileManagerLinux.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FFileManagerWindows.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FMallocAnsi.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FMallocDebug.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FMallocWindows.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FOutputDeviceAnsiError.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FOutputDeviceFile.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FOutputDeviceNull.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FOutputDeviceStdout.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FOutputDeviceWindowsError.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\FRiffChunk.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\SerialNumber.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UDebugInfo.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UExporter.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UFactory.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnArc.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnBits.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnBuild.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnCache.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnCId.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnClass.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnCoreNet.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnCorObj.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnFile.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnGnuG.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnMath.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnMem.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnName.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnNames.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnObjBas.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnObjVer.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnScript.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnStack.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnTemplate.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnType.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnUnix.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnVcWin32.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Inc\UnVcWn32SSE.h">
+      <Filter>Core\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\AActor.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\ABrush.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\ACamera.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\AGameReplicationInfo.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\AInventory.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\AMover.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\APawn.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\APlayerPawn.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\APlayerReplicationInfo.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\AZoneInfo.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\Engine.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\EngineClasses.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\Palette.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\S3tc.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\ULevelSummary.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnActor.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnAudio.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnBunch.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnCamera.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnChan.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnCon.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnConn.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnDDraw.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnDemoPenLev.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnDemoRec.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnDynBsp.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnEngine.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnEngineGnuG.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnEventManager.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnGame.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnIn.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnLevel.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnMesh.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnModel.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnNet.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnNetDrv.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnObj.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnPenLev.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnPlayer.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnPrim.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnReach.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnRender.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnRenderIterator.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnRenDev.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnScrTex.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnTex.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnURL.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Src\CorePrivate.h">
+      <Filter>Core\Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Src\UnLinker.h">
+      <Filter>Core\Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Src\Amd3d.h">
+      <Filter>Engine\Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Src\EnginePrivate.h">
+      <Filter>Engine\Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Src\UnPath.h">
+      <Filter>Engine\Src</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtBorder.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtButton.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtCheckbox.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtClipWindow.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtComputerWindow.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtEdit.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\Extension.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtensionCore.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtFlag.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtFlagBase.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtGameEngine.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtGC.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtInput.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtLargeText.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtList.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtModal.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtObject.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtPlayerPawn.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtRadioBox.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtRoot.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtScale.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtScaleManager.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtScrollArea.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtString.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtTabGroup.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtText.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtTextLog.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtTile.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtToggle.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtViewport.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtWindow.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Extension\Inc\ExtWindowCore.h">
+      <Filter>Extension\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\Inc\afxres.h">
+      <Filter>Window\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\Inc\Window.h">
+      <Filter>Window\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Inc\UnEngineWin.h">
+      <Filter>Engine\Inc</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicArray.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Helper.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="HookHelper.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Launcher.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="RootWindowOverride.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptUtilities.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resource.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="logo.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Core\Lib\Core.lib">
+      <Filter>Core\Lib</Filter>
+    </Library>
+    <Library Include="Engine\Lib\Engine.lib">
+      <Filter>Engine\Lib</Filter>
+    </Library>
+    <Library Include="Extension\Lib\Extension.lib">
+      <Filter>Extension\Lib</Filter>
+    </Library>
+    <Library Include="Window\Lib\Window.lib">
+      <Filter>Window\Lib</Filter>
+    </Library>
+  </ItemGroup>
+</Project>
