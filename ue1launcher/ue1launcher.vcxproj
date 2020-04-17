@@ -54,8 +54,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Helper.cpp" />
-    <ClCompile Include="Launcher.cpp" />
+    <ClCompile Include="Launcher\Sources\Helper.cpp" />
+    <ClCompile Include="Launcher\Sources\Launcher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Inc\Core.h" />
@@ -190,20 +190,20 @@
     <ClInclude Include="Extension\Inc\ExtViewport.h" />
     <ClInclude Include="Extension\Inc\ExtWindow.h" />
     <ClInclude Include="Extension\Inc\ExtWindowCore.h" />
-    <ClInclude Include="Helper.h" />
-    <ClInclude Include="HookHelper.h" />
-    <ClInclude Include="Launcher.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="RootWindowOverride.h" />
-    <ClInclude Include="ScriptUtilities.h" />
+    <ClInclude Include="Launcher\Headers\Helper.h" />
+    <ClInclude Include="Launcher\Headers\HookHelper.h" />
+    <ClInclude Include="Launcher\Headers\Launcher.h" />
+    <ClInclude Include="Launcher\Resources\resource.h" />
+    <ClInclude Include="Launcher\Headers\RootWindowOverride.h" />
+    <ClInclude Include="Launcher\Headers\ScriptUtilities.h" />
     <ClInclude Include="Window\Inc\afxres.h" />
     <ClInclude Include="Window\Inc\Window.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resource.rc" />
+    <ResourceCompile Include="Launcher\Resources\Resource.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="logo.ico" />
+    <Image Include="Launcher\Resources\logo.ico" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Core\Lib\Core.lib" />

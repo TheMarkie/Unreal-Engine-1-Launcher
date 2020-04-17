@@ -58,10 +58,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Helper.cpp">
+    <ClCompile Include="Launcher\Sources\Helper.cpp">
       <Filter>Launcher\Sources</Filter>
     </ClCompile>
-    <ClCompile Include="Launcher.cpp">
+    <ClCompile Include="Launcher\Sources\Launcher.cpp">
       <Filter>Launcher\Sources</Filter>
     </ClCompile>
   </ItemGroup>
@@ -465,35 +465,35 @@
     <ClInclude Include="Engine\Inc\UnEngineWin.h">
       <Filter>Engine\Inc</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicArray.h">
+    <ClInclude Include="Launcher\Headers\DynamicArray.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Helper.h">
+    <ClInclude Include="Launcher\Headers\Helper.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="HookHelper.h">
+    <ClInclude Include="Launcher\Headers\HookHelper.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Launcher.h">
+    <ClInclude Include="Launcher\Headers\Launcher.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="resource.h">
+    <ClInclude Include="Launcher\Resources\resource.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="RootWindowOverride.h">
+    <ClInclude Include="Launcher\Headers\RootWindowOverride.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="ScriptUtilities.h">
+    <ClInclude Include="Launcher\Headers\ScriptUtilities.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Resource.rc">
+    <ResourceCompile Include="Launcher\Resources\Resource.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="logo.ico">
+    <Image Include="Launcher\Resources\logo.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
