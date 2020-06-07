@@ -681,10 +681,10 @@ private:
         }
         // Intercept ToggleFullScreen and SetRes to make them work with borderless.
         else if ( ParseCommand( &Cmd, TEXT( "ToggleFullScreen" ) ) ) {
-            if ( UsesBorderless() ) {
+            if ( IsUsingBorderless() ) {
                 ToggleWindowMode();
 
-                GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", IsFullScreen() );
+                GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", IsInFullScreen() );
 
                 return 1;
             }
@@ -692,12 +692,12 @@ private:
             return 0;
         }
         else if ( ParseCommand( &Cmd, TEXT( "SetRes" ) ) ) {
-            if ( UsesBorderless() ) {
+            if ( IsUsingBorderless() ) {
                 int w, h;
                 if ( StringToResolution( Cmd, w, h ) ) {
-                    SetResolution( w, h, IsFullScreen() );
+                    SetResolution( w, h, IsInFullScreen() );
 
-                    if ( IsFullScreen() ) {
+                    if ( IsInFullScreen() ) {
                         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), w );
                         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), h );
                     }
@@ -959,8 +959,8 @@ static void MainLoop( UEngine* Engine )
     RegisterRawInput();
 
     // Apply borderless mode appropriately.
-    if ( UsesBorderless() ) {
-        ToggleWindowMode( UsesFullScreen() );
+    if ( IsUsingBorderless() ) {
+        ToggleWindowMode( IsInFullScreen() );
     }
 
     // Loop while running.
@@ -1058,7 +1058,7 @@ static void MainLoop( UEngine* Engine )
                 }
             }
             else if ( Msg.message == WM_SYSKEYDOWN ) {
-                if ( focused && UsesBorderless() ) {
+                if ( focused && IsUsingBorderless() ) {
                     if ( Msg.wParam == VK_RETURN && ( HIWORD( Msg.lParam ) & KF_ALTDOWN ) ) {
                         ToggleWindowMode();
 

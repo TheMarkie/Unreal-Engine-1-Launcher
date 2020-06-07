@@ -30,9 +30,9 @@ void RegisterRawInput();
 
 int GetFPSCap();
 int GetUIScale();
-bool UsesBorderless();
-bool UsesFullScreen();
-bool IsFullScreen();
+bool IsUsingBorderless();
+bool IsUsingFullScreen();
+bool IsInFullScreen();
 
 void GetDesktopResolution( int&, int& );
 bool StringToResolution( const TCHAR*, int&, int& );

@@ -332,7 +332,7 @@ public: \
 			StaticConfigName(), \
 			RF_Public | RF_Standalone | RF_Transient | RF_Native, \
 			(void(*)(void*))TClass::InternalConstructor, \
-			(void(UObject::*)())TClass::StaticConstructor \
+			&TClass::StaticConstructor \
 		); \
 		extern "C" DLL_EXPORT UClass* autoclass##TClass;\
 		DLL_EXPORT UClass* autoclass##TClass = TClass::StaticClass();

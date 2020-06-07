@@ -113,7 +113,7 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
         InitHelper();
 
         // If borderless, prevent the game from going real full screen.
-        if ( UsesBorderless() ) {
+        if ( IsUsingBorderless() ) {
             GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", FALSE );
         }
 
@@ -131,7 +131,7 @@ INT WINAPI WinMain( HINSTANCE hInInstance, HINSTANCE hPrevInstance, char*, INT n
         UEngine* Engine = InitEngine();
 
         // Restore full screen option.
-        if ( UsesFullScreen() ) {
+        if ( IsUsingFullScreen() ) {
             GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", TRUE );
         }
 

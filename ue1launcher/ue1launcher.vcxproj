@@ -28,7 +28,10 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
-  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Label="UserMacros">
+    <ModName>VanillaMatters</ModName>
+    <ModDir>D:\_Programs\Steam\steamapps\common\Deus Ex\VanillaMatters\System\</ModDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Sources;$(ProjectDir)Launcher\Resources;$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(ProjectDir)Extension\Inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Core\Lib;$(ProjectDir)Engine\Lib;$(ProjectDir)Window\Lib;$(ProjectDir)Extension\Lib;$(LibraryPath)</LibraryPath>
@@ -41,7 +44,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>false</ConformanceMode>
-      <PreprocessorDefinitions>WIN32;WINDOWS;_WINDOWS;HAZARD_API=__declspec(dllexport);%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;WINDOWS;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <AdditionalOptions>/Zc:implicitNoexcept- %(AdditionalOptions)</AdditionalOptions>
       <ForceConformanceInForLoopScope>false</ForceConformanceInForLoopScope>
@@ -211,6 +214,12 @@
     <Library Include="Window\Lib\Window.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Target Name="AfterBuild">
+    <Delete Files="$(ModDir)$(ModName).exe.old" ContinueOnError="WarnAndContinue" />
+    <Copy SourceFiles="$(ModDir)$(ModName).exe" DestinationFiles="$(ModDir)$(ModName).exe.old" OverwriteReadOnlyFiles="true" />
+    <Delete Files="$(ModDir)$(ModName).exe" ContinueOnError="WarnAndContinue" />
+    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFiles="$(ModDir)$(ModName).exe" OverwriteReadOnlyFiles="true" />
+  </Target>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

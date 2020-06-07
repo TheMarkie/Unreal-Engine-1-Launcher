@@ -13,19 +13,19 @@ UViewport* vp;
 // ==============================================
 TCHAR settingsPackage[72];
 
-UBOOL usesBorderless;
-UBOOL usesFullScreen;
+UBOOL UsesBorderless;
+UBOOL UsesFullScreen;
 
-int fpsCap;
-int wW, wH, fW, fH;
+int FpsCap;
+int WindowedWidth, WindowedHeight, FullScreenWidth, FullScreenHeight;
 
-int dW, dH;
+int DesktopWidth, DesktopHeight;
 
-int scale;
+int UIScale;
 
-bool isFullScreen;
+bool IsFullScreen;
 
-bool resolutionChanged;
+bool ResolutionChanged;
 
 // ==============================================
 // Functions to set stuff
@@ -38,35 +38,47 @@ void InitHelper() {
     package = package + L"Launcher";
     appStrcpy( settingsPackage, *package );
 
-    if ( !GConfig->GetBool( settingsPackage, L"BorderlessWindowed", usesBorderless ) ) {
-        usesBorderless = true;
-
-        GConfig->SetBool( settingsPackage, L"BorderlessWindowed", usesBorderless );
+    if ( !GConfig->GetBool( settingsPackage, L"BorderlessWindowed", UsesBorderless ) ) {
+        UsesBorderless = true;
+        GConfig->SetBool( settingsPackage, L"BorderlessWindowed", UsesBorderless );
     }
-    GConfig->GetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", usesFullScreen );
 
-    if ( !GConfig->GetInt( settingsPackage, L"FPSCap", fpsCap ) ) {
-        fpsCap = 120;
-
-        GConfig->SetInt( settingsPackage, L"FPSCap", fpsCap );
+    if ( !GConfig->GetInt( settingsPackage, L"FPSCap", FpsCap ) ) {
+        FpsCap = 120;
+        GConfig->SetInt( settingsPackage, L"FPSCap", FpsCap );
     }
-    fpsCap = Max( fpsCap, 0 );
+    FpsCap = Max( FpsCap, 0 );
 
-    if ( !GConfig->GetInt( settingsPackage, L"UIScale", scale ) ) {
-        scale = 1;
-
-        GConfig->SetInt( settingsPackage, L"UIScale", scale );
+    if ( !GConfig->GetInt( settingsPackage, L"UIScale", UIScale ) ) {
+        UIScale = 1;
+        GConfig->SetInt( settingsPackage, L"UIScale", UIScale );
     }
-    scale = Max( scale, 1 );
+    UIScale = Max( UIScale, 1 );
 
-    GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", fW );
-    GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportY", fH );
-    GConfig->GetInt( L"WinDrv.WindowsClient", L"WindowedViewportX", wW );
-    GConfig->GetInt( L"WinDrv.WindowsClient", L"WindowedViewportY", wH );
+    if ( !GConfig->GetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", UsesFullScreen ) ) {
+        UsesFullScreen = false;
+        GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", UsesFullScreen );
+    }
+    IsFullScreen = UsesFullScreen;
 
-    isFullScreen = usesFullScreen;
+    GetDesktopResolution( DesktopWidth, DesktopHeight );
 
-    GetDesktopResolution( dW, dH );
+    if ( !GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", FullScreenWidth ) ) {
+        FullScreenWidth = DesktopWidth;
+        GConfig->SetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", FullScreenWidth );
+    }
+    if ( !GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportY", FullScreenHeight ) ) {
+        FullScreenHeight = DesktopHeight;
+        GConfig->SetInt( L"WinDrv.WindowsClient", L"FullscreenViewportY", FullScreenHeight );
+    }
+    if ( !GConfig->GetInt( L"WinDrv.WindowsClient", L"WindowedViewportX", WindowedWidth ) ) {
+        WindowedWidth = 1280;
+        GConfig->GetInt( L"WinDrv.WindowsClient", L"WindowedViewportX", WindowedWidth );
+    }
+    if ( !GConfig->GetInt( L"WinDrv.WindowsClient", L"WindowedViewportY", WindowedHeight ) ) {
+        WindowedHeight = 720;
+        GConfig->GetInt( L"WinDrv.WindowsClient", L"WindowedViewportY", WindowedHeight );
+    }
 
     // Override native functions.
     InitNativeFunctions();
@@ -103,42 +115,42 @@ void InitNativeFunctions() {
 }
 
 void CleanUpHelper() {
-    GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", IsFullScreen() );
+    GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", IsInFullScreen() );
 
-    if ( UsesBorderless() ) {
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), wW );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportY" ), wH );
+    if ( IsUsingBorderless() ) {
+        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), WindowedWidth );
+        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportY" ), WindowedHeight );
     }
 }
 
-void SetResolution( const int w, const int h, bool fullScreen ) {
+void SetResolution( const int width, const int height, bool fullScreen ) {
     int offsetX, offsetY;
 
     if ( fullScreen ) {
-        fW = w > 0 ? w : fW;
-        fH = h > 0 ? h : fH;
+        FullScreenWidth = width > 0 ? width : FullScreenWidth;
+        FullScreenHeight = height > 0 ? height : FullScreenHeight;
 
-        offsetX = max( ( dW - w ) / 2, 0 );
-        offsetY = max( ( dH - h ) / 2, 0 );
+        offsetX = Max( ( DesktopWidth - width ) / 2, 0 );
+        offsetY = Max( ( DesktopHeight - height ) / 2, 0 );
 
-        SetWindowPos( mainWnd, NULL, offsetX, offsetY, fW, fH, 0 );
+        SetWindowPos( mainWnd, NULL, offsetX, offsetY, FullScreenWidth, FullScreenHeight, 0 );
     }
     else {
-        wW = w > 0 ? w : wW;
-        wH = h > 0 ? h : wH;
+        WindowedWidth = width > 0 ? width : WindowedWidth;
+        WindowedHeight = width > 0 ? height : WindowedHeight;
 
-        RECT rect = { 0, 0, w, h };
+        RECT rect = { 0, 0, width, height };
         LONG_PTR style = GetWindowLongPtr( mainWnd, GWL_STYLE );
 
         AdjustWindowRect( &rect, style, TRUE );
 
-        int aW = rect.right - rect.left;
-        int aH = rect.bottom - rect.top - 20;
+        int actualWidth = rect.right - rect.left;
+        int actualHeight = rect.bottom - rect.top - 20;
 
-        offsetX = max( ( dW - aW ) / 2, 0 );
-        offsetY = max( ( dH - aH - 22 ) / 2, 0 );
+        offsetX = Max( ( DesktopWidth - actualWidth ) / 2, 0 );
+        offsetY = Max( ( DesktopHeight - actualHeight - 22 ) / 2, 0 );
 
-        SetWindowPos( mainWnd, NULL, offsetX, offsetY, wW, wH, 0 );
+        SetWindowPos( mainWnd, NULL, offsetX, offsetY, WindowedWidth, WindowedHeight, 0 );
     }
 }
 
@@ -149,7 +161,7 @@ void SetWindowMode( const bool borderless, int w, int h ) {
     if ( borderless ) {
         style = style & ~BORDER_STYLE;
 
-        offsetY = Max( ( dH - h ) / 2, 0 );
+        offsetY = Max( ( DesktopHeight - h ) / 2, 0 );
     }
     else {
         style = style | BORDER_STYLE;
@@ -160,10 +172,10 @@ void SetWindowMode( const bool borderless, int w, int h ) {
         w = rect.right - rect.left;
         h = rect.bottom - rect.top - 20;
 
-        offsetY = Max( ( dH - h - 22 ) / 2, 0 );
+        offsetY = Max( ( DesktopHeight - h - 22 ) / 2, 0 );
     }
 
-    offsetX = Max( ( dW - w ) / 2, 0 );
+    offsetX = Max( ( DesktopWidth - w ) / 2, 0 );
 
     SetWindowLongPtr( mainWnd, GWL_STYLE, style );
     SetWindowPos( mainWnd, NULL, offsetX, offsetY, w, h, SWP_FRAMECHANGED );
@@ -171,32 +183,32 @@ void SetWindowMode( const bool borderless, int w, int h ) {
 
 void ToggleWindowMode( const bool fullScreen ) {
     if ( fullScreen ) {
-        SetWindowMode( true, fW, fH );
+        SetWindowMode( true, FullScreenWidth, FullScreenHeight );
     }
     else {
-        SetWindowMode( false, wW, wH );
+        SetWindowMode( false, WindowedWidth, WindowedHeight );
     }
 
-    isFullScreen = fullScreen;
+    IsFullScreen = fullScreen;
 }
 
 void ToggleWindowMode() {
-    ToggleWindowMode( !IsFullScreen() );
+    ToggleWindowMode( !IsInFullScreen() );
 }
 
 void SetFPSCap( const int cap ) {
     if ( cap >= 0 ) {
-        fpsCap = cap;
+        FpsCap = cap;
 
-        GConfig->SetInt( settingsPackage, L"FPSCap", fpsCap );
+        GConfig->SetInt( settingsPackage, L"FPSCap", FpsCap );
     }
 }
 
 void SetUIScale( const int n ) {
     if ( n >= 1 ) {
-        scale = n;
+        UIScale = n;
 
-        GConfig->SetInt( settingsPackage, L"UIScale", scale );
+        GConfig->SetInt( settingsPackage, L"UIScale", UIScale );
     }
 }
 
@@ -222,23 +234,23 @@ void RegisterRawInput() {
 // Functions to get stuff
 // ==============================================
 int GetFPSCap() {
-    return fpsCap;
+    return FpsCap;
 }
 
 int GetUIScale() {
-    return scale;
+    return UIScale;
 }
 
-bool UsesBorderless() {
-    return usesBorderless;
+bool IsUsingBorderless() {
+    return UsesBorderless;
 }
 
-bool UsesFullScreen() {
-    return usesFullScreen;
+bool IsUsingFullScreen() {
+    return UsesFullScreen;
 }
 
-bool IsFullScreen() {
-    return isFullScreen;
+bool IsInFullScreen() {
+    return IsFullScreen;
 }
 
 void GetDesktopResolution( int& width, int& height ) {
