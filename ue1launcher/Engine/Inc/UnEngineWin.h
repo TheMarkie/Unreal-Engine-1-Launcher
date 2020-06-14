@@ -869,31 +869,6 @@ static UEngine* InitEngine()
         FirstRun = ENGINE_VERSION;
     GConfig->SetInt( TEXT("FirstRun"), TEXT("FirstRun"), FirstRun );
 
-    // Cd check.
-    FString CdPath;
-    GConfig->GetString( TEXT("Engine.Engine"), TEXT("CdPath"), CdPath );
-    if
-    (   CdPath!=TEXT("") )
-    // DEUS_EX_DEMO - Uncomment below line for demo, comment for retail
-//  &&  GFileManager->FileSize(TEXT("..\\Textures\\Palettes.utx"))<=0 )//oldver     // DEUS_EX CNN - Force CD check
-    {
-        FString Check = CdPath * TEXT("Textures\\Palettes.utx");
-        while( !GIsEditor && GFileManager->FileSize(*Check)<=0 )
-        {
-            if( MessageBox
-            (
-                NULL,
-                LocalizeGeneral("InsertCdText",TEXT("Window")),
-                LocalizeGeneral("InsertCdTitle",TEXT("Window")),
-                MB_TOPMOST|MB_SETFOREGROUND|MB_TASKMODAL|MB_OKCANCEL    // DEUS_EX CNN - Added MB_TOPMOST|MB_SETFOREGROUND to force the window to the front
-            )==IDCANCEL )
-            {
-                GIsCriticalError = 1;
-                ExitProcess( 0 );
-            }
-        }
-    }
-
 #if ENGINE_VERSION<230
     // Display the damn story to appease the German censors.
     UBOOL CanModifyGore=1;
