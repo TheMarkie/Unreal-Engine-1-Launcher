@@ -921,14 +921,14 @@ static void MainLoop( UEngine* Engine )
 
     // Set up all the necessary stuff that we're gonna use during the game.
     if ( Engine->Client->Viewports.Num() > 0 ) {
-        vp = Engine->Client->Viewports( 0 );
+        Viewport = Engine->Client->Viewports( 0 );
     }
     else {
-        vp = nullptr;
+        Viewport = nullptr;
     }
 
     // Get the window pointer.
-    mainWnd = vp ? ( HWND ) vp->GetWindow() : GetActiveWindow();
+    MainWindow = Viewport ? ( HWND ) Viewport->GetWindow() : GetActiveWindow();
 
     // Init raw input.
     RegisterRawInput();
@@ -969,10 +969,10 @@ static void MainLoop( UEngine* Engine )
 
         // Markie
         if ( Engine->Client->Viewports.Num() <= 0 ) {
-            vp = nullptr;
+            Viewport = nullptr;
         }
 
-        bool focused = GetFocus() == mainWnd && GetForegroundWindow() == mainWnd;
+        bool focused = GetFocus() == MainWindow && GetForegroundWindow() == MainWindow;
 
         // Handle all incoming messages.
         guard(MessagePump);
@@ -993,37 +993,34 @@ static void MainLoop( UEngine* Engine )
             else if ( Msg.message == WM_INPUT ) {
                 if ( focused ) {
                     UINT dwSize;
-
                     GetRawInputData( ( HRAWINPUT ) Msg.lParam, RID_INPUT, NULL, &dwSize, sizeof( RAWINPUTHEADER ) );
-
                     LPBYTE lpb = new BYTE[dwSize];
-
                     GetRawInputData( ( HRAWINPUT ) Msg.lParam, RID_INPUT, lpb, &dwSize, sizeof( RAWINPUTHEADER ) );
 
                     if ( lpb != NULL ) {
                         RAWINPUT* raw = ( RAWINPUT* ) lpb;
 
-                        // Camera movement in-game. Lifted from kentie's.
+                        // Camera movement in-game.
                         if ( raw->data.mouse.lLastX != 0 ) {
-                            Engine->InputEvent( vp, EInputKey::IK_MouseX, EInputAction::IST_Axis, raw->data.mouse.lLastX );
+                            Engine->InputEvent( Viewport, EInputKey::IK_MouseX, EInputAction::IST_Axis, raw->data.mouse.lLastX );
                         }
                         if ( raw->data.mouse.lLastY != 0 ) {
-                            Engine->InputEvent( vp, EInputKey::IK_MouseY, EInputAction::IST_Axis, - raw->data.mouse.lLastY );
+                            Engine->InputEvent( Viewport, EInputKey::IK_MouseY, EInputAction::IST_Axis, - raw->data.mouse.lLastY );
                         }
 
-                        // Add support for more mouse buttons. Lifted from kentie's.
+                        // Add support for more mouse buttons.
                         if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_UP ) {
-                            Engine->InputEvent( vp, EInputKey::IK_Unknown05, EInputAction::IST_Release );
+                            Engine->InputEvent( Viewport, EInputKey::IK_Unknown05, EInputAction::IST_Release );
                         }
                         else if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_4_DOWN ) {
-                            Engine->InputEvent( vp, EInputKey::IK_Unknown05, EInputAction::IST_Press );
+                            Engine->InputEvent( Viewport, EInputKey::IK_Unknown05, EInputAction::IST_Press );
                         }
 
                         if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_UP ) {
-                            Engine->InputEvent( vp, EInputKey::IK_Unknown06, EInputAction::IST_Release );
+                            Engine->InputEvent( Viewport, EInputKey::IK_Unknown06, EInputAction::IST_Release );
                         }
                         else if ( raw->data.mouse.ulButtons & RI_MOUSE_BUTTON_5_DOWN ) {
-                            Engine->InputEvent( vp, EInputKey::IK_Unknown06, EInputAction::IST_Press );
+                            Engine->InputEvent( Viewport, EInputKey::IK_Unknown06, EInputAction::IST_Press );
                         }
 
                         processed = true;
@@ -1062,10 +1059,10 @@ static void MainLoop( UEngine* Engine )
         // When focused, clip cursor and hide it.
         if ( focused ) {
             RECT rect;
-            GetClientRect( mainWnd, &rect );
+            GetClientRect( MainWindow, &rect );
 
             POINT points[] = { { rect.left, rect.top },{ rect.right, rect.bottom } };
-            MapWindowPoints( mainWnd, NULL, points, 2 );
+            MapWindowPoints( MainWindow, NULL, points, 2 );
 
             RECT clip = { points[0].x, points[0].y, points[1].x, points[1].y };
 
@@ -1077,7 +1074,7 @@ static void MainLoop( UEngine* Engine )
             GetCursorInfo( &curInfo );
 
             // Hide cursor only when we know we're in the game window, so that "preferences" and other external menus can have the cursor.
-            if ( GetCapture() == mainWnd || WindowFromPoint( mP ) == mainWnd ) {
+            if ( GetCapture() == MainWindow || WindowFromPoint( mP ) == MainWindow ) {
                 if ( curInfo.flags == CURSOR_SHOWING ) {
                     ShowCursor( false );
                 }
@@ -1089,8 +1086,8 @@ static void MainLoop( UEngine* Engine )
 
         // Snap in-game cursor to real cursor.
         if ( focused ) {
-            ScreenToClient( mainWnd, &mP );
-            Engine->MousePosition( vp, 0, mP.x, mP.y );
+            ScreenToClient( MainWindow, &mP );
+            Engine->MousePosition( Viewport, 0, mP.x, mP.y );
         }
 
         // If editor thread doesn't have the focus, don't suck up too much CPU time.

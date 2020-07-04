@@ -5,13 +5,13 @@
 
 typedef signed int UBOOL;
 
-HWND mainWnd;
-UViewport* vp;
+HWND MainWindow;
+UViewport* Viewport;
 
 // ==============================================
 // Global settings
 // ==============================================
-TCHAR settingsPackage[72];
+TCHAR SettingsPackage[72];
 
 UBOOL UsesBorderless;
 UBOOL UsesFullScreen;
@@ -36,22 +36,22 @@ void InitHelper() {
 
     FString package( appPackage() );
     package = package + L"Launcher";
-    appStrcpy( settingsPackage, *package );
+    appStrcpy( SettingsPackage, *package );
 
-    if ( !GConfig->GetBool( settingsPackage, L"BorderlessWindowed", UsesBorderless ) ) {
+    if ( !GConfig->GetBool( SettingsPackage, L"BorderlessWindowed", UsesBorderless ) ) {
         UsesBorderless = true;
-        GConfig->SetBool( settingsPackage, L"BorderlessWindowed", UsesBorderless );
+        GConfig->SetBool( SettingsPackage, L"BorderlessWindowed", UsesBorderless );
     }
 
-    if ( !GConfig->GetInt( settingsPackage, L"FPSCap", FpsCap ) ) {
+    if ( !GConfig->GetInt( SettingsPackage, L"FPSCap", FpsCap ) ) {
         FpsCap = 120;
-        GConfig->SetInt( settingsPackage, L"FPSCap", FpsCap );
+        GConfig->SetInt( SettingsPackage, L"FPSCap", FpsCap );
     }
     FpsCap = Max( FpsCap, 0 );
 
-    if ( !GConfig->GetInt( settingsPackage, L"UIScale", UIScale ) ) {
+    if ( !GConfig->GetInt( SettingsPackage, L"UIScale", UIScale ) ) {
         UIScale = 1;
-        GConfig->SetInt( settingsPackage, L"UIScale", UIScale );
+        GConfig->SetInt( SettingsPackage, L"UIScale", UIScale );
     }
     UIScale = Max( UIScale, 1 );
 
@@ -133,14 +133,14 @@ void SetResolution( const int width, const int height, bool fullScreen ) {
         offsetX = Max( ( DesktopWidth - width ) / 2, 0 );
         offsetY = Max( ( DesktopHeight - height ) / 2, 0 );
 
-        SetWindowPos( mainWnd, NULL, offsetX, offsetY, FullScreenWidth, FullScreenHeight, 0 );
+        SetWindowPos( MainWindow, NULL, offsetX, offsetY, FullScreenWidth, FullScreenHeight, 0 );
     }
     else {
         WindowedWidth = width > 0 ? width : WindowedWidth;
         WindowedHeight = width > 0 ? height : WindowedHeight;
 
         RECT rect = { 0, 0, width, height };
-        LONG_PTR style = GetWindowLongPtr( mainWnd, GWL_STYLE );
+        LONG_PTR style = GetWindowLongPtr( MainWindow, GWL_STYLE );
 
         AdjustWindowRect( &rect, style, TRUE );
 
@@ -150,14 +150,14 @@ void SetResolution( const int width, const int height, bool fullScreen ) {
         offsetX = Max( ( DesktopWidth - actualWidth ) / 2, 0 );
         offsetY = Max( ( DesktopHeight - actualHeight - 22 ) / 2, 0 );
 
-        SetWindowPos( mainWnd, NULL, offsetX, offsetY, WindowedWidth, WindowedHeight, 0 );
+        SetWindowPos( MainWindow, NULL, offsetX, offsetY, WindowedWidth, WindowedHeight, 0 );
     }
 }
 
 void SetWindowMode( const bool borderless, int w, int h ) {
     int offsetX, offsetY;
 
-    LONG_PTR style = GetWindowLongPtr( mainWnd, GWL_STYLE );
+    LONG_PTR style = GetWindowLongPtr( MainWindow, GWL_STYLE );
     if ( borderless ) {
         style = style & ~BORDER_STYLE;
 
@@ -177,8 +177,8 @@ void SetWindowMode( const bool borderless, int w, int h ) {
 
     offsetX = Max( ( DesktopWidth - w ) / 2, 0 );
 
-    SetWindowLongPtr( mainWnd, GWL_STYLE, style );
-    SetWindowPos( mainWnd, NULL, offsetX, offsetY, w, h, SWP_FRAMECHANGED );
+    SetWindowLongPtr( MainWindow, GWL_STYLE, style );
+    SetWindowPos( MainWindow, NULL, offsetX, offsetY, w, h, SWP_FRAMECHANGED );
 }
 
 void ToggleWindowMode( const bool fullScreen ) {
@@ -200,7 +200,7 @@ void SetFPSCap( const int cap ) {
     if ( cap >= 0 ) {
         FpsCap = cap;
 
-        GConfig->SetInt( settingsPackage, L"FPSCap", FpsCap );
+        GConfig->SetInt( SettingsPackage, L"FPSCap", FpsCap );
     }
 }
 
@@ -208,7 +208,7 @@ void SetUIScale( const int n ) {
     if ( n >= 1 ) {
         UIScale = n;
 
-        GConfig->SetInt( settingsPackage, L"UIScale", UIScale );
+        GConfig->SetInt( SettingsPackage, L"UIScale", UIScale );
     }
 }
 
@@ -216,7 +216,7 @@ void SetUIScale( const int n ) {
 // Miscellaneous functions.
 // ==============================================
 void RegisterRawInput() {
-    if ( !mainWnd ) {
+    if ( !MainWindow ) {
         return;
     }
 
@@ -225,7 +225,7 @@ void RegisterRawInput() {
     Rid[0].usUsagePage = 0x01;
     Rid[0].usUsage = 0x02;
     Rid[0].dwFlags = 0;
-    Rid[0].hwndTarget = mainWnd;
+    Rid[0].hwndTarget = MainWindow;
 
     RegisterRawInputDevices( Rid, 1, sizeof( Rid[0] ) );
 }

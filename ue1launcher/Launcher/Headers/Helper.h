@@ -11,8 +11,8 @@
 #include <Engine.h>
 #include <Extension.h>
 
-extern UViewport* vp;
-extern HWND mainWnd;
+extern HWND MainWindow;
+extern UViewport* Viewport;
 
 void InitHelper();
 void InitRedirects();
