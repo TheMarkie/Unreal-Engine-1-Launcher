@@ -30,7 +30,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
     <ModName>VanillaMatters</ModName>
-    <ModDir>D:\_Programs\Steam\steamapps\common\Deus Ex\VanillaMatters\System\</ModDir>
+    <ModDir>D:\_Games\Deus Ex\VanillaMatters\System\</ModDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Sources;$(ProjectDir)Launcher\Resources;$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(ProjectDir)Extension\Inc;$(IncludePath)</IncludePath>
