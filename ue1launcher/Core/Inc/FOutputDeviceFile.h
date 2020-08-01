@@ -73,6 +73,7 @@ public:
 						ACh[i] = ToAnsi(Ch[i] );
 					ACh[i] = 0;
 					LogAr->Serialize( ACh, i );
+					LogAr->Flush();
 #else
 					WriteRaw( FName::SafeString(Event) );
 					WriteRaw( TEXT(": ") );
