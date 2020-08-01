@@ -19,6 +19,8 @@ void InitRedirects();
 void InitNativeFunctions();
 void CleanUpHelper();
 
+BOOL ToggleDEP( BOOL );
+
 void SetResolution( const int, const int, bool );
 void SetWindowMode( const bool, int, int );
 void ToggleWindowMode( const bool );

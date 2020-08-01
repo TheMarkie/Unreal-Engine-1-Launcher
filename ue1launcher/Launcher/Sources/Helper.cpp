@@ -31,6 +31,8 @@ bool ResolutionChanged;
 // Functions to set stuff
 // ==============================================
 void InitHelper() {
+    GLog->Logf( L"Disabled DEP: %d", ToggleDEP( 0 ) );
+
     // Redirect all the necessary functions before we do anything.
     InitRedirects();
 
@@ -112,6 +114,18 @@ void InitRedirects() {
 void InitNativeFunctions() {
     PreRenderWindowsHook preRenderWindowsHook;
     DynamicArray dynamicArray;
+}
+
+BOOL ToggleDEP( BOOL enable ) {
+    const HMODULE module = GetModuleHandleW( L"Kernel32.dll" );
+    if ( module ) {
+        const auto procSet = reinterpret_cast< BOOL( WINAPI* const )( DWORD ) >( GetProcAddress( module, "SetProcessDEPPolicy" ) );
+        if ( procSet ) {
+            return procSet( enable );
+        }
+    }
+
+    return 0;
 }
 
 void CleanUpHelper() {
