@@ -111,298 +111,81 @@ class WConfigWizard : public WWizardDialog
     WConfigWizard()
     : LogoStatic(this,IDC_Logo)
     , Cancel(0)
-    {
-        InitSysDirs();
-    }
+    {}
     void OnInitDialog()
     {
         guard(WStartupWizard::OnInitDialog);
         WWizardDialog::OnInitDialog();
         SendMessageX( *this, WM_SETICON, ICON_BIG, (WPARAM)LoadIconIdX(hInstance,IDICON_Mainframe) );
-        LogoBitmap.LoadFile( TEXT("..\\Help\\Logo.bmp") );
+        LogoBitmap.LoadFile( TEXT("ConfigLogo.bmp") );
         SendMessageX( LogoStatic, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)LogoBitmap.GetBitmapHandle() );
         SetText( *Title );
         SetForegroundWindow( hWnd );
         unguard;
     }
-};
-
-class WConfigPageFirstTime : public WWizardPage
-{
-    DECLARE_WINDOWCLASS(WConfigPageFirstTime,WWizardPage,Startup)
-    WConfigWizard* Owner;
-    WConfigPageFirstTime( WConfigWizard* InOwner )
-    : WWizardPage( TEXT("ConfigPageFirstTime"), IDDIALOG_ConfigPageFirstTime, InOwner )
-    , Owner(InOwner)
-    {}
-    const TCHAR* GetNextText()
+    void OnCancel()
     {
-        return LocalizeGeneral(TEXT("Run"),TEXT("Startup"));
-    }
-    WWizardPage* GetNext()
-    {
-        Owner->EndDialog(1);
-        return NULL;
-    }
-};
-
-class WConfigPageSafeOptions : public WWizardPage
-{
-    DECLARE_WINDOWCLASS(WConfigPageSafeOptions,WWizardPage,Startup)
-    WConfigWizard* Owner;
-    WButton NoSoundButton, No3DSoundButton, No3DVideoButton, WindowButton, ResButton, ResetConfigButton, NoProcessorButton, NoJoyButton;
-    WConfigPageSafeOptions( WConfigWizard* InOwner )
-    : WWizardPage       ( TEXT("ConfigPageSafeOptions"), IDDIALOG_ConfigPageSafeOptions, InOwner )
-    , Owner             (InOwner)
-    , NoSoundButton     (this,IDC_NoSound)
-    , No3DSoundButton   (this,IDC_No3DSound)
-    , No3DVideoButton   (this,IDC_No3dVideo)
-    , WindowButton      (this,IDC_Window)
-    , ResButton         (this,IDC_Res)
-    , ResetConfigButton (this,IDC_ResetConfig)
-    , NoProcessorButton (this,IDC_NoProcessor)
-    , NoJoyButton       (this,IDC_NoJoy)
-    {}
-    void OnInitDialog()
-    {
-        WWizardPage::OnInitDialog();
-        SendMessageX( NoSoundButton,     BM_SETCHECK, 1, 0 );
-        SendMessageX( No3DSoundButton,   BM_SETCHECK, 1, 0 );
-        SendMessageX( No3DVideoButton,   BM_SETCHECK, 1, 0 );
-        SendMessageX( WindowButton,      BM_SETCHECK, 1, 0 );
-        SendMessageX( ResButton,         BM_SETCHECK, 1, 0 );
-        SendMessageX( ResetConfigButton, BM_SETCHECK, 0, 0 );
-        SendMessageX( NoProcessorButton, BM_SETCHECK, 1, 0 );
-        SendMessageX( NoJoyButton,       BM_SETCHECK, 1, 0 );
-    }
-    const TCHAR* GetNextText()
-    {
-        return LocalizeGeneral(TEXT("Run"),TEXT("Startup"));
-    }
-    WWizardPage* GetNext()
-    {
-        FString CmdLine;
-        if( SendMessageX(NoSoundButton,BM_GETCHECK,0,0)==BST_CHECKED )
-            CmdLine+=TEXT(" -nosound");
-        if( SendMessageX(No3DSoundButton,BM_GETCHECK,0,0)==BST_CHECKED )
-            CmdLine+=TEXT(" -no3dsound");
-        if( SendMessageX(No3DSoundButton,BM_GETCHECK,0,0)==BST_CHECKED )
-            CmdLine+=TEXT(" -nohard");
-        if( SendMessageX(No3DSoundButton,BM_GETCHECK,0,0)==BST_CHECKED )
-            CmdLine+=TEXT(" -nohard -noddraw");
-        if( SendMessageX(No3DSoundButton,BM_GETCHECK,0,0)==BST_CHECKED )
-            CmdLine+=TEXT(" -defaultres");
-        if( SendMessageX(NoProcessorButton,BM_GETCHECK,0,0)==BST_CHECKED )
-            CmdLine+=TEXT(" -nommx -nokni -nok6");
-        if( SendMessageX(NoJoyButton,BM_GETCHECK,0,0)==BST_CHECKED )
-            CmdLine+=TEXT(" -nojoy");
-        if( SendMessageX(ResetConfigButton,BM_GETCHECK,0,0)==BST_CHECKED )
-            GFileManager->Delete( *(FString(appPackage())+TEXT(".ini")) );
-        ShellExecuteX( NULL, TEXT("open"), ThisFile, *CmdLine, appBaseDir(), SW_SHOWNORMAL );
-        Owner->EndDialog(0);
-        return NULL;
-    }
-};
-
-class WConfigPageDetail : public WWizardPage
-{
-    DECLARE_WINDOWCLASS(WConfigPageDetail,WWizardPage,Startup)
-    WConfigWizard* Owner;
-    WEdit DetailEdit;
-    WConfigPageDetail( WConfigWizard* InOwner )
-    : WWizardPage( TEXT("ConfigPageDetail"), IDDIALOG_ConfigPageDetail, InOwner )
-    , Owner(InOwner)
-    , DetailEdit(this,IDC_DetailEdit)
-    {}
-    void OnInitDialog()
-    {
-        WWizardPage::OnInitDialog();
-        FString Info;
-
-        INT DescFlags=0;
-        FString Driver = GConfig->GetStr(TEXT("Engine.Engine"),TEXT("GameRenderDevice"));
-        GConfig->GetInt(*Driver,TEXT("DescFlags"),DescFlags);
-
-        // Frame rate dependent LOD.
-        if( Driver==TEXT("SoftDrv.SoftwareRenderDevice") || 280.0*1000.0*1000.0*GSecondsPerCycle>1.f )
-        {
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("MinDesiredFrameRate"), TEXT("1") );         // DEUS_EX CNN - changed from 20
-        }
-        else if( Driver==TEXT("D3DDrv.D3DRenderDevice") )
-        {
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("MinDesiredFrameRate"), TEXT("1") );         // DEUS_EX CNN - changed from 28
-        }
-
-        // Sound quality.
-        if( !GIsMMX || GPhysicalMemory <= 32*1024*1024 )
-        {
-            Info = Info + LocalizeGeneral(TEXT("SoundLow"),TEXT("Startup")) + TEXT("\r\n");
-            GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("UseReverb"),       TEXT("False") );
-            GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("OutputRate"),      TEXT("11025Hz") );
-            GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("UseSpatial"),      TEXT("False") );
-            GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("UseFilter"),       TEXT("False") );
-            GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("EffectsChannels"), TEXT("8") );
-            GConfig->SetString( TEXT("Botpack.TournamentPlayer"),    TEXT("AnnouncerVolume"), TEXT("false") );
-            GConfig->SetString( TEXT("Botpack.TournamentPlayer"),    TEXT("bNoVoiceTaunts"),  TEXT("true") );		
-            GConfig->SetBool( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("LowSoundQuality"), 1 );
-        }
-        else
-        {
-            Info = Info + LocalizeGeneral(TEXT("SoundHigh"),TEXT("Startup")) + TEXT("\r\n");
-        }
-
-        // Skins.
-        Info = Info + LocalizeGeneral(TEXT("SkinsHigh"),TEXT("Startup")) + TEXT("\r\n");
-
-        // World.
-        Info = Info + LocalizeGeneral(TEXT("WorldHigh"),TEXT("Startup")) + TEXT("\r\n");
-
-        // Resolution.
-        // Snap the full screen resolution to native resolution.
-        int width = 1280;
-        int height = 720;
-        GetDesktopResolution( width, height );
-
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), Min( 1280, width ) );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportY" ), Min( 720, height ) );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedColorBits" ), 32 );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), Max( width, 1280 ) );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), Max( height, 720 ) );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenColorBits" ), 32 );
-
-        Info = Info + LocalizeGeneral(TEXT("ResHigh"),TEXT("Startup")) + TEXT("\r\n");
-        DetailEdit.SetText(*Info);
-    }
-    WWizardPage* GetNext()
-    {
-        return new WConfigPageFirstTime(Owner);
-    }
-};
-
-class WConfigPageDriver : public WWizardPage
-{
-    DECLARE_WINDOWCLASS(WConfigPageDriver,WWizardPage,Startup)
-    WConfigWizard* Owner;
-    WUrlButton WebButton;
-    WLabel Card;
-    WConfigPageDriver( WConfigWizard* InOwner )
-    : WWizardPage( TEXT("ConfigPageDriver"), IDDIALOG_ConfigPageDriver, InOwner )
-    , Owner(InOwner)
-    , WebButton(this,LocalizeGeneral(TEXT("Direct3DWebPage"),TEXT("Startup")),IDC_WebButton)
-    , Card(this,IDC_Card)
-    {}
-    void OnInitDialog()
-    {
-        WWizardPage::OnInitDialog();
-        FString CardName=GConfig->GetStr(TEXT("D3DDrv.D3DRenderDevice"),TEXT("Description"));
-        if( CardName!=TEXT("") )
-            Card.SetText(*CardName);
-    }
-    WWizardPage* GetNext()
-    {
-        return new WConfigPageDetail(Owner);
+        GIsCriticalError = 1;
+        ExitProcess( 0 );
     }
 };
 
 class WConfigPageRenderer : public WWizardPage
 {
-    DECLARE_WINDOWCLASS(WConfigPageRenderer,WWizardPage,Startup)
+    DECLARE_WINDOWCLASS(WConfigPageRenderer,WWizardPage,Startup);
     WConfigWizard* Owner;
     WListBox RenderList;
-    WButton ShowCompatible, ShowAll;
     WLabel RenderNote;
-    INT First;
-    TArray<FRegistryObjectInfo> Classes;
+    TArray<FRegistryObjectInfo> RenderDevices;
     WConfigPageRenderer( WConfigWizard* InOwner )
     : WWizardPage( TEXT("ConfigPageRenderer"), IDDIALOG_ConfigPageRenderer, InOwner )
     , Owner(InOwner)
     , RenderList(this,IDC_RenderList)
-    //, ShowCompatible(this,IDC_Compatible,FDelegate(this,(TDelegate)RefreshList))
-    //, ShowAll(this,IDC_All,FDelegate(this,(TDelegate)RefreshList))
-    // Markie
-    , ShowCompatible( this, IDC_Compatible, FDelegate( this, ( TDelegate ) &WConfigPageRenderer::RefreshList ) )
-    , ShowAll( this, IDC_All, FDelegate( this, ( TDelegate ) &WConfigPageRenderer::RefreshList ) )
     , RenderNote(this,IDC_RenderNote)
-    , First(0)
     {}
+    void OnInitDialog()
+    {
+        WWizardPage::OnInitDialog();
+        RenderList.SelectionChangeDelegate = FDelegate(this,(TDelegate)&WConfigPageRenderer::CurrentChange);
+        RenderList.DoubleClickDelegate = FDelegate(Owner,(TDelegate)&WWizardDialog::OnFinish);
+        RefreshList();
+    }
     void RefreshList()
     {
         RenderList.Empty();
-        INT All=(SendMessageX(ShowAll,BM_GETCHECK,0,0)==BST_CHECKED), BestPriority=0;
+        RenderDevices.Empty();
+        UObject::GetRegistryObjects( RenderDevices, UClass::StaticClass(), URenderDevice::StaticClass(), 0 );
         FString Default;
-        Classes.Empty();
-        UObject::GetRegistryObjects( Classes, UClass::StaticClass(), URenderDevice::StaticClass(), 0 );
-        for( TArray<FRegistryObjectInfo>::TIterator It(Classes); It; ++It )
+        for( TArray<FRegistryObjectInfo>::TIterator It(RenderDevices); It; ++It )
         {
             FString Path=It->Object, Left, Right, Temp;
             if( Path.Split(TEXT("."),&Left,&Right) )
             {
-                INT DoShow=All, Priority=0;
-                INT DescFlags=0;
-                GConfig->GetInt(*Path,TEXT("DescFlags"),DescFlags);
-                if
-                (   It->Autodetect!=TEXT("")
-                && (GFileManager->FileSize(*FString::Printf(TEXT("%s\\%s"), SysDir, *It->Autodetect))>=0
-                ||  GFileManager->FileSize(*FString::Printf(TEXT("%s\\%s"), WinDir, *It->Autodetect))>=0) )
-                    DoShow = Priority = 2;
-                else if( Path==TEXT("SoftDrv.SoftwareRenderDevice") )
-                    DoShow = Priority = 1;
-                if( DoShow )
+                RenderList.AddString( *(Temp=Localize(*Right,TEXT("ClassCaption"),*Left)) );
+                if( Default==TEXT("") )
                 {
-                    RenderList.AddString( *(Temp=Localize(*Right,TEXT("ClassCaption"),*Left)) );
-                    if( Priority>=BestPriority )
-                        {Default=Temp; BestPriority=Priority;}
+                    Default=Temp;
                 }
             }
         }
         if( Default!=TEXT("") )
-            RenderList.SetCurrent(RenderList.FindStringChecked(*Default),1);
+            RenderList.SetCurrent( RenderList.FindStringChecked(*Default), 1 );
         CurrentChange();
     }
     void CurrentChange()
     {
-        RenderNote.SetText(Localize(TEXT("Descriptions"),*CurrentDriver(),TEXT("Startup"),NULL,1));
-    }
-    void OnPaint()
-    {
-        if( !First++ )
+        if( CurrentDriver()!=TEXT("") )
         {
-            UpdateWindow( *this );
-            GConfig->Flush( 1 );
-            if( !ParseParam(appCmdLine(),TEXT("nodetect")) )
-            {
-                GFileManager->Delete(TEXT("Detected.ini"));
-                ShellExecuteX( NULL, TEXT("open"), ThisFile, TEXT("testrendev=D3DDrv.D3DRenderDevice log=Detected.log"), appBaseDir(), SW_SHOWNORMAL );
-                for( INT MSec=30000; MSec>0 && GFileManager->FileSize(TEXT("Detected.ini"))<0; MSec-=100 )
-                    Sleep(100);
-            }
-            RefreshList();
+            GConfig->SetString(TEXT("Engine.Engine"),TEXT("GameRenderDevice"),*CurrentDriver());
         }
-    }
-    void OnCurrent()
-    {
-        guard(WFilerPageInstallProgress::OnCurrent);
-        unguard;
-    }
-    void OnInitDialog()
-    {
-        WWizardPage::OnInitDialog();
-        SendMessageX(ShowCompatible,BM_SETCHECK,BST_CHECKED,0);
-        //RenderList.SelectionChangeDelegate = FDelegate(this,(TDelegate)CurrentChange);
-        //RenderList.DoubleClickDelegate = FDelegate(Owner,(TDelegate)WWizardDialog::OnNext);
-
-        // Markie
-        RenderList.SelectionChangeDelegate = FDelegate( this, ( TDelegate ) &WConfigPageRenderer::CurrentChange );
-        RenderList.DoubleClickDelegate = FDelegate( Owner, ( TDelegate ) &WWizardDialog::OnNext );
-
-        RenderList.AddString( LocalizeGeneral(TEXT("Detecting"),TEXT("Startup")) );
+        RenderNote.SetText(Localize(TEXT("Descriptions"),*CurrentDriver(),TEXT("Startup"),NULL,1));
     }
     FString CurrentDriver()
     {
         if( RenderList.GetCurrent()>=0 )
         {
             FString Name = RenderList.GetString(RenderList.GetCurrent());
-            for( TArray<FRegistryObjectInfo>::TIterator It(Classes); It; ++It )
+            for( TArray<FRegistryObjectInfo>::TIterator It(RenderDevices); It; ++It )
             {
                 FString Path=It->Object, Left, Right, Temp;
                 if( Path.Split(TEXT("."),&Left,&Right) )
@@ -412,55 +195,13 @@ class WConfigPageRenderer : public WWizardPage
         }
         return TEXT("");
     }
-    WWizardPage* GetNext()
-    {
-        if( CurrentDriver()!=TEXT("") )
-            GConfig->SetString(TEXT("Engine.Engine"),TEXT("GameRenderDevice"),*CurrentDriver());
-        if( CurrentDriver()==TEXT("D3DDrv.D3DRenderDevice") )
-            return new WConfigPageDriver(Owner);
-        else
-            return new WConfigPageDetail(Owner);
-    }
-};
-
-class WConfigPageSafeMode : public WWizardPage
-{
-    DECLARE_WINDOWCLASS(WConfigPageSafeMode,WWizardPage,Startup)
-    WConfigWizard* Owner;
-    WCoolButton RunButton, VideoButton, SafeModeButton, WebButton;
-    WConfigPageSafeMode( WConfigWizard* InOwner )
-    : WWizardPage    ( TEXT("ConfigPageSafeMode"), IDDIALOG_ConfigPageSafeMode, InOwner )
-    //, RunButton      ( this, IDC_Run,      FDelegate(this,(TDelegate)OnRun) )
-    //, VideoButton    ( this, IDC_Video,    FDelegate(this,(TDelegate)OnVideo) )
-    //, SafeModeButton ( this, IDC_SafeMode, FDelegate(this,(TDelegate)OnSafeMode) )
-    //, WebButton      ( this, IDC_Web,      FDelegate(this,(TDelegate)OnWeb) )
-    // Markie
-    , RunButton( this, IDC_Run, FDelegate( this, ( TDelegate ) &WConfigPageSafeMode::OnRun ) )
-    , VideoButton( this, IDC_Video, FDelegate( this, ( TDelegate ) &WConfigPageSafeMode::OnVideo ) )
-    , SafeModeButton( this, IDC_SafeMode, FDelegate( this, ( TDelegate ) &WConfigPageSafeMode::OnSafeMode ) )
-    , WebButton( this, IDC_Web, FDelegate( this, ( TDelegate ) &WConfigPageSafeMode::OnWeb ) )
-    , Owner          (InOwner)
-    {}
-    void OnRun()
-    {
-        Owner->EndDialog(1);
-    }
-    void OnVideo()
-    {
-        Owner->Advance( new WConfigPageRenderer(Owner) );
-    }
-    void OnSafeMode()
-    {
-        Owner->Advance( new WConfigPageSafeOptions(Owner) );
-    }
-    void OnWeb()
-    {
-        ShellExecuteX( *this, TEXT("open"), LocalizeGeneral(TEXT("WebPage"),TEXT("Startup")), TEXT(""), appBaseDir(), SW_SHOWNORMAL );
-        Owner->EndDialog(0);
-    }
     const TCHAR* GetNextText()
     {
         return NULL;
+    }
+    const TCHAR* GetFinishText()
+    {
+        return LocalizeGeneral("FinishButton", TEXT("Window"));
     }
 };
 
@@ -775,14 +516,27 @@ static UEngine* InitEngine()
     {
         WConfigWizard D;
         WWizardPage* Page = NULL;
-        if( ParseParam(appCmdLine(),TEXT("safe")) || appStrfind(appCmdLine(),TEXT("readini")) )
-            {Page = new WConfigPageSafeMode(&D); D.Title=LocalizeGeneral(TEXT("SafeMode"),TEXT("Startup"));}
-        else if( FirstRun<ENGINE_VERSION )
-            {Page = new WConfigPageRenderer(&D); D.Title=LocalizeGeneral(TEXT("FirstTime"),TEXT("Startup"));}
+        if( FirstRun<ENGINE_VERSION )
+        {
+            // Init first run config here.
+            // Snap the full screen resolution to native resolution.
+            int width = 1280;
+            int height = 720;
+            GetDesktopResolution( width, height );
+
+            GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), Min( 1280, width ) );
+            GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportY" ), Min( 720, height ) );
+            GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedColorBits" ), 32 );
+            GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), Max( width, 1280 ) );
+            GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), Max( height, 720 ) );
+            GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenColorBits" ), 32 );
+
+            SetAllResolution( Max( width, 1280 ), Max( height, 720 ), Min( 1280, width ), Min( 720, height ) );
+
+            Page = new WConfigPageRenderer(&D); D.Title=LocalizeGeneral(TEXT("FirstTime"),TEXT("Startup"));
+        }
         else if( ParseParam(appCmdLine(),TEXT("changevideo")) )
             {Page = new WConfigPageRenderer(&D); D.Title=LocalizeGeneral(TEXT("Video"),TEXT("Startup"));}
-        else if( !AlreadyRunning && GFileManager->FileSize(TEXT("Running.ini"))>=0 )
-            {Page = new WConfigPageSafeMode(&D); D.Title=LocalizeGeneral(TEXT("RecoveryMode"),TEXT("Startup"));}
         if( Page )
         {
             ExitSplash();
@@ -803,21 +557,6 @@ static UEngine* InitEngine()
     if( FirstRun<ENGINE_VERSION )
         FirstRun = ENGINE_VERSION;
     GConfig->SetInt( TEXT("FirstRun"), TEXT("FirstRun"), FirstRun );
-
-#if ENGINE_VERSION<230
-    // Display the damn story to appease the German censors.
-    UBOOL CanModifyGore=1;
-    GConfig->GetBool( TEXT("UnrealI.UnrealGameOptionsMenu"), TEXT("bCanModifyGore"), CanModifyGore );
-    if( !CanModifyGore && !GIsEditor )
-    {
-        FString S;
-        if( appLoadFileToString( S, TEXT("Story.txt") ) )
-        {
-            WTextScrollerDialog Dlg( TEXT("The Story"), *S );
-            Dlg.DoModal();
-        }
-    }
-#endif
 
     // Create the global engine object.
     UClass* EngineClass;

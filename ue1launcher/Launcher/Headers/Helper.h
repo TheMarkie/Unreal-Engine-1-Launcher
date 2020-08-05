@@ -21,6 +21,7 @@ void CleanUpHelper();
 BOOL ToggleDEP( BOOL );
 
 void SetResolution( const int, const int, bool );
+void SetAllResolution( const int, const int, const int, const int );
 void SetWindowMode( const bool, int, int );
 void ToggleWindowMode( const bool );
 void ToggleWindowMode();

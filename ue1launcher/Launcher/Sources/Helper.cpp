@@ -159,6 +159,13 @@ void SetResolution( const int width, const int height, bool fullScreen ) {
     }
 }
 
+void SetAllResolution( const int fullWidth, const int fullHeight, const int windowedWidth, const int windowedHeight ) {
+    FullScreenWidth = fullWidth > 0 ? fullWidth : FullScreenWidth;
+    FullScreenHeight = fullHeight > 0 ? fullHeight : FullScreenHeight;
+    WindowedWidth = windowedWidth > 0 ? windowedWidth : WindowedWidth;
+    WindowedHeight = windowedHeight > 0 ? windowedHeight : WindowedHeight;
+}
+
 void SetWindowMode( const bool borderless, int w, int h ) {
     int offsetX, offsetY;
 
