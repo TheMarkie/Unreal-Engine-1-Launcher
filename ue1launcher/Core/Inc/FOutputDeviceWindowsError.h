@@ -11,13 +11,7 @@
 //
 class FOutputDeviceWindowsError : public FOutputDeviceError
 {
-	INT ErrorPos;
-	EName ErrorType;
 public:
-	FOutputDeviceWindowsError()
-	: ErrorPos(0)
-	, ErrorType(NAME_None)
-	{}
 	void Serialize( const TCHAR* Msg, enum EName Event )
 	{
 #ifdef _DEBUG
@@ -33,7 +27,6 @@ public:
 		{
 			// First appError.
 			GIsCriticalError = 1;
-			ErrorType        = Event;
 			debugf( NAME_Critical, TEXT("appError called:") );
 			debugf( NAME_Critical, TEXT("%s"), Msg );
 
@@ -41,10 +34,9 @@ public:
 			debugf( NAME_Critical, TEXT("Windows GetLastError: %s (%i)"), appGetSystemErrorMessage(Error), Error );
 
 			// Shut down.
-			UObject::StaticShutdownAfterError();
 			appStrncpy( GErrorHist, Msg, ARRAY_COUNT(GErrorHist) );
 			appStrncat( GErrorHist, TEXT("\r\n\r\n"), ARRAY_COUNT(GErrorHist) );
-			ErrorPos = appStrlen(GErrorHist);
+			UObject::StaticShutdownAfterError();
 			if( GIsGuarded )
 			{
 				appStrncat( GErrorHist, GIsGuarded ? LocalizeError("History",TEXT("Core")) : TEXT("History: "), ARRAY_COUNT(GErrorHist) );
@@ -70,7 +62,7 @@ public:
 			GIsCriticalError = 1;
 			GLogHook         = NULL;
 			UObject::StaticShutdownAfterError();
-			GErrorHist[ErrorType==NAME_FriendlyError ? ErrorPos : ARRAY_COUNT(GErrorHist)-1]=0;
+			GErrorHist[ARRAY_COUNT(GErrorHist)-1]=0;
 			if( GIsClient || GIsEditor || !GIsStarted )
 				MessageBox( NULL, GErrorHist, GConfig ? LocalizeError(TEXT("Critical"),TEXT("Window")) : TEXT("Critical Error At Startup"), MB_OK|MB_ICONERROR|MB_TASKMODAL );
 		}

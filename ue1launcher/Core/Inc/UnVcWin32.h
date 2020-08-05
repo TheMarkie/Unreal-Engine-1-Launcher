@@ -29,8 +29,8 @@
 
 // Make sure HANDLE is defined.
 #ifndef _WINDOWS_
-	#define HANDLE void*
-	#define HINSTANCE void*
+	#define HANDLE DWORD
+	#define HINSTANCE DWORD
 #endif
 
 // Sizes.
@@ -87,6 +87,9 @@ typedef unsigned long       SIZE_T;     // Corresponds to C SIZE_T.
 
 // Bitfield type.
 typedef unsigned long       BITFIELD;	// For bitfields.
+
+// !! Fixme: This is a workaround.
+#define GCC_OPT_INLINE		inline
 
 // Unwanted VC++ level 4 warnings to disable.
 #pragma warning(disable : 4244) /* conversion to float, possible loss of data							*/
@@ -168,7 +171,6 @@ typedef unsigned long       BITFIELD;	// For bitfields.
 	CORE_API INT winGetSizeUNICODE( const ANSICHAR* InACh );
 	#define TCHAR_CALL_OS(funcW,funcA) (GUnicodeOS ? (funcW) : (funcA))
 	#define TCHAR_TO_ANSI(str) winToANSI((ANSICHAR*)appAlloca(winGetSizeANSI(str)),str,winGetSizeANSI(str))
-	#define TCHAR_TO_OEM(str) winToOEM((ANSICHAR*)appAlloca(winGetSizeANSI(str)),str,winGetSizeANSI(str))
 	#define ANSI_TO_TCHAR(str) winToUNICODE((TCHAR*)appAlloca(winGetSizeUNICODE(str)),str,winGetSizeUNICODE(str))
 #endif
 

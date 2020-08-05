@@ -144,7 +144,6 @@ REG_NAME_HIGH( 668, Extends)
 REG_NAME_HIGH( 669, NoExport)
 REG_NAME_HIGH( 670, NoUserCreate)
 REG_NAME_HIGH( 671, PerObjectConfig)
-REG_NAME_HIGH( 672, NativeReplication)
 
 // State overrides.
 REG_NAME_HIGH( 675, Auto)
@@ -222,9 +221,9 @@ REGISTER_NAME( 788, Title)
 REGISTER_NAME( 789, Error)
 REGISTER_NAME( 790, Heading)
 REGISTER_NAME( 791, SubHeading)
-REGISTER_NAME( 792, FriendlyError)
+REGISTER_NAME( 792, ExpectedError)
 REGISTER_NAME( 793, Progress)
-REGISTER_NAME( 794, UserPrompt)
+REGISTER_NAME( 794, FriendlyError)
 
 // Console text colors.
 REGISTER_NAME( 800, White)
@@ -253,9 +252,6 @@ REGISTER_NAME( 831, WetTexture)
 REGISTER_NAME( 832, Main)
 REGISTER_NAME( 833, NotifyLevelChange)
 REGISTER_NAME( 834, VideoChange)
-REGISTER_NAME( 835, SendText)
-REGISTER_NAME( 836, SendBinary)
-REGISTER_NAME( 837, ConnectFailure)
 
 /*-----------------------------------------------------------------------------
 	Special engine-generated probe messages.

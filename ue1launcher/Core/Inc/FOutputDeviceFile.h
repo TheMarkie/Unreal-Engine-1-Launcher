@@ -41,9 +41,7 @@ public:
 					if( !Filename[0] )
 					{
 						appStrcpy( Filename, appBaseDir() );
-						if
-						(	!Parse(appCmdLine(), TEXT("LOG="), Filename+appStrlen(Filename), ARRAY_COUNT(Filename)-appStrlen(Filename) )
-						&&	!Parse(appCmdLine(), TEXT("ABSLOG="), Filename, ARRAY_COUNT(Filename) ) )
+						if( !Parse(appCmdLine(), TEXT("LOG="), Filename+appStrlen(Filename), ARRAY_COUNT(Filename)-appStrlen(Filename) ) )
 						{
 							appStrcat( Filename, appPackage() );
 							appStrcat( Filename, TEXT(".log") );

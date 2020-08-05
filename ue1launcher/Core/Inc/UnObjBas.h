@@ -77,11 +77,10 @@ enum EClassFlags
 	CLASS_NoExport          = 0x00100,  // Don't export to C++ header.
 	CLASS_NoUserCreate      = 0x00200,  // Don't allow users to create in the editor.
 	CLASS_PerObjectConfig   = 0x00400,  // Handle object configuration on a per-object basis, rather than per-class.
-	CLASS_NativeReplication = 0x00800,  // Replication handled in C++.
 
 	// Flags to inherit from base class.
 	CLASS_Inherit           = CLASS_Transient | CLASS_Config | CLASS_Localized | CLASS_SafeReplace | CLASS_RuntimeStatic | CLASS_PerObjectConfig,
-	CLASS_RecompilerClear   = CLASS_Inherit | CLASS_Abstract | CLASS_NoExport | CLASS_NativeReplication,
+	CLASS_RecompilerClear   = CLASS_Inherit | CLASS_Abstract | CLASS_NoExport,
 };
 
 //
@@ -113,6 +112,9 @@ enum EPropertyFlags
 	CPF_OnDemand     = 0x00100000, // Object or dynamic array loaded on demand only.
 	CPF_New			 = 0x00200000, // Automatically create inner object.
 	CPF_NeedCtorLink = 0x00400000, // Fields need construction/destruction.
+
+	// Temporary flags.
+	CPF_Replicated   = 0x80000000, // Replication condition is true.
 
 	// Combinations of flags.
 	CPF_ParmFlags           = CPF_OptionalParm | CPF_Parm | CPF_OutParm | CPF_SkipParm | CPF_ReturnParm | CPF_CoerceParm,
@@ -389,8 +391,6 @@ class CORE_API UObject : public FUnknown
 	friend class ULinkerSave;
 	friend class UPackageMap;
 	friend class FArchiveTagUsed;
-	friend struct FObjectImport;
-	friend struct FObjectExport;
 
 private:
 	// Internal per-object variables.
@@ -409,7 +409,6 @@ private:
 	static UBOOL            GObjNoRegister;		// Registration disable.
 	static INT				GObjBeginLoadCount;	// Count for BeginLoad multiple loads.
 	static INT				GObjRegisterCount;  // ProcessRegistrants entry counter.
-	static INT				GImportCount;		// Imports for EndLoad optimization.
 	static UObject*			GObjHash[4096];		// Object hash.
 	static UObject*			GAutoRegister;		// Objects to automatically register.
 	static TArray<UObject*> GObjLoaded;			// Objects that might need preloading.

@@ -63,6 +63,10 @@ public:
 	friend void* operator new( size_t Size, FMemStack& Mem, EMemZeroed Tag, INT Count=1, INT Align=DEFAULT_ALIGNMENT );
 	friend void* operator new( size_t Size, FMemStack& Mem, EMemOned Tag, INT Count=1, INT Align=DEFAULT_ALIGNMENT );
 
+private:
+	// Constants.
+	enum {MAX_CHUNKS=1024};
+
 	// Types.
 	struct FTaggedMemory
 	{
@@ -70,10 +74,6 @@ public:
 		INT DataSize;
 		BYTE Data[1];
 	};
-
-private:
-	// Constants.
-	enum {MAX_CHUNKS=1024};
 
 	// Variables.
 	BYTE*			Top;				// Top of current chunk (Top<=End).

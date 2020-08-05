@@ -4,23 +4,7 @@
 =============================================================================*/
 
 #if defined(_DEBUG) && !defined(_REALLY_WANT_DEBUG)
-#error "Your active configuration is set to DEBUG.  Click here for important information!"
-//
-// ** IMPORTANT INFORMATION **
-//
-// When running in DEBUG mode, all errors intentionally trigger a breakpoint. 
-// Therefore, DEBUG  builds are only suitable for running from within the debugger.  
-// If you run DEBUG builds outside the debugger, you will get a GPF when an error 
-// occurs instead of a useful error message.  If this is what you want, 
-// define _REALLY_WANT_DEBUG and recompile.
-//
-// This message is here because Visual C++ sets itself to DEBUG mode when you 
-// first load Unreal.dsw, which is probably not what you want.
-//
-// Always do a full recompile of 100% of the C++ code (all DLL's and EXE's) 
-// when switching between DEBUG and RELEASE builds.  The two builds generate 
-// the same named EXE's and DLL's, but they are not compatible.
-// 
+#error "Your active configuration is set to DEBUG mode -- this may result in an unstable build!"
 #endif
 
 /*-----------------------------------------------------------------------------
@@ -65,11 +49,6 @@
 // Whether to use Katmai assembler code.
 #ifndef ASMKNI
 #define ASMKNI 1
-#endif
-
-// Demo version.
-#ifndef DEMOVERSION
-#define DEMOVERSION 0
 #endif
 
 /*-----------------------------------------------------------------------------

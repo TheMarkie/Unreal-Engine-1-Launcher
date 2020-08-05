@@ -15,27 +15,15 @@
 	#undef ASM
 	#undef ASM3DNOW
 	#undef ASMKNI
-	#define ASMLINUX 1
 #else
 	#error Unsupported platform.
 #endif
 
-// Stack control.
-#include <signal.h>
-#include <setjmp.h>
-class __Context
-{
-public:
-	__Context() { Last = Env; }
-	~__Context() { /* Env = Last; */ }
-	static void StaticInit();
-	static jmp_buf Env;
+/*----------------------------------------------------------------------------
+	Signal handling.
+----------------------------------------------------------------------------*/
 
-protected:
-	static void HandleSIGSEGV( int Sig );
-	static struct sigaction Act;
-	jmp_buf Last;
-};
+#include <signal.h>
 
 /*----------------------------------------------------------------------------
 	Platform specifics types and defines.
@@ -76,7 +64,6 @@ enum {CACHE_LINE_SIZE   = 32}; // Cache line size.
 #define STDCALL
 #define FORCEINLINE /* Force code to be inline */
 #define ZEROARRAY 0 /* Zero-length arrays in structs */
-#define __cdecl
 
 // Variable arguments.
 #define GET_VARARGS(msg,len,fmt)	\
@@ -164,103 +151,6 @@ typedef unsigned int size_t;
 // !! Fixme: This is a workaround.
 #define GCC_OPT_INLINE
 
-// Memory
-#define appAlloca(size) alloca((size+7)&~7)
-
-extern CORE_API UBOOL GTimestamp;
-extern CORE_API DOUBLE GSecondsPerCycle;
-CORE_API DOUBLE appSecondsSlow();
-
-//
-// Round a floating point number to an integer.
-// Note that (int+.5) is rounded to (int+1).
-//
-#define DEFINED_appRound 1
-inline INT appRound( FLOAT F )
-{
-	return (INT)(F);
-}
-
-//
-// Converts to integer equal to or less than.
-//
-#define DEFINED_appFloor 1
-inline INT appFloor( FLOAT F )
-{
-	static FLOAT Half=0.5;
-	return (INT)(F - Half);
-}
-
-//
-// CPU cycles, related to GSecondsPerCycle.
-//
-#define DEFINED_appCycles 1
-inline DWORD appCycles()
-{
-	if( GTimestamp )
-	{
-		DWORD r;
-		asm("rdtsc" : "=a" (r) : "d" (r));
-		return r;
-	}
-}
-
-//
-// Seconds, arbitrarily based.
-//
-#define DEFINED_appSeconds 1
-inline DOUBLE appSeconds()
-{
-	if( GTimestamp )
-	{
-		DWORD L,H;
-		asm("rdtsc" : "=a" (L), "=d" (H));
-		
-		return ((DOUBLE)L +  4294967296.0 * (DOUBLE)H) * GSecondsPerCycle;
-	}
-	else return appSecondsSlow();
-}
-
-//
-// Memory copy.
-//
-#define DEFINED_appMemcpy 1
-inline void appMemcpy( void* Dest, const void* Src, INT Count )
-{
-	asm volatile("
-		pushl %%ebx;
-		pushl %%ecx;
-		pushl %%esi;
-		pushl %%edi;
-		mov %%ecx, %%ebx;
-		shr $2, %%ecx;
-		and $3, %%ebx;
-		rep;
-		movsl;
-		mov %%ebx, %%ecx;
-		rep;
-		movsb;
-		popl %%edi;
-		popl %%esi;
-		popl %%ecx;
-		popl %%ebx;
-	"
-	:
-	: "S" (Src),
-	  "D" (Dest),
-	  "c" (Count)
-	);
-}
-
-//
-// Memory zero.
-//
-#define DEFINED_appMemzero 1
-inline void appMemzero( void* Dest, INT Count )
-{
-	memset( Dest, 0, Count );
-}
-
 /*----------------------------------------------------------------------------
 	Globals.
 ----------------------------------------------------------------------------*/
@@ -276,9 +166,6 @@ extern "C"
 	extern CORE_API UBOOL GIs3DNow;
 	extern CORE_API UBOOL GTimestamp;
 }
-
-// Module name
-extern ANSICHAR GModule[32];
 
 /*----------------------------------------------------------------------------
 	The End.

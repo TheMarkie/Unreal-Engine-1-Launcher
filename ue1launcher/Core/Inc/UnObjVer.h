@@ -8,13 +8,13 @@
 -----------------------------------------------------------------------------*/
 
 // Earliest engine build that is network compatible with this one.
-#define ENGINE_MIN_NET_VERSION 400
+#define ENGINE_MIN_NET_VERSION 224
 
 // Engine build number, for displaying to end users.
-#define ENGINE_VERSION 400
+#define ENGINE_VERSION 226
 
 // Base protocol version to negotiate in network play.
-#define ENGINE_NEGOTIATION_VERSION 400
+#define ENGINE_NEGOTIATION_VERSION 224
 
 // Prevents incorrect files from being loaded.
 #define PACKAGE_FILE_TAG 0x9E2A83C1

@@ -324,16 +324,16 @@ public:
 		return Result;
 		unguard;
 	}
-	UBOOL SetDefaultDirectory( const TCHAR* Filename )
+	UBOOL SetCurrentDirectory( const TCHAR* Filename )
 	{
-		guard(FFileManagerAnsi::SetDefaultDirectory);
+		guard(FFileManagerAnsi::SetCurrentDirectory);
 		//warning: ANSI compliance is questionable here.
 		return TCHAR_CALL_OS( _wchdir(Filename), chdir(TCHAR_TO_ANSI(Filename)) )==0;
 		unguard;
 	}
-	FString GetDefaultDirectory()
+	FString GetCurrentDirectory()
 	{
-		guard(FFileManagerAnsi::GetDefaultDirectory);
+		guard(FFileManagerAnsi::GetCurrentDirectory);
 		//warning: ANSI compliance is questionable here.
 #if UNICODE
 		if( GUnicodeOS )

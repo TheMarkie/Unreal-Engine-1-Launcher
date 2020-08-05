@@ -13,17 +13,23 @@
 //
 // Native function table.
 //
-typedef void (UObject::*Native)( FFrame& TheStack, RESULT_DECL );
-extern CORE_API Native GNatives[];
-BYTE CORE_API GRegisterNative( INT iNative, const Native& Func );
+#if _MSC_VER
+	extern CORE_API void (UObject::*GNatives[])( FFrame& TheStack, RESULT_DECL );
+	BYTE CORE_API GRegisterNative( INT iNative, void* Func );
+#else
+	typedef void (UObject::*Native)( FFrame& TheStack, RESULT_DECL );
+	extern CORE_API Native GNatives[];
+	BYTE CORE_API GRegisterNative( INT iNative, const Native& Func );
+#endif
 
 //
 // Registering a native function.
 //
 #if _MSC_VER
 	#define IMPLEMENT_FUNCTION(cls,num,func) \
-		extern "C" DLL_EXPORT Native int##cls##func = (Native)&cls::func; \
-		static BYTE cls##func##Temp = GRegisterNative( num, int##cls##func );
+		extern "C" DLL_EXPORT void (cls::*int##cls##func)( FFrame& TheStack, RESULT_DECL ); \
+		DLL_EXPORT void (cls::*int##cls##func)( FFrame& TheStack, RESULT_DECL ) = &cls::func; \
+		static BYTE cls##func##Temp = GRegisterNative(num,*(void**)&int##cls##func);
 #else
 	#define IMPLEMENT_FUNCTION(cls,num,func) \
 		extern "C" DLL_EXPORT { Native int##cls##func = (Native)&cls::func; } \
@@ -37,30 +43,30 @@ BYTE CORE_API GRegisterNative( INT iNative, const Native& Func );
 //
 // Macros for grabbing parameters for native functions.
 //
-#define P_GET_UBOOL(var)              DWORD var=0;                         Stack.Step( Stack.Object, &var    );
-#define P_GET_UBOOL_OPTX(var,def)     DWORD var=def;                       Stack.Step( Stack.Object, &var    );
-#define P_GET_STRUCT(typ,var)         typ   var;                           Stack.Step( Stack.Object, &var    );
-#define P_GET_STRUCT_OPTX(typ,var,def)typ   var=def;                       Stack.Step( Stack.Object, &var    );
-#define P_GET_STRUCT_REF(typ,var)     typ   var##T; GPropAddr=0;           Stack.Step( Stack.Object, &var##T ); typ*     var = GPropAddr ? (typ    *)GPropAddr:&var##T;
-#define P_GET_INT(var)                INT   var=0;                         Stack.Step( Stack.Object, &var    );
-#define P_GET_INT_OPTX(var,def)       INT   var=def;                       Stack.Step( Stack.Object, &var    );
-#define P_GET_INT_REF(var)            INT   var##T=0; GPropAddr=0;         Stack.Step( Stack.Object, &var##T ); INT*     var = GPropAddr ? (INT    *)GPropAddr:&var##T;
-#define P_GET_FLOAT(var)              FLOAT var=0.f;                       Stack.Step( Stack.Object, &var    );
-#define P_GET_FLOAT_OPTX(var,def)     FLOAT var=def;                       Stack.Step( Stack.Object, &var    );
-#define P_GET_FLOAT_REF(var)          FLOAT var##T=0.0; GPropAddr=0;       Stack.Step( Stack.Object, &var##T ); FLOAT*   var = GPropAddr ? (FLOAT  *)GPropAddr:&var##T;
-#define P_GET_BYTE(var)               BYTE  var=0;                         Stack.Step( Stack.Object, &var    );
-#define P_GET_BYTE_OPTX(var,def)      BYTE  var=def;                       Stack.Step( Stack.Object, &var    );
-#define P_GET_BYTE_REF(var)           BYTE  var##T=0; GPropAddr=0;         Stack.Step( Stack.Object, &var##T ); BYTE*    var = GPropAddr ? (BYTE   *)GPropAddr:&var##T;
-#define P_GET_NAME(var)               FName var=NAME_None;                 Stack.Step( Stack.Object, &var    );
-#define P_GET_NAME_OPTX(var,def)      FName var=def;                       Stack.Step( Stack.Object, &var    );
-#define P_GET_NAME_REF(var)           FName var##T=NAME_None; GPropAddr=0; Stack.Step( Stack.Object, &var##T ); FName*   var = GPropAddr ? (FName  *)GPropAddr:&var##T;
-#define P_GET_STR(var)                FString var;                         Stack.Step( Stack.Object, &var    );
-#define P_GET_STR_OPTX(var,def)       FString var(def);                    Stack.Step( Stack.Object, &var    );
-#define P_GET_STR_REF(var)            FString var##T; GPropAddr=0;         Stack.Step( Stack.Object, &var##T ); FString* var = GPropAddr ? (FString*)GPropAddr:&var##T;
-#define P_GET_OBJECT(cls,var)         cls*  var=NULL;                      Stack.Step( Stack.Object, &var    );
-#define P_GET_OBJECT_OPTX(cls,var,def)cls*  var=def;                       Stack.Step( Stack.Object, &var    );
-#define P_GET_OBJECT_REF(cls,var)     cls*  var##T=NULL; GPropAddr=0;      Stack.Step( Stack.Object, &var##T ); cls**    var = GPropAddr ? (cls   **)GPropAddr:&var##T;
-#define P_GET_ARRAY_REF(typ,var)      typ   var##T[256]; GPropAddr=0;      Stack.Step( Stack.Object,  var##T ); typ*     var = GPropAddr ? (typ    *)GPropAddr: var##T;
+#define P_GET_UBOOL(var)              DWORD var=0;            Stack.Step( Stack.Object, &var    );
+#define P_GET_UBOOL_OPTX(var,def)     DWORD var=def;          Stack.Step( Stack.Object, &var    );
+#define P_GET_STRUCT(typ,var)         typ   var;              Stack.Step( Stack.Object, &var    );
+#define P_GET_STRUCT_OPTX(typ,var,def)typ   var=def;          Stack.Step( Stack.Object, &var    );
+#define P_GET_STRUCT_REF(typ,var)     typ   var##T;           Stack.Step( Stack.Object, &var##T ); typ*     var = GPropAddr ? (typ    *)GPropAddr:&var##T;
+#define P_GET_INT(var)                INT   var=0;            Stack.Step( Stack.Object, &var    );
+#define P_GET_INT_OPTX(var,def)       INT   var=def;          Stack.Step( Stack.Object, &var    );
+#define P_GET_INT_REF(var)            INT   var##T=0;         Stack.Step( Stack.Object, &var##T ); INT*     var = GPropAddr ? (INT    *)GPropAddr:&var##T;
+#define P_GET_FLOAT(var)              FLOAT var=0.f;          Stack.Step( Stack.Object, &var    );
+#define P_GET_FLOAT_OPTX(var,def)     FLOAT var=def;          Stack.Step( Stack.Object, &var    );
+#define P_GET_FLOAT_REF(var)          FLOAT var##T=0.0;       Stack.Step( Stack.Object, &var##T ); FLOAT*   var = GPropAddr ? (FLOAT  *)GPropAddr:&var##T;
+#define P_GET_BYTE(var)               BYTE  var=0;            Stack.Step( Stack.Object, &var    );
+#define P_GET_BYTE_OPTX(var,def)      BYTE  var=def;          Stack.Step( Stack.Object, &var    );
+#define P_GET_BYTE_REF(var)           BYTE  var##T=0;         Stack.Step( Stack.Object, &var##T ); BYTE*    var = GPropAddr ? (BYTE   *)GPropAddr:&var##T;
+#define P_GET_NAME(var)               FName var=NAME_None;    Stack.Step( Stack.Object, &var    );
+#define P_GET_NAME_OPTX(var,def)      FName var=def;          Stack.Step( Stack.Object, &var    );
+#define P_GET_NAME_REF(var)           FName var##T=NAME_None; Stack.Step( Stack.Object, &var##T ); FName*   var = GPropAddr ? (FName  *)GPropAddr:&var##T;
+#define P_GET_STR(var)                FString var;            Stack.Step( Stack.Object, &var    );
+#define P_GET_STR_OPTX(var,def)       FString var(def);       Stack.Step( Stack.Object, &var    );
+#define P_GET_STR_REF(var)            FString var##T;         Stack.Step( Stack.Object, &var##T ); FString* var = GPropAddr ? (FString*)GPropAddr:&var##T;
+#define P_GET_OBJECT(cls,var)         cls*  var=NULL;         Stack.Step( Stack.Object, &var    );
+#define P_GET_OBJECT_OPTX(cls,var,def)cls*  var=def;          Stack.Step( Stack.Object, &var    );
+#define P_GET_OBJECT_REF(cls,var)     cls*  var##T=NULL;      Stack.Step( Stack.Object, &var##T ); cls**    var = GPropAddr ? (cls   **)GPropAddr:&var##T;
+#define P_GET_ARRAY_REF(typ,var)      typ   var##T[256];      Stack.Step( Stack.Object,  var##T ); typ*     var = GPropAddr ? (typ    *)GPropAddr: var##T;
 #define P_GET_SKIP_OFFSET(var)        _WORD var; {checkSlow(*Stack.Code==EX_Skip); Stack.Code++; var=*(_WORD*)Stack.Code; Stack.Code+=2; }
 #define P_FINISH                      Stack.Code++;
 

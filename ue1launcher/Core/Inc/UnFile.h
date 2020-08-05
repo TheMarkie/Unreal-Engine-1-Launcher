@@ -103,19 +103,13 @@ CORE_API FString appClipboardPaste();
 	#define unguard				}
 	#define unguardf(msg)		}
 #else
+	#define guard(func)			{static const TCHAR __FUNC_NAME__[]=TEXT(#func); try{
 	#if _MSC_VER
-		#define guard(func)			{static const TCHAR __FUNC_NAME__[]=TEXT(#func); try{
 		#define unguard				}catch(TCHAR*Err){throw Err;}catch(...){appUnwindf(TEXT("%s"),__FUNC_NAME__); throw;}}
 		#define unguardf(msg)		}catch(TCHAR*Err){throw Err;}catch(...){appUnwindf(TEXT("%s"),__FUNC_NAME__); appUnwindf msg; throw;}}
 	#else
-		#define guard(func)			{static const TCHAR __FUNC_NAME__[]=TEXT(#func); \
-									__Context __LOCAL_CONTEXT__; try{ \
-									if(setjmp(__Context::Env)) { throw 1; } else {
-		#define unguard				}}catch(char*Err){throw Err;}catch(...) \
-									{appUnwindf(TEXT("%s"),__FUNC_NAME__); throw;}}
-		#define unguardf(msg)		}}catch(char*Err){throw Err;}catch(...) \
-									{appUnwindf(TEXT("%s"),__FUNC_NAME__); \
-									appUnwindf msg; throw;}}
+		#define unguard				}catch(char*Err){throw Err;}catch(...){appUnwindf(TEXT("%s"),__FUNC_NAME__); throw;}}
+		#define unguardf(msg)		}catch(char*Err){throw Err;}catch(...){appUnwindf(TEXT("%s"),__FUNC_NAME__); appUnwindf msg; throw;}}
 	#endif
 #endif
 
@@ -377,7 +371,7 @@ CORE_API DOUBLE appSin( DOUBLE Value );
 CORE_API DOUBLE appCos( DOUBLE Value );
 CORE_API DOUBLE appTan( DOUBLE Value );
 CORE_API DOUBLE appAtan( DOUBLE Value );
-CORE_API DOUBLE appAtan2( DOUBLE Y, DOUBLE X );
+CORE_API DOUBLE appAtan2( DOUBLE Y, FLOAT X );
 CORE_API DOUBLE appSqrt( DOUBLE Value );
 CORE_API DOUBLE appPow( DOUBLE A, DOUBLE B );
 CORE_API UBOOL appIsNan( DOUBLE Value );

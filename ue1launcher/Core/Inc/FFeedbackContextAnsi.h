@@ -10,6 +10,12 @@
 	FFeedbackContextAnsi.
 -----------------------------------------------------------------------------*/
 
+#if UNICODE
+#define appPrintf wprintf
+#else
+#define appPrintf printf
+#endif
+
 //
 // Feedback context.
 //
@@ -21,16 +27,6 @@ public:
 	INT WarningCount;
 	FContextSupplier* Context;
 	FOutputDevice* AuxOut;
-
-	// Local functions.
-	void LocalPrint( const TCHAR* Str )
-	{
-#if UNICODE
-		wprintf(TEXT("%s"),Str);
-#else
-		printf(TEXT("%s"),Str);
-#endif
-	}
 
 	// Constructor.
 	FFeedbackContextAnsi()
@@ -70,13 +66,11 @@ public:
 		{
 			appSprintf( Temp, TEXT("%s"), (TCHAR*)V );
 			V = Temp;
-			LocalPrint( V );
-			LocalPrint( TEXT("\r") );
+			appPrintf( TEXT("%s\r"), V);
 			fflush( stdout );
 			return;
 		}
-		LocalPrint( V );
-		LocalPrint( TEXT("\n") );
+		appPrintf( TEXT("%s\n"), V );//!!unicode
 		if( GLog != this )
 			GLog->Serialize( V, Event );
 		if( AuxOut )
@@ -91,8 +85,7 @@ public:
 		guard(FFeedbackContextAnsi::YesNof);
 		if( (GIsClient || GIsEditor) && !ParseParam(appCmdLine(),TEXT("Silent")) )//!!
 		{
-			LocalPrint( TempStr );
-			LocalPrint( TEXT(" (Y/N): ") );
+			appPrintf( TEXT("%s (Y/N): "), TempStr );
 			INT Ch = getchar();
 			return (Ch=='Y' || Ch=='y');
 		}
@@ -131,6 +124,8 @@ public:
 		unguard;
 	}
 };
+
+#undef appPrintf
 
 /*-----------------------------------------------------------------------------
 	The End.

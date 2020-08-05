@@ -25,7 +25,6 @@
 #if _MSC_VER
 	#include "UnVcWin32.h"
 #elif __GNUG__
-	#include <string.h>
 	#include "UnGnuG.h"
 #else
 	#error Unknown Compiler
@@ -39,7 +38,6 @@
 // OS specific include.
 #if __UNIX__
 	#include "UnUnix.h"
-	#include <signal.h>
 #endif
 
 // Global constants.
@@ -295,6 +293,7 @@ public:
 	virtual TArray<FString> FindFiles( const TCHAR* Filename, UBOOL Files, UBOOL Directories )=0;
 	virtual UBOOL SetDefaultDirectory( const TCHAR* Filename )=0;
 	virtual FString GetDefaultDirectory()=0;
+	virtual void Init(UBOOL Startup) {}
 };
 
 /*----------------------------------------------------------------------------
@@ -329,7 +328,6 @@ CORE_API extern INT                     GScriptCycles;
 CORE_API extern DWORD					GPageSize;
 CORE_API extern DWORD					GProcessorCount;
 CORE_API extern DWORD					GPhysicalMemory;
-CORE_API extern DWORD                   GUglyHackFlags;
 CORE_API extern UBOOL					GIsScriptable;
 CORE_API extern UBOOL					GIsEditor;
 CORE_API extern UBOOL					GIsClient;
@@ -343,6 +341,7 @@ CORE_API extern UBOOL					GIsRequestingExit;
 CORE_API extern UBOOL					GIsStrict;
 CORE_API extern UBOOL                   GScriptEntryTag;
 CORE_API extern UBOOL                   GLazyLoad;
+CORE_API extern UBOOL                   GSafeMode;
 CORE_API extern UBOOL					GUnicode;
 CORE_API extern UBOOL					GUnicodeOS;
 CORE_API extern class FGlobalMath		GMath;

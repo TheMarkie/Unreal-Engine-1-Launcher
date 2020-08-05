@@ -84,6 +84,7 @@ public:
 		{
 			check(GIsCriticalError||((FMemDebug*)InPtr-1)->RefCount==1);
 			check(GIsCriticalError||((FMemDebug*)InPtr-1)->Size>0);
+			check(GIsCriticalError||((FMemDebug*)InPtr-1)->Size<=_msize((FMemDebug*)InPtr-1));
 			void* Result = appMalloc( NewSize, Tag );
 			appMemcpy( Result, InPtr, Min(((FMemDebug*)InPtr-1)->Size,NewSize) );
 			appFree( InPtr );
@@ -132,18 +133,15 @@ public:
 	{
 		guard(FMallocDebug::DumpAllocs);
 		INT Count=0;
-		INT Chunks=0;
 		debugf( TEXT("Unfreed memory:") );
 		for( FMemDebug* Ptr=GFirstDebug; Ptr; Ptr=Ptr->Next )
 		{
 			TCHAR Temp[256];
 			appStrncpy( Temp, (TCHAR*)(Ptr+1), Min((SIZE_T)255,Ptr->Size) );
-			//debugf( TEXT("   % 10i %s <%s>"), Ptr->Size, Ptr->Tag, Temp );
+			debugf( TEXT("   % 10i %s <%s>"), Ptr->Size, Ptr->Tag, Temp );
 			Count += Ptr->Size;
-			Chunks++;
 		}
 		debugf( TEXT("End of list: %i Bytes still allocated"), Count );
-		debugf( TEXT("             %i Chunks allocated"), Chunks );
 		unguard;
 	}
 	void HeapCheck()

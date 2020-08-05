@@ -6,26 +6,18 @@
 		* Created by Tim Sweeney
 =============================================================================*/
 
+#if UNICODE
+#define appPrintf wprintf
+#else
+#define appPrintf printf
+#endif
+
 //
 // ANSI stdout output device.
 //
 class FOutputDeviceAnsiError : public FOutputDeviceError
 {
-	INT ErrorPos;
-	EName ErrorType;
-	void LocalPrint( const TCHAR* Str )
-	{
-#if UNICODE
-		wprintf(TEXT("%s"),Str);
-#else
-		printf(TEXT("%s"),Str);
-#endif
-	}
 public:
-	FOutputDeviceAnsiError()
-	: ErrorPos(0)
-	, ErrorType(NAME_None)
-	{}
 	void Serialize( const TCHAR* Msg, enum EName Event )
 	{
 #ifdef _DEBUG
@@ -40,7 +32,6 @@ public:
 		{
 			// First appError.
 			GIsCriticalError = 1;
-			ErrorType        = Event;
 			debugf( NAME_Critical, TEXT("appError called:") );
 			debugf( NAME_Critical, Msg );
 
@@ -48,7 +39,6 @@ public:
 			UObject::StaticShutdownAfterError();
 			appStrncpy( GErrorHist, Msg, ARRAY_COUNT(GErrorHist) );
 			appStrncat( GErrorHist, TEXT("\r\n\r\n"), ARRAY_COUNT(GErrorHist) );
-			ErrorPos = appStrlen(GErrorHist);
 			if( GIsGuarded )
 			{
 				appStrncat( GErrorHist, LocalizeError("History",TEXT("Core")), ARRAY_COUNT(GErrorHist) );
@@ -77,14 +67,15 @@ public:
 			GIsCriticalError = 1;
 			GLogHook         = NULL;
 			UObject::StaticShutdownAfterError();
-			GErrorHist[ErrorType==NAME_FriendlyError ? ErrorPos : ARRAY_COUNT(GErrorHist)-1]=0;
-			LocalPrint( GErrorHist );
-			LocalPrint( TEXT("\n\nExiting due to error\n") );
+			GErrorHist[ARRAY_COUNT(GErrorHist)-1]=0;
+			appPrintf( TEXT("%s\n\nExiting due to error\n"), GErrorHist );
 		}
 		catch( ... )
 		{}
 	}
 };
+
+#undef appPrintf
 
 /*-----------------------------------------------------------------------------
 	The End.

@@ -982,70 +982,6 @@ inline void ASMTransformPoint(const FCoords &Coords, const FVector &InVector, FV
         fstp    dword ptr [edi+8]     
 	}
 }
-#elif ASMLINUX
-inline void ASMTransformPoint(const FCoords &Coords, const FVector &InVector, FVector &OutVector)
-{
-	__asm__ __volatile__ ("
-		# Get source.
-		flds	0(%%esi);			# x
-		flds	4(%%esi);			# y x
-		flds	8(%%esi);			# z y x
-		fxch	%%st(2);
-
-		# Subtract origin.
-		fsubs	0(%1);
-		fxch	%%st(1);
-		fsubs	4(%1);
-		fxch	%%st(2);
-		fsubs	8(%1);
-		fxch	%%st(1);
-
-		# Triplicate X for transforming.
-		fld		%%st(0);
-		fmuls	12(%1);
-		fld		%%st(1);
-		fmuls	24(%1);
-		fxch	%%st(2);
-		fmuls	36(%1);
-		fxch	%%st(4);
-		
-		fld		%%st(0);
-		fmuls	16(%1);
-		fld		%%st(1);
-		fmuls	28(%1);
-		fxch	%%st(2);
-		fmuls	40(%1);
-		fxch	%%st(1);
-
-		faddp	%%st(0),%%st(3);
-		faddp	%%st(0),%%st(5);
-		faddp	%%st(0),%%st(2);
-		fxch	%%st(2);
-		
-		fld		%%st(0);
-		fmuls	20(%1);
-		fld		%%st(1);
-		fmuls	32(%1);
-		fxch	%%st(2);
-		fmuls	44(%1);
-		fxch	%%st(1);
-		
-		faddp	%%st(0),%%st(4);
-		faddp	%%st(0),%%st(4);
-		faddp	%%st(0),%%st(1);
-		fxch	%%st(1);
-
-		fstps	0(%%edi);
-		fstps	4(%%edi);
-		fstps	8(%%edi);
-	"
-	:
-	:	"S" (&InVector),
-		"q" (&Coords),
-		"D" (&OutVector)
-	: "memory"
-	);
-}
 #endif
 
 #if ASM
@@ -1106,82 +1042,19 @@ inline void ASMTransformVector(const FCoords &Coords, const FVector &InVector, F
 }
 #endif
 
-#if ASMLINUX
-inline void ASMTransformVector(const FCoords &Coords, const FVector &InVector, FVector &OutVector)
-{
-	asm volatile("
-		# Get source.
-		flds	0(%%esi);
-		flds	4(%%esi);
-		fxch	%%st(1);
-		flds	8(%%esi);
-		fxch	%%st(1);
-
-		# Triplicate X for transforming.
-		fld		%%st(0);
-		fmuls	12(%1);
-		fld		%%st(1);
-		fmuls	24(%1);
-		fxch	%%st(2);
-		fmuls	36(%1);
-		fxch	%%st(4);
-
-		fld		%%st(0);
-		fmuls	16(%1);
-		fld		%%st(1);
-		fmuls	28(%1);
-		fxch	%%st(2);
-		fmuls	40(%1);
-		fxch	%%st(1);
-
-		faddp	%%st(0),%%st(3);
-		faddp	%%st(0),%%st(5);
-		faddp	%%st(0),%%st(2);
-		fxch	%%st(2);
-
-		fld		%%st(0);
-		fmuls	20(%1);
-		fld		%%st(1);
-		fmuls	32(%1);
-		fxch	%%st(2);
-		fmuls	44(%1);
-		fxch	%%st(1);
-
-		faddp	%%st(0),%%st(4);
-		faddp	%%st(0),%%st(4);
-		faddp	%%st(0),%%st(1);
-		fxch	%%st(1);
-
-		fstps	0(%%edi);
-		fstps	4(%%edi);
-		fstps	8(%%edi);
-	"
-	:
-	: "S" (&InVector),
-	  "q" (&Coords),
-	  "D" (&OutVector)
-	: "memory"
-	);
-}
-#endif
-
 //
 // Transform a point by a coordinate system, moving
 // it by the coordinate system's origin if nonzero.
 //
 inline FVector FVector::TransformPointBy( const FCoords &Coords ) const
-{
-#if ASM
+{   
+#if !ASM	
+	FVector Temp = *this - Coords.Origin;
+	return FVector(	Temp | Coords.XAxis, Temp | Coords.YAxis, Temp | Coords.ZAxis );
+#else
 	FVector Temp;
 	ASMTransformPoint( Coords, *this, Temp);
 	return Temp;
-#elif ASMLINUX
-	static FVector Temp;
-	ASMTransformPoint( Coords, *this, Temp);
-	return Temp;
-#else
-	FVector Temp = *this - Coords.Origin;
-	return FVector(	Temp | Coords.XAxis, Temp | Coords.YAxis, Temp | Coords.ZAxis );
 #endif
 }
 
@@ -1191,16 +1064,12 @@ inline FVector FVector::TransformPointBy( const FCoords &Coords ) const
 //
 inline FVector FVector::TransformVectorBy( const FCoords &Coords ) const
 {
-#if ASM
-	FVector Temp;
-	ASMTransformVector( Coords, *this, Temp);
-	return Temp;
-#elif ASMLINUX
-	FVector Temp;
-	ASMTransformVector( Coords, *this, Temp);
-	return Temp;
-#else
+#if !ASM
 	return FVector(	*this | Coords.XAxis, *this | Coords.YAxis, *this | Coords.ZAxis );
+#else	
+	FVector Temp;
+	ASMTransformVector( Coords, *this, Temp);
+	return Temp;
 #endif
 }
 

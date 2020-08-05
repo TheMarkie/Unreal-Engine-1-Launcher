@@ -13,12 +13,13 @@ class CORE_API FFieldNetCache
 {
 public:
 	UField* Field;
-	INT FieldNetIndex;
+	INT RepIndex;
+	INT ValueIndex;
 	INT ConditionIndex;
 	FFieldNetCache()
 	{}
-	FFieldNetCache( UField* InField, INT InFieldNetIndex, INT InConditionIndex )
-	: Field(InField), FieldNetIndex(InFieldNetIndex), ConditionIndex(InConditionIndex)
+	FFieldNetCache( UField* InField, INT InRepIndex, INT InValueIndex, INT InConditionIndex )
+	: Field(InField), RepIndex(InRepIndex), ValueIndex(InValueIndex), ConditionIndex(InConditionIndex)
 	{}
 	friend CORE_API FArchive& operator<<( FArchive& Ar, FFieldNetCache& F );
 };
@@ -32,42 +33,18 @@ class CORE_API FClassNetCache
 public:
 	FClassNetCache();
 	FClassNetCache( UClass* Class );
-	INT GetMaxIndex()
-	{
-		return FieldsBase+Fields.Num();
-	}
-	INT FClassNetCache::GetRepConditionCount()
-	{
-		return RepConditionCount;
-	}
-	FFieldNetCache* GetFromField( UObject* Field )
-	{
-		guardSlow(FClassNetCache::GetFromField);
-		FFieldNetCache* Result=NULL;
-		for( FClassNetCache* C=this; C; C=C->Super )
-			if( (Result=C->FieldMap.FindRef(Field))!=NULL )
-				break;
-		return Result;
-		unguardSlow;
-	}
-	FFieldNetCache* GetFromIndex( INT Index )
-	{
-		guardSlow(FFieldNetCache::GetFromIndex);
-		for( FClassNetCache* C=this; C; C=C->Super )
-			if( Index>=C->FieldsBase && Index<C->FieldsBase+C->Fields.Num() )
-				return &C->Fields(Index-C->FieldsBase);
-		return NULL;
-		unguardSlow;
-	}
+	INT GetMaxIndex();
+	INT GetMaxPropertyIndex();
+	INT GetRepValueCount();
+	INT GetRepConditionCount();
+	FFieldNetCache* GetFromField( UField* Field );
+	FFieldNetCache* GetFromIndex( INT Index );
 	CORE_API friend FArchive& operator<<( FArchive& Ar, FClassNetCache& Cache );
-	TArray<FFieldNetCache*> RepProperties;
 private:
-	INT FieldsBase;
-	FClassNetCache* Super;
-	INT RepConditionCount;
+	INT RepValueCount, RepConditionCount, MaxPropertyIndex;
 	UClass* Class;
 	TArray<FFieldNetCache> Fields;
-	TMap<UObject*,FFieldNetCache*> FieldMap;
+	TMap<UField*,INT> FieldIndices;
 };
 
 //
@@ -104,7 +81,6 @@ class CORE_API UPackageMap : public UObject
 
 	// UObject interface.
 	void Serialize( FArchive& Ar );
-	void Destroy();
 
 	// UPackageMap interface.
 	virtual UBOOL CanSerializeObject( UObject* Obj );
@@ -118,34 +94,15 @@ class CORE_API UPackageMap : public UObject
 	virtual FClassNetCache* GetClassNetCache( UClass* Class );
 	virtual UBOOL SupportsPackage( UObject* InOuter );
 	void Copy( UPackageMap* Other );
-	void CopyLinkers( UPackageMap* Other );
 
 	// Variables.
 	TArray<FPackageInfo> List;
 protected:
 	TMap<UObject*,INT> LinkerMap;
-	TMap<UObject*,FClassNetCache*> ClassFieldIndices;
+	TMap<UObject*,FClassNetCache> ClassFieldIndices;
 	TArray<INT> NameIndices;
 	DWORD MaxObjectIndex;
 	DWORD MaxNameIndex;
-};
-inline FArchive& operator<<( FArchive& Ar, FClassNetCache* )
-{
-	return Ar;
-}
-
-//
-// Information for tracking retirement and retransmission of a property.
-//
-struct FPropertyRetirement
-{
-	INT			InPacketId;		// Packet received on, INDEX_NONE=none.
-	INT			OutPacketId;	// Packet sent on, INDEX_NONE=none.
-	BYTE		Reliable;		// Whether it was sent reliably.
-	FPropertyRetirement()
-	:	OutPacketId	( INDEX_NONE )
-	,	InPacketId	( INDEX_NONE )
-	{}
 };
 
 /*----------------------------------------------------------------------------

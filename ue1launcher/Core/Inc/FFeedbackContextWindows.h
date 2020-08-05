@@ -29,10 +29,7 @@ public:
 	void Serialize( const TCHAR* V, EName Event )
 	{
 		guard(FFeedbackContextWindows::Serialize);
-		if( Event==NAME_UserPrompt && (GIsClient || GIsEditor) )
-			::MessageBox( NULL, V, LocalizeError("Warning",TEXT("Core")), MB_OK|MB_TASKMODAL );
-		else
-			debugf( NAME_Warning, TEXT("%s"), V );
+		debugf( NAME_Warning, TEXT("%s"), V );
 		unguard;
 	}
 	UBOOL YesNof( const TCHAR* Fmt, ... )

@@ -50,7 +50,11 @@ public:
 	{
 		return Num;
 	}
-	void Pop( FBitWriter& Writer );
+	void Pop( FBitWriter& Writer )
+	{
+		Writer.ArIsError = Overflowed;
+		Writer.Num       = Num;
+	}
 private:
 	UBOOL			Overflowed;
 	INT				Num;

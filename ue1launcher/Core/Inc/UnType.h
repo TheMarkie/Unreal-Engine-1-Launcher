@@ -7,13 +7,6 @@
 	UProperty.
 -----------------------------------------------------------------------------*/
 
-// Property exporting flags.
-enum EPropertyPortFlags
-{
-	PPF_Localized = 1,
-	PPF_Delimited = 2,
-};
-
 //
 // An UnrealScript variable.
 //
@@ -28,7 +21,6 @@ class CORE_API UProperty : public UField
 	DWORD		PropertyFlags;
 	FName		Category;
 	_WORD		RepOffset;
-	_WORD		RepIndex;
 
 	// In memory variables.
 	INT			Offset;
@@ -51,9 +43,9 @@ class CORE_API UProperty : public UField
 	virtual void ExportCppItem( FOutputDevice& Out ) const=0;
 	virtual void SerializeItem( FArchive& Ar, void* Value ) const=0;
 	virtual UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
-	virtual void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const=0;
-	virtual const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const=0;
-	virtual UBOOL ExportText( INT ArrayElement, TCHAR* ValueStr, BYTE* Data, BYTE* Delta, INT PortFlags ) const;
+	virtual void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const=0;
+	virtual const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const=0;
+	virtual UBOOL ExportText( INT ArrayElement, TCHAR* ValueStr, BYTE* Data, BYTE* Delta, UBOOL HumanReadable ) const;
 	virtual void CopySingleValue( void* Dest, void* Src ) const;
 	virtual void CopyCompleteValue( void* Dest, void* Src ) const;
 	virtual void DestroyValue( void* Dest ) const;
@@ -116,8 +108,8 @@ class CORE_API UByteProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void CopyCompleteValue( void* Dest, void* Src ) const;
 };
@@ -146,8 +138,8 @@ class CORE_API UIntProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void CopyCompleteValue( void* Dest, void* Src ) const;
 };
@@ -183,8 +175,8 @@ class CORE_API UBoolProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 };
 
@@ -212,8 +204,8 @@ class CORE_API UFloatProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void CopyCompleteValue( void* Dest, void* Src ) const;
 };
@@ -250,8 +242,8 @@ class CORE_API UObjectProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void CopyCompleteValue( void* Dest, void* Src ) const;
 };
@@ -282,7 +274,7 @@ class CORE_API UClassProperty : public UObjectProperty
 	void Serialize( FArchive& Ar );
 
 	// UProperty interface.
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	BYTE GetID() const
 	{
 		return NAME_ObjectProperty;
@@ -312,8 +304,8 @@ class CORE_API UNameProperty : public UProperty
 	UBOOL Identical( const void* A, const void* B ) const;
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void CopyCompleteValue( void* Dest, void* Src ) const;
 };
@@ -344,8 +336,8 @@ class CORE_API UStrProperty : public UProperty
 	UBOOL Identical( const void* A, const void* B ) const;
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void DestroyValue( void* Dest ) const;
 };
@@ -381,8 +373,8 @@ class CORE_API UFixedArrayProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void DestroyValue( void* Dest ) const;
 
@@ -420,8 +412,8 @@ class CORE_API UArrayProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void DestroyValue( void* Dest ) const;
 
@@ -460,8 +452,8 @@ class CORE_API UMapProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void DestroyValue( void* Dest ) const;
 };
@@ -499,8 +491,8 @@ class CORE_API UStructProperty : public UProperty
 	void SerializeItem( FArchive& Ar, void* Value ) const;
 	UBOOL NetSerializeItem( FArchive& Ar, UPackageMap* Map, void* Data ) const;
 	void ExportCppItem( FOutputDevice& Out ) const;
-	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, INT PortFlags ) const;
-	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, INT PortFlags ) const;
+	void ExportTextItem( TCHAR* ValueStr, BYTE* PropertyValue, BYTE* DefaultValue, UBOOL HumanReadable ) const;
+	const TCHAR* ImportText( const TCHAR* Buffer, BYTE* Data, UBOOL HumanReadable ) const;
 	void CopySingleValue( void* Dest, void* Src ) const;
 	void DestroyValue( void* Dest ) const;
 };

@@ -14,22 +14,6 @@
 enum {PROPERTY_ALIGNMENT=4 };
 
 /*-----------------------------------------------------------------------------
-	FRepRecord.
------------------------------------------------------------------------------*/
-
-//
-// Information about a property to replicate.
-//
-struct FRepRecord
-{
-	UProperty* Property;
-	INT Index;
-	FRepRecord(UProperty* InProperty,INT InIndex)
-	: Property(InProperty), Index(InIndex)
-	{}
-};
-
-/*-----------------------------------------------------------------------------
 	FDependency.
 -----------------------------------------------------------------------------*/
 
@@ -417,7 +401,6 @@ class CORE_API UClass : public UState
 	FGuid				ClassGuid;
 	UClass*				ClassWithin;
 	FName				ClassConfigName;
-	TArray<FRepRecord>	ClassReps;
 	TArray<UField*>		NetFields;
 	TArray<FDependency> Dependencies;
 	TArray<FName>		PackageImports;

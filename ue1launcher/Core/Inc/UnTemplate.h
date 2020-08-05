@@ -13,73 +13,65 @@
 //
 // Type information for initialization.
 //
+#ifdef _MSC_VER
+
 template <class T> struct TTypeInfoBase
 {
-public:
 	typedef const T& ConstInitType;
 	static UBOOL NeedsDestructor() {return 1;}
-	static UBOOL DefinitelyNeedsDestructor() {return 0;}
 	static const T& ToInit( const T& In ) {return In;}
 };
 template <class T> struct TTypeInfo : public TTypeInfoBase<T>
 {
 };
-
-template <> struct TTypeInfo<BYTE> : public TTypeInfoBase<BYTE>
+template <> struct TTypeInfo<BYTE> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<SBYTE> : public TTypeInfoBase<SBYTE>
+template <> struct TTypeInfo<SBYTE> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<ANSICHAR> : public TTypeInfoBase<ANSICHAR>
+template <> struct TTypeInfo<ANSICHAR> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<INT> : public TTypeInfoBase<INT>
+template <> struct TTypeInfo<INT> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<DWORD> : public TTypeInfoBase<DWORD>
+template <> struct TTypeInfo<DWORD> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<_WORD> : public TTypeInfoBase<_WORD>
+template <> struct TTypeInfo<_WORD> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<SWORD> : public TTypeInfoBase<SWORD>
+template <> struct TTypeInfo<SWORD> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<QWORD> : public TTypeInfoBase<QWORD>
+template <> struct TTypeInfo<QWORD> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<SQWORD> : public TTypeInfoBase<SQWORD>
+template <> struct TTypeInfo<SQWORD> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<FName> : public TTypeInfoBase<FName>
+template <> struct TTypeInfo<FName> : public TTypeInfoBase<T>
 {
-public:
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<UObject*> : public TTypeInfoBase<UObject*>
+#else
+template <class T> struct TTypeInfo
 {
-public:
-	static UBOOL NeedsDestructor() {return 0;}
+	typedef const T& ConstInitType;
+	static UBOOL NeedsDestructor() {return 1;}
+	static const T& ToInit( const T& In ) {return In;}
 };
+#endif
 
 /*-----------------------------------------------------------------------------
 	Standard templates.
@@ -208,13 +200,6 @@ public:
 		checkSlow(ArrayMax>=ArrayNum);
 		return ArrayNum;
 	}
-	void InsertZeroed( INT Index, INT Count, INT ElementSize )
-	{
-		guardSlow(FArray::InsertZeroed);
-		Insert( Index, Count, ElementSize );
-		appMemzero( (BYTE*)Data+Index*ElementSize, Count*ElementSize );
-		unguardSlow;
-	}
 	void Insert( INT Index, INT Count, INT ElementSize )
 	{
 		guardSlow(FArray::Insert);
@@ -338,21 +323,9 @@ public:
 	:	FArray( Other.ArrayNum, sizeof(T) )
 	{
 		guardSlow(TArray::copyctor);
-		if( TTypeInfo<T>::NeedsDestructor() )
-		{
-			ArrayNum=0;
-			for( INT i=0; i<Other.ArrayNum; i++ )
-				new(*this)T(Other(i));
-		}
-		else if( sizeof(T)!=1 )
-		{
-			for( INT i=0; i<ArrayNum; i++ )
-				(*this)(i) = Other(i);
-		}
-		else
-		{
-			appMemcpy( &(*this)(0), &Other(0), ArrayNum * sizeof(T) );
-		}
+		ArrayNum=0;
+		for( INT i=0; i<Other.ArrayNum; i++ )
+			new(*this)T(Other(i));
 		unguardSlow;
 	}
 	TArray( ENoInit )
@@ -392,20 +365,20 @@ public:
 		return Result;
 		unguardSlow;
 	}
-	T& Last( INT c=0 )
+	T& Last()
 	{
 		guardSlow(TArray::Last);
-		check(c<ArrayNum);
+		check(ArrayNum>0);
 		checkSlow(ArrayMax>=ArrayNum);
-		return ((T*)Data)[ArrayNum-c-1];
+		return ((T*)Data)[ArrayNum-1];
 		unguardSlow;
 	}
-	const T& Last( INT c=0 ) const
+	const T& Last() const
 	{
 		guardSlow(TArray::Last);
-		checkSlow(c<ArrayNum);
+		checkSlow(ArrayNum>0);
 		checkSlow(ArrayMax>=ArrayNum);
-		return ((T*)Data)[ArrayNum-c-1];
+		return ((T*)Data)[ArrayNum-1];
 		unguardSlow;
 	}
 	void Shrink()
@@ -477,22 +450,13 @@ public:
 	INT Add( INT n=1 )
 	{
 		guardSlow(TArray::Add);
-		checkSlow(!TTypeInfo<T>::DefinitelyNeedsDestructor());
 		return FArray::Add( n, sizeof(T) );
 		unguardSlow;
 	}
 	void Insert( INT Index, INT Count=1 )
 	{
 		guardSlow(TArray::Insert);
-		checkSlow(!TTypeInfo<T>::DefinitelyNeedsDestructor());
 		FArray::Insert( Index, Count, sizeof(T) );
-		unguardSlow;
-	}
-	void InsertZeroed( INT Index, INT Count=1 )
-	{
-		guardSlow(TArray::InsertZeroed);
-		checkSlow(!TTypeInfo<T>::DefinitelyNeedsDestructor());
-		FArray::InsertZeroed( Index, Count, sizeof(T) );
 		unguardSlow;
 	}
 	void Remove( INT Index, INT Count=1 )
@@ -533,7 +497,6 @@ public:
 	INT AddItem( const T& Item )
 	{
 		guardSlow(TArray::AddItem);
-		checkSlow(!TTypeInfo<T>::DefinitelyNeedsDestructor());
 		INT Index=Add();
 		(*this)(Index)=Item;
 		return Index;
@@ -548,7 +511,6 @@ public:
 	INT AddUniqueItem( const T& Item )
 	{
 		guardSlow(TArray::AddUniqueItem);
-		checkSlow(!TTypeInfo<T>::DefinitelyNeedsDestructor());
 		for( INT Index=0; Index<ArrayNum; Index++ )
 			if( (*this)(Index)==Item )
 				return Index;
@@ -592,14 +554,14 @@ public:
 template <class T> void* operator new( size_t Size, TArray<T>& Array )
 {
 	guardSlow(TArray::operator new);
-	INT Index = Array.FArray::Add(1,sizeof(T));
+	INT Index = Array.Add();
 	return &Array(Index);
 	unguardSlow;
 }
 template <class T> void* operator new( size_t Size, TArray<T>& Array, INT Index )
 {
 	guardSlow(TArray::operator new);
-	Array.FArray::Insert(Index,1,sizeof(T));
+	Array.Insert(Index);
 	return &Array(Index);
 	unguardSlow;
 }
@@ -869,9 +831,6 @@ public:
 		unguard;
 	}
 	void Unload()
-#if __GNUG__
-		;	// Function declaration.
-#else
 	{
 		// Make sure this array is unloaded.
 		guard(TLazyArray::Unload);
@@ -883,7 +842,6 @@ public:
 		}
 		unguard;
 	}
-#endif
 	friend FArchive& operator<<( FArchive& Ar, TLazyArray& This )
 	{
 		guard(TLazyArray<<);
@@ -923,20 +881,6 @@ public:
 		unguard;
 	}
 };
-#if __GNUG__
-template <class T> void TLazyArray<T>::Unload()
-{
-	// Make sure this array is unloaded.
-	 guard(TLazyArray::Unload);
-	 if( SavedPos<0 && GLazyLoad )
-	 {
-		// Unload it now.
-		Empty();
-		SavedPos *= -1;
-	 }
-	 unguard;
-}
-#endif
 
 /*-----------------------------------------------------------------------------
 	Dynamic strings.
@@ -951,17 +895,17 @@ public:
 	FString()
 	: TArray<TCHAR>()
 	{}
-	FString( const FString& Other )
-	: TArray<TCHAR>( Other.ArrayNum )
-	{
-		if( ArrayNum )
-			appMemcpy( &(*this)(0), &Other(0), ArrayNum*sizeof(TCHAR) );
-	}
 	FString( const TCHAR* In )
 	: TArray<TCHAR>( *In ? (appStrlen(In)+1) : 0 )
 	{
 		if( ArrayNum )
 			appMemcpy( &(*this)(0), In, ArrayNum*sizeof(TCHAR) );
+	}
+	FString( const FString& Other )
+	: TArray<TCHAR>( Other.ArrayNum )
+	{
+		if( ArrayNum )
+			appMemcpy( &(*this)(0), &Other(0), ArrayNum*sizeof(TCHAR) );
 	}
 	FString( ENoInit )
 	: TArray<TCHAR>( E_NoInit )
@@ -1117,8 +1061,7 @@ public:
 		{
 			for( INT i=Len()-1; i>=0; i-- )
 			{
-				INT j;
-				for( j=0; SubStr[j]; j++ )
+				for( INT j=0; SubStr[j]; j++ )
 					if( (*this)(i+j)!=SubStr[j] )
 						break;
 				if( !SubStr[j] )
@@ -1164,10 +1107,9 @@ public:
 	friend struct FStringNoInit;
 private:
 	FString( INT InCount, const TCHAR* InSrc )
-	:	TArray<TCHAR>( InCount ? InCount+1 : 0 )
+	:	TArray<TCHAR>( InCount+1 )
 	{
-		if( ArrayNum )
-			appStrncpy( &(*this)(0), InSrc, InCount+1 );
+		appStrncpy( &(*this)(0), InSrc, InCount+1 );
 	}
 };
 struct CORE_API FStringNoInit : public FString
@@ -1202,12 +1144,13 @@ inline DWORD GetTypeHash( const FString& S )
 {
 	return appStrihash(*S);
 }
-template <> struct TTypeInfo<FString> : public TTypeInfoBase<FString>
+#if _MSC_VER
+template <> struct TTypeInfo<FString> : public TTypeInfoBase<T>
 {
 	typedef const TCHAR* ConstInitType;
 	static const TCHAR* ToInit( const FString& In ) {return *In;}
-	static UBOOL DefinitelyNeedsDestructor() {return 0;}
 };
+#endif
 
 //
 // String exchanger.
@@ -1621,8 +1564,7 @@ template<class T> void Sort( T* First, INT Num )
 			// Use simple bubble-sort.
 			while( Current.Max > Current.Min )
 			{
-				T *Max, *Item;
-				for( Max=Current.Min, Item=Current.Min+1; Item<=Current.Max; Item++ )
+				for( T *Max=Current.Min, *Item=Current.Min+1; Item<=Current.Max; Item++ )
 					if( Compare(*Item, *Max) > 0 )
 						Max = Item;
 				Exchange( *Max, *Current.Max-- );
@@ -1640,7 +1582,7 @@ template<class T> void Sort( T* First, INT Num )
 			{
 				while( ++Inner.Min<=Current.Max && Compare(*Inner.Min, *Current.Min) <= 0 );
 				while( --Inner.Max> Current.Min && Compare(*Inner.Max, *Current.Min) >= 0 );
-				if( Inner.Min>Inner.Max )
+				if( Inner.Max<Inner.Min )
 					break;
 				Exchange( *Inner.Min, *Inner.Max );
 			}
@@ -1655,7 +1597,7 @@ template<class T> void Sort( T* First, INT Num )
 					StackTop->Max = Inner.Max - 1;
 					StackTop++;
 				}
-				if( Current.Max>Inner.Min )
+				if( Inner.Min<Current.Max )
 				{
 					Current.Min = Inner.Min;
 					goto Loop;
@@ -1663,7 +1605,7 @@ template<class T> void Sort( T* First, INT Num )
 			}
 			else
 			{
-				if( Current.Max>Inner.Min )
+				if( Inner.Min<Current.Max )
 				{
 					StackTop->Min = Inner  .Min;
 					StackTop->Max = Current.Max;

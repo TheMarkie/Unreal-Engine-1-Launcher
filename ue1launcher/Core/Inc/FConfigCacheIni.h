@@ -112,7 +112,7 @@ public:
 
 		// Add .ini extension.
 		INT Len = appStrlen(Filename);
-		if( Len<5 || (Filename[Len-4]!='.' && Filename[Len-5]!='.') )
+		if( Len<4 || Filename[Len-4]!='.' )
 			appStrcat( Filename, TEXT(".ini") );
 
 		// Automatically translate generic filenames.
@@ -139,12 +139,10 @@ public:
 			if( !Filename || It.Key()==Filename )
 				It.Value().Write( *It.Key() );
 		if( Read )
-		{
 			if( Filename )
 				Remove(Filename);
 			else
 				Empty();
-		}
 		unguard;
 	}
 	void Detach( const TCHAR* Filename )

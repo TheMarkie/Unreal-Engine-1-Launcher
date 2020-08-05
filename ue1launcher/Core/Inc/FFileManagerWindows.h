@@ -137,7 +137,9 @@ public:
 	,	Error		( InError )
 	,	Pos			( InPos )
 	,	BufferCount	( 0 )
-	{}
+	{
+		ArIsSaving = ArIsPersistent = 1;
+	}
 	~FArchiveFileWriter()
 	{
 		guard(FArchiveFileWriter::~FArchiveFileWriter);
