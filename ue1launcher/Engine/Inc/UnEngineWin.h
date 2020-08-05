@@ -292,12 +292,19 @@ class WConfigPageDetail : public WWizardPage
         int height = 720;
         GetDesktopResolution( width, height );
 
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), Min( 1280, width ) );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportY" ), Min( 720, height ) );
+        int fullWidth = Max( width, 1280 );
+        int fullHeight = Max( height, 720 );
+        int windowedWidth = Min( 1280, width );
+        int windowedHeight = Min( 720, height );
+
+        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportX" ), windowedWidth );
+        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedViewportY" ), windowedHeight );
         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "WindowedColorBits" ), 32 );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), Max( width, 1280 ) );
-        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), Max( height, 720 ) );
+        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), fullWidth );
+        GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), fullHeight );
         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenColorBits" ), 32 );
+
+        SetAllResolution( fullWidth, fullHeight, windowedWidth, windowedHeight );
 
         Info = Info + LocalizeGeneral(TEXT("ResHigh"),TEXT("Startup")) + TEXT("\r\n");
         DetailEdit.SetText(*Info);
