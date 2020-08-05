@@ -477,9 +477,6 @@
     <ClInclude Include="Launcher\Headers\Launcher.h">
       <Filter>Launcher\Headers</Filter>
     </ClInclude>
-    <ClInclude Include="Launcher\Headers\RootWindowOverride.h">
-      <Filter>Launcher\Headers</Filter>
-    </ClInclude>
     <ClInclude Include="Launcher\Resources\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
