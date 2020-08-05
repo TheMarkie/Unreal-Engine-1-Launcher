@@ -287,14 +287,6 @@ class WConfigPageDetail : public WWizardPage
         }
 
         // Resolution.
-        // DEUS_EX CNN - no support for less than 640x480
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportX"),  TEXT("640") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportY"),  TEXT("480") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedColorBits"),  TEXT("16") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportX"), TEXT("640") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportY"), TEXT("480") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenColorBits"), TEXT("16") );
-
         // Snap the full screen resolution to native resolution.
         int width = 1280;
         int height = 720;
@@ -306,32 +298,8 @@ class WConfigPageDetail : public WWizardPage
         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), Max( width, 1280 ) );
         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), Max( height, 720 ) );
         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenColorBits" ), 32 );
-/*
-        if( (!GIsMMX || !GIsPentiumPro) && Driver==TEXT("SoftDrv.SoftwareRenderDevice") )
-        {
-            Info = Info + LocalizeGeneral(TEXT("ResLow"),TEXT("Startup")) + TEXT("\r\n");
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportX"),  TEXT("320") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportY"),  TEXT("240") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedColorBits"),  TEXT("16") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportX"), TEXT("320") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportY"), TEXT("240") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenColorBits"), TEXT("16") );
-        }
-        else if( Driver==TEXT("SoftDrv.SoftwareRenderDevice") || (DescFlags&RDDESCF_LowDetailWorld) )
-        {
-            Info = Info + LocalizeGeneral(TEXT("ResLow"),TEXT("Startup")) + TEXT("\r\n");
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportX"),  TEXT("512") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportY"),  TEXT("384") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedColorBits"),  TEXT("16") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportX"), TEXT("512") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportY"), TEXT("384") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenColorBits"), TEXT("16") );
-        }
-        else
-*/
-//      {
-            Info = Info + LocalizeGeneral(TEXT("ResHigh"),TEXT("Startup")) + TEXT("\r\n");
-//      }
+
+        Info = Info + LocalizeGeneral(TEXT("ResHigh"),TEXT("Startup")) + TEXT("\r\n");
         DetailEdit.SetText(*Info);
     }
     WWizardPage* GetNext()
@@ -868,21 +836,6 @@ static UEngine* InitEngine()
     if( FirstRun<ENGINE_VERSION )
         FirstRun = ENGINE_VERSION;
     GConfig->SetInt( TEXT("FirstRun"), TEXT("FirstRun"), FirstRun );
-
-#if ENGINE_VERSION<230
-    // Display the damn story to appease the German censors.
-    UBOOL CanModifyGore=1;
-    GConfig->GetBool( TEXT("UnrealI.UnrealGameOptionsMenu"), TEXT("bCanModifyGore"), CanModifyGore );
-    if( !CanModifyGore && !GIsEditor )
-    {
-        FString S;
-        if( appLoadFileToString( S, TEXT("Story.txt") ) )
-        {
-            WTextScrollerDialog Dlg( TEXT("The Story"), *S );
-            Dlg.DoModal();
-        }
-    }
-#endif
 
     // Create the global engine object.
     UClass* EngineClass;
