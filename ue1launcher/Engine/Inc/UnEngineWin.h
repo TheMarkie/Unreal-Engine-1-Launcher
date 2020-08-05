@@ -1002,21 +1002,6 @@ static void MainLoop( UEngine* Engine )
             RECT clip = { points[0].x, points[0].y, points[1].x, points[1].y };
 
             ClipCursor( &clip );
-
-            CURSORINFO curInfo = { 0 };
-            curInfo.cbSize = sizeof( curInfo );
-
-            GetCursorInfo( &curInfo );
-
-            // Hide cursor only when we know we're in the game window, so that "preferences" and other external menus can have the cursor.
-            if ( GetCapture() == MainWindow || WindowFromPoint( mP ) == MainWindow ) {
-                if ( curInfo.flags == CURSOR_SHOWING ) {
-                    ShowCursor( false );
-                }
-            }
-            else if ( curInfo.flags == 0 ) {
-                ShowCursor( true );
-            }
         }
 
         // Snap in-game cursor to real cursor.
