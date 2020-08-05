@@ -33,8 +33,7 @@
     <ModDir>D:\_Games\Deus Ex\VanillaMatters\System\</ModDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Sources;$(ProjectDir)Launcher\Resources;$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(ProjectDir)Extension\Inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)Core\Lib;$(ProjectDir)Engine\Lib;$(ProjectDir)Window\Lib;$(ProjectDir)Extension\Lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Sources;$(ProjectDir)Launcher\Resources;$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -52,7 +51,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>winmm.lib;Core.lib;Engine.lib;Window.lib;Extension.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
     </Link>
   </ItemDefinitionGroup>
