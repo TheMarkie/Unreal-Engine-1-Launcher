@@ -271,7 +271,6 @@ class ENGINE_API UViewport : public UPlayer
 	virtual void CloseWindow()=0;
 	virtual void UpdateInput( UBOOL Reset )=0;
 	virtual void* GetWindow()=0;
-	virtual void* GetServer();
 	virtual void SetMouseCapture( UBOOL Capture, UBOOL Clip, UBOOL FocusOnly=0 )=0;
 	virtual void Repaint( UBOOL Blit )=0;
 	virtual UBOOL Exec( const TCHAR* Cmd, FOutputDevice& Ar=*GLog );
@@ -362,8 +361,6 @@ class ENGINE_API UClient : public UObject
 	BITFIELD	CurvedSurfaces;
 	BITFIELD	ScreenFlashes;
 	BITFIELD	NoLighting;
-	BITFIELD	Decals;
-	BITFIELD	NoDynamicLights;
 	INT			WindowedViewportX;
 	INT			WindowedViewportY;
 	INT			WindowedColorBits;
@@ -373,7 +370,6 @@ class ENGINE_API UClient : public UObject
 	FLOAT		Brightness;
 	FLOAT		MipFactor;
 	INT			TextureLODSet[LODSET_MAX];
-	FLOAT		MinDesiredFrameRate;
 
 	// Constructors.
 	UClient();
@@ -386,7 +382,7 @@ class ENGINE_API UClient : public UObject
 
 	// UClient interface.
 	virtual void Init( UEngine* InEngine )=0;
-	virtual void Flush( UBOOL AllowPrecache );
+	virtual void Flush();
 	virtual void ShowViewportWindows( DWORD ShowFlags, int DoShow )=0;
 	virtual void EnableViewportWindows( DWORD ShowFlags, int DoEnable )=0;
 	virtual void Tick()=0;

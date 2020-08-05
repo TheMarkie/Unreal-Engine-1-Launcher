@@ -33,8 +33,6 @@ class		UConsole;
 struct FTextureInfo;
 class  AActor;
 class  ABrush;
-class  FDecal;
-class  ADecal;
 class  FScan;
 
 /*-----------------------------------------------------------------------------
@@ -199,19 +197,17 @@ class FBspSurf
 public:
 
 	// Persistent info.
-	UTexture*	Texture;		// 4 Texture map.
-	DWORD		PolyFlags;		// 4 Polygon flags.
-	INT			pBase;			// 4 Polygon & texture base point index (where U,V==0,0).
-	INT			vNormal;		// 4 Index to polygon normal.
-	INT			vTextureU;		// 4 Texture U-vector index.
-	INT			vTextureV;		// 4 Texture V-vector index.
-	INT			iLightMap;		// 4 Light mesh.
-	INT			iBrushPoly;		// 4 Editor brush polygon index.
-	SWORD		PanU;			// 2 U-Panning value.
-	SWORD		PanV;			// 2 V-Panning value.
-	ABrush*		Actor;			// 4 Brush actor owning this Bsp surface.
-	TArray<FDecal>	Decals;		// 12 Array decals on this surface
-	TArray<INT>	Nodes;			// 12 Nodes which make up this surface
+	UTexture*	Texture;	// 4 Texture map.
+	DWORD		PolyFlags;  // 4 Polygon flags.
+	INT			pBase;      // 4 Polygon & texture base point index (where U,V==0,0).
+	INT			vNormal;    // 4 Index to polygon normal.
+	INT			vTextureU;  // 4 Texture U-vector index.
+	INT			vTextureV;  // 4 Texture V-vector index.
+	INT			iLightMap;	// 4 Light mesh.
+	INT			iBrushPoly; // 4 Editor brush polygon index.
+	SWORD		PanU;		// 2 U-Panning value.
+	SWORD		PanV;		// 2 V-Panning value.
+	ABrush*		Actor;		// 4 Brush actor owning this Bsp surface.
 
 	// Functions.
 	ENGINE_API friend FArchive& operator<<( FArchive& Ar, FBspSurf& Surf );
@@ -426,7 +422,7 @@ class ENGINE_API UPolys : public UObject
 };
 
 /*-----------------------------------------------------------------------------
-	FVerts.
+	UVerts.
 -----------------------------------------------------------------------------*/
 
 //
@@ -446,32 +442,6 @@ public:
 	{
 		guard(FVert<<);
 		return Ar << AR_INDEX(Vert.pVertex) << AR_INDEX(Vert.iSide);
-		unguard;
-	}
-};
-
-/*-----------------------------------------------------------------------------
-	FDecals.
------------------------------------------------------------------------------*/
-
-//
-// Decal associated with a surface
-//
-class FDecal
-{
-public:
-	// Variables.
-	FVector Vertices[4];	// Vertices of decal on surface (offset from the surface base).
-	ADecal*	Actor;			// ADecal actor associated with this decal.
-	TArray<INT> Nodes;		// The FBspNode indices on which this decal lies.
-
-	// Functions.
-	friend FArchive& operator<< (FArchive &Ar, FDecal &Decal)
-	{
-		guard(FDecal<<);
-		if( !Ar.IsLoading() && !Ar.IsSaving() )
-			Ar << *(UObject**)&Decal.Actor;
-		return Ar;
 		unguard;
 	}
 };

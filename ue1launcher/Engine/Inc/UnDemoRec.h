@@ -29,9 +29,7 @@ class ENGINE_API UDemoRecConnection : public UNetConnection
 	FString LowLevelGetRemoteAddress();
 	FString LowLevelDescribe();
 	void LowLevelSend( void* Data, INT Count );
-	INT IsNetReady( UBOOL Saturate );
-	void FlushNet();
-	void HandleClientPlayer( APlayerPawn* Pawn );
+	INT IsNetReady();
 
 	// UDemoRecConnection functions.
 	UDemoRecDriver* GetDriver();
@@ -49,13 +47,11 @@ class ENGINE_API UDemoRecDriver : public UNetDriver
 	DECLARE_CLASS(UDemoRecDriver,UNetDriver,CLASS_Transient|CLASS_Config)
 
 	// Variables.
+	DOUBLE			NextPacketPlaybackTime;//!!cached hack
 	FString			DemoFilename;
 	FStringNoInit	DemoSpectatorClass;
 	FArchive*		FileAr;
-	UBOOL			ClientThirdPerson;
-	UBOOL			TimeBased;
-	UBOOL			NoFrameCap;
-	INT				FrameNum;
+	UBOOL			bJustConnected;//!!is there a better way to handle this?
 
 	// Constructors.
 	void StaticConstructor();
@@ -74,7 +70,6 @@ class ENGINE_API UDemoRecDriver : public UNetDriver
 	// UDemoRecDriver functions.
 	UBOOL InitBase( UBOOL Connect, FNetworkNotify* InNotify, FURL& ConnectURL, FString& Error );
 	ULevel* GetLevel();
-	void SpawnDemoRecSpectator( UNetConnection* Connection );
 };
 
 /*-----------------------------------------------------------------------------

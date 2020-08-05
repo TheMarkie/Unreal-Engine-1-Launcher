@@ -100,15 +100,6 @@ AUTOGENERATE_NAME(ServerTravel)
 AUTOGENERATE_NAME(PostLogin)
 AUTOGENERATE_NAME(DemoPlaySound)
 AUTOGENERATE_NAME(PreClientTravel)
-AUTOGENERATE_NAME(BroadcastLocalizedMessage)
-AUTOGENERATE_NAME(ReceiveLocalizedMessage)
-AUTOGENERATE_NAME(LogGameSpecial)
-AUTOGENERATE_NAME(PostTouch)
-AUTOGENERATE_NAME(Update)
-AUTOGENERATE_NAME(AlterDestination)
-AUTOGENERATE_NAME(SpawnNotification)
-AUTOGENERATE_NAME(UpdateTactics)
-AUTOGENERATE_NAME(LogGameSpecial2)
 
 #ifndef NAMES_ONLY
 
@@ -520,14 +511,6 @@ struct AActor_eventSetInitialState_Parms
 struct AActor_eventPostBeginPlay_Parms
 {
 };
-struct AActor_eventBroadcastLocalizedMessage_Parms
-{
-    class UClass* Message;
-    INT Switch;
-    class APlayerReplicationInfo* RelatedPRI_1;
-    class APlayerReplicationInfo* RelatedPRI_2;
-    class UObject* OptionalObject;
-};
 struct AActor_eventBroadcastMessage_Parms
 {
     FString Msg;
@@ -618,10 +601,6 @@ struct AActor_eventBump_Parms
     class AActor* Other;
 };
 struct AActor_eventUnTouch_Parms
-{
-    class AActor* Other;
-};
-struct AActor_eventPostTouch_Parms
 {
     class AActor* Other;
 };
@@ -719,9 +698,6 @@ public:
     BITFIELD bNetOptional:1;
     BITFIELD bReplicateInstigator:1;
     BITFIELD bTrailerSameRotation:1;
-    BITFIELD bTrailerPrePivot:1;
-    BITFIELD bClientAnim:1;
-    BITFIELD bSimFall:1;
     BYTE Physics GCC_PACK(4);
     BYTE Role;
     BYTE RemoteRole;
@@ -735,7 +711,6 @@ public:
     FLOAT AnimFrame;
     FLOAT AnimRate;
     FLOAT TweenRate;
-    FLOAT LODBias;
     class ALevelInfo* Level;
     class ULevel* XLevel;
     FName Tag;
@@ -855,7 +830,6 @@ public:
     FRotator DesiredRotation;
     FLOAT PhysAlpha;
     FLOAT PhysRate;
-    class AActor* PendingTouch;
     FLOAT AnimLast;
     FLOAT AnimMinRate;
     FLOAT OldAnimRate;
@@ -870,14 +844,8 @@ public:
     BITFIELD bNetFeel:1;
     BITFIELD bSimulatedPawn:1;
     BITFIELD bDemoRecording:1;
-    BITFIELD bClientDemoRecording:1;
-    BITFIELD bClientDemoNetFunc:1;
     class UClass* RenderIteratorClass GCC_PACK(4);
     class URenderIterator* RenderInterface;
-    DECLARE_FUNCTION(execMultiply_ColorFloat);
-    DECLARE_FUNCTION(execAdd_ColorColor);
-    DECLARE_FUNCTION(execMultiply_FloatColor);
-    DECLARE_FUNCTION(execSubtract_ColorColor);
     DECLARE_FUNCTION(execVisibleCollidingActors);
     DECLARE_FUNCTION(execVisibleActors);
     DECLARE_FUNCTION(execRadiusActors);
@@ -893,14 +861,11 @@ public:
     DECLARE_FUNCTION(execGetMapName);
     DECLARE_FUNCTION(execPlayerCanSeeMe);
     DECLARE_FUNCTION(execMakeNoise);
-    DECLARE_FUNCTION(execGetSoundDuration);
     DECLARE_FUNCTION(execDemoPlaySound);
-    DECLARE_FUNCTION(execPlayOwnedSound);
     DECLARE_FUNCTION(execPlaySound);
     DECLARE_FUNCTION(execSetTimer);
     DECLARE_FUNCTION(execDestroy);
     DECLARE_FUNCTION(execSpawn);
-    DECLARE_FUNCTION(execFastTrace);
     DECLARE_FUNCTION(execTrace);
     DECLARE_FUNCTION(execSetPhysics);
     DECLARE_FUNCTION(execFinishInterpolation);
@@ -944,16 +909,6 @@ public:
     void eventPostBeginPlay()
     {
         ProcessEvent(FindFunctionChecked(ENGINE_PostBeginPlay),NULL);
-    }
-    void eventBroadcastLocalizedMessage(class UClass* Message, INT Switch, class APlayerReplicationInfo* RelatedPRI_1, class APlayerReplicationInfo* RelatedPRI_2, class UObject* OptionalObject)
-    {
-        AActor_eventBroadcastLocalizedMessage_Parms Parms;
-        Parms.Message=Message;
-        Parms.Switch=Switch;
-        Parms.RelatedPRI_1=RelatedPRI_1;
-        Parms.RelatedPRI_2=RelatedPRI_2;
-        Parms.OptionalObject=OptionalObject;
-        ProcessEvent(FindFunctionChecked(ENGINE_BroadcastLocalizedMessage),&Parms);
     }
     void eventBroadcastMessage(const FString& Msg, BITFIELD bBeep, FName Type)
     {
@@ -1088,12 +1043,6 @@ public:
         Parms.Other=Other;
         ProcessEvent(FindFunctionChecked(ENGINE_UnTouch),&Parms);
     }
-    void eventPostTouch(class AActor* Other)
-    {
-        AActor_eventPostTouch_Parms Parms;
-        Parms.Other=Other;
-        ProcessEvent(FindFunctionChecked(ENGINE_PostTouch),&Parms);
-    }
     void eventTouch(class AActor* Other)
     {
         AActor_eventTouch_Parms Parms;
@@ -1183,7 +1132,7 @@ public:
     {
         ProcessEvent(FindFunctionChecked(ENGINE_AnimEnd),NULL);
     }
-    DECLARE_CLASS(AActor,UObject,0|CLASS_NativeReplication)
+    DECLARE_CLASS(AActor,UObject,0)
     #include "AActor.h"
 };
 
@@ -1230,10 +1179,6 @@ struct APawn_eventWalkTexture_Parms
 struct APawn_eventEnemyNotVisible_Parms
 {
 };
-struct APawn_eventUpdateTactics_Parms
-{
-    FLOAT DeltaTime;
-};
 struct APawn_eventUpdateEyeHeight_Parms
 {
     FLOAT DeltaTime;
@@ -1261,29 +1206,17 @@ struct APawn_eventLongFall_Parms
 struct APawn_eventPlayerTimeout_Parms
 {
 };
-struct APawn_eventReceiveLocalizedMessage_Parms
-{
-    class UClass* Message;
-    INT Switch;
-    class APlayerReplicationInfo* RelatedPRI_1;
-    class APlayerReplicationInfo* RelatedPRI_2;
-    class UObject* OptionalObject;
-};
 struct APawn_eventTeamMessage_Parms
 {
     class APlayerReplicationInfo* PRI;
     FString S;
     FName Type;
-    BITFIELD bBeep;
 };
 struct APawn_eventClientMessage_Parms
 {
     FString S;
     FName Type;
     BITFIELD bBeep;
-};
-struct APawn_eventAlterDestination_Parms
-{
 };
 struct APawn_eventMayFall_Parms
 {
@@ -1322,8 +1255,6 @@ public:
     BITFIELD bIsFemale:1;
     BITFIELD bIsMultiSkinned:1;
     BITFIELD bCountJumps:1;
-    BITFIELD bAdvancedTactics:1;
-    BITFIELD bViewTarget:1;
     FLOAT SightCounter GCC_PACK(4);
     FLOAT PainTime;
     FLOAT SpeechTime;
@@ -1373,8 +1304,6 @@ public:
     INT SecretCount;
     INT Spree;
     INT Health;
-    FStringNoInit SelectionMesh;
-    FStringNoInit SpecialMesh;
     FName ReducedDamageType;
     FLOAT ReducedDamagePct;
     class UClass* DropWhenKilled;
@@ -1425,12 +1354,11 @@ public:
     FStringNoInit MenuName;
     FStringNoInit NameArticle;
     BYTE VoicePitch;
-    FStringNoInit VoiceType;
+    class UClass* VoiceType;
     FLOAT OldMessageTime;
     class ANavigationPoint* RouteCache[16];
     class UClass* PlayerReplicationInfoClass;
     class APlayerReplicationInfo* PlayerReplicationInfo;
-    class ADecal* Shadow;
     DECLARE_FUNCTION(execClientHearSound);
     DECLARE_FUNCTION(execStopWaiting);
     DECLARE_FUNCTION(execPickAnyTarget);
@@ -1488,12 +1416,6 @@ public:
     {
         ProcessEvent(FindFunctionChecked(ENGINE_EnemyNotVisible),NULL);
     }
-    void eventUpdateTactics(FLOAT DeltaTime)
-    {
-        APawn_eventUpdateTactics_Parms Parms;
-        Parms.DeltaTime=DeltaTime;
-        ProcessEvent(FindFunctionChecked(ENGINE_UpdateTactics),&Parms);
-    }
     void eventUpdateEyeHeight(FLOAT DeltaTime)
     {
         APawn_eventUpdateEyeHeight_Parms Parms;
@@ -1531,23 +1453,12 @@ public:
     {
         ProcessEvent(FindFunctionChecked(ENGINE_PlayerTimeout),NULL);
     }
-    void eventReceiveLocalizedMessage(class UClass* Message, INT Switch, class APlayerReplicationInfo* RelatedPRI_1, class APlayerReplicationInfo* RelatedPRI_2, class UObject* OptionalObject)
-    {
-        APawn_eventReceiveLocalizedMessage_Parms Parms;
-        Parms.Message=Message;
-        Parms.Switch=Switch;
-        Parms.RelatedPRI_1=RelatedPRI_1;
-        Parms.RelatedPRI_2=RelatedPRI_2;
-        Parms.OptionalObject=OptionalObject;
-        ProcessEvent(FindFunctionChecked(ENGINE_ReceiveLocalizedMessage),&Parms);
-    }
-    void eventTeamMessage(class APlayerReplicationInfo* PRI, const FString& S, FName Type, BITFIELD bBeep)
+    void eventTeamMessage(class APlayerReplicationInfo* PRI, const FString& S, FName Type)
     {
         APawn_eventTeamMessage_Parms Parms;
         Parms.PRI=PRI;
         Parms.S=S;
         Parms.Type=Type;
-        Parms.bBeep=bBeep;
         ProcessEvent(FindFunctionChecked(ENGINE_TeamMessage),&Parms);
     }
     void eventClientMessage(const FString& S, FName Type, BITFIELD bBeep)
@@ -1558,15 +1469,11 @@ public:
         Parms.bBeep=bBeep;
         ProcessEvent(FindFunctionChecked(ENGINE_ClientMessage),&Parms);
     }
-    void eventAlterDestination()
-    {
-        ProcessEvent(FindFunctionChecked(ENGINE_AlterDestination),NULL);
-    }
     void eventMayFall()
     {
         ProcessEvent(FindFunctionChecked(ENGINE_MayFall),NULL);
     }
-    DECLARE_CLASS(APawn,AActor,0|CLASS_Config|CLASS_NativeReplication)
+    DECLARE_CLASS(APawn,AActor,0)
     #include "APawn.h"
 };
 
@@ -1619,8 +1526,6 @@ public:
     FLOAT DodgeClickTimer;
     FLOAT DodgeClickTime;
     FLOAT Bob;
-    FLOAT LandBob;
-    FLOAT AppliedBob;
     FLOAT bobtime;
     INT ShowFlags;
     INT RendMap;
@@ -1672,7 +1577,6 @@ public:
     BITFIELD bAnimTransition:1;
     BITFIELD bIsTurning:1;
     BITFIELD bFrozen:1;
-    BITFIELD bBadConnectionAlert:1;
     BITFIELD bInvertMouse:1;
     BITFIELD bShowScores:1;
     BITFIELD bShowMenu:1;
@@ -1696,21 +1600,17 @@ public:
     BITFIELD bJustAltFired:1;
     BITFIELD bIsTyping:1;
     BITFIELD bFixedCamera:1;
-    BITFIELD bNeverAutoSwitch:1;
-    BITFIELD bJumpStatus:1;
-    BITFIELD bUpdating:1;
-    BITFIELD bCheatsEnabled:1;
     FLOAT ZoomLevel GCC_PACK(4);
     class UClass* SpecialMenu;
     FStringNoInit DelayedCommand;
     FLOAT MouseSensitivity;
     FName WeaponPriority[20];
+    INT NetSpeed;
+    INT LanSpeed;
     FLOAT SmoothMouseX;
     FLOAT SmoothMouseY;
-    FLOAT BorrowedMouseX;
-    FLOAT BorrowedMouseY;
+    FLOAT KbdAccel;
     FLOAT MouseSmoothThreshold;
-    FLOAT MouseZeroTime;
     FLOAT aBaseX;
     FLOAT aBaseY;
     FLOAT aBaseZ;
@@ -1728,36 +1628,27 @@ public:
     FLOAT aExtra0;
     class ASavedMove* SavedMoves;
     class ASavedMove* FreeMoves;
-    class ASavedMove* PendingMove;
     FLOAT CurrentTimeStamp;
     FLOAT LastUpdateTime;
     FLOAT ServerTimeStamp;
     FLOAT TimeMargin;
-    FLOAT ClientUpdateTime;
     FLOAT MaxTimeMargin;
-    FStringNoInit ProgressMessage[8];
-    FColor ProgressColor[8];
+    FStringNoInit ProgressMessage[5];
+    FColor ProgressColor[5];
     FLOAT ProgressTimeOut;
     FStringNoInit QuickSaveString;
     FStringNoInit NoPauseMessage;
     FStringNoInit ViewingFrom;
     FStringNoInit OwnCamera;
     FStringNoInit FailedView;
+    FStringNoInit CantChangeNameMsg;
     class AGameReplicationInfo* GameReplicationInfo;
     FStringNoInit ngWorldSecret;
-    BITFIELD ngSecretSet:1 GCC_PACK(4);
-    FRotator TargetViewRotation GCC_PACK(4);
+    FRotator TargetViewRotation;
     FLOAT TargetEyeHeight;
     FVector TargetWeaponViewOffset;
-    INT DemoViewPitch;
-    INT DemoViewYaw;
-    FLOAT LastPlaySound;
-    DECLARE_FUNCTION(execPasteFromClipboard);
-    DECLARE_FUNCTION(execCopyToClipboard);
     DECLARE_FUNCTION(execConsoleCommand);
-    DECLARE_FUNCTION(execGetPlayerNetworkAddress);
     DECLARE_FUNCTION(execGetEntryLevel);
-    DECLARE_FUNCTION(execGetDefaultURL);
     DECLARE_FUNCTION(execUpdateURL);
     DECLARE_FUNCTION(execResetKeyboard);
     DECLARE_FUNCTION(execClientTravel);
@@ -1820,7 +1711,7 @@ public:
         Parms.bItems=bItems;
         ProcessEvent(FindFunctionChecked(ENGINE_ClientTravel),&Parms);
     }
-    DECLARE_CLASS(APlayerPawn,APawn,0|CLASS_Config|CLASS_NativeReplication)
+    DECLARE_CLASS(APlayerPawn,APawn,0|CLASS_Config)
     #include "APlayerPawn.h"
 };
 
@@ -1836,7 +1727,7 @@ public:
 class ENGINE_API AScout : public APawn
 {
 public:
-    DECLARE_CLASS(AScout,APawn,0|CLASS_Config)
+    DECLARE_CLASS(AScout,APawn,0)
     NO_DEFAULT_CONSTRUCTOR(AScout)
 };
 
@@ -1937,7 +1828,6 @@ public:
     class APawn* WaitingPawn;
     BITFIELD bOpening:1 GCC_PACK(4);
     BITFIELD bDelaying:1;
-    BITFIELD bClientPause:1;
     BITFIELD bPlayerOnly:1;
     class ATrigger* RecommendedTrigger GCC_PACK(4);
     FVector SimOldPos;
@@ -1947,92 +1837,10 @@ public:
     FVector SimInterpolate;
     FVector RealPosition;
     FRotator RealRotation;
+    INT ServerUpdate;
     INT ClientUpdate;
-    DECLARE_CLASS(AMover,ABrush,0|CLASS_NativeReplication)
+    DECLARE_CLASS(AMover,ABrush,0)
     #include "AMover.h"
-};
-
-
-struct ASpawnNotify_eventSpawnNotification_Parms
-{
-    class AActor* A;
-    class AActor* ReturnValue;
-};
-class ENGINE_API ASpawnNotify : public AActor
-{
-public:
-    class UClass* ActorClass;
-    class ASpawnNotify* Next;
-    class AActor* eventSpawnNotification(class AActor* A)
-    {
-        ASpawnNotify_eventSpawnNotification_Parms Parms;
-        Parms.A=A;
-        Parms.ReturnValue=0;
-        ProcessEvent(FindFunctionChecked(ENGINE_SpawnNotification),&Parms);
-        return Parms.ReturnValue;
-    }
-    DECLARE_CLASS(ASpawnNotify,AActor,0)
-    NO_DEFAULT_CONSTRUCTOR(ASpawnNotify)
-};
-
-
-struct ADecal_eventUpdate_Parms
-{
-    class AActor* L;
-};
-class ENGINE_API ADecal : public AActor
-{
-public:
-    INT MultiDecalLevel;
-    FLOAT LastRenderedTime;
-    TArray<INT> SurfList;
-    DECLARE_FUNCTION(execDetachDecal);
-    DECLARE_FUNCTION(execAttachDecal);
-    void eventUpdate(class AActor* L)
-    {
-        ADecal_eventUpdate_Parms Parms;
-        Parms.L=L;
-        ProcessEvent(FindFunctionChecked(ENGINE_Update),&Parms);
-    }
-    DECLARE_CLASS(ADecal,AActor,0)
-    NO_DEFAULT_CONSTRUCTOR(ADecal)
-};
-
-
-class ENGINE_API AKeypoint : public AActor
-{
-public:
-    DECLARE_CLASS(AKeypoint,AActor,0)
-    NO_DEFAULT_CONSTRUCTOR(AKeypoint)
-};
-
-
-class ENGINE_API Alocationid : public AKeypoint
-{
-public:
-    FStringNoInit LocationName;
-    FLOAT Radius;
-    class Alocationid* NextLocation;
-    DECLARE_CLASS(Alocationid,AKeypoint,0)
-    NO_DEFAULT_CONSTRUCTOR(Alocationid)
-};
-
-
-class ENGINE_API AInterpolationPoint : public AKeypoint
-{
-public:
-    INT Position;
-    FLOAT RateModifier;
-    FLOAT GameSpeedModifier;
-    FLOAT FovModifier;
-    BITFIELD bEndOfPath:1 GCC_PACK(4);
-    BITFIELD bSkipNextPath:1;
-    FLOAT ScreenFlashScale GCC_PACK(4);
-    FVector ScreenFlashFog;
-    class AInterpolationPoint* Prev;
-    class AInterpolationPoint* Next;
-    DECLARE_CLASS(AInterpolationPoint,AKeypoint,0)
-    NO_DEFAULT_CONSTRUCTOR(AInterpolationPoint)
 };
 
 
@@ -2044,87 +1852,40 @@ public:
 };
 
 
-class ENGINE_API AReplicationInfo : public AInfo
+class ENGINE_API ATimeDemo : public AInfo
 {
 public:
-    DECLARE_CLASS(AReplicationInfo,AInfo,0)
-    NO_DEFAULT_CONSTRUCTOR(AReplicationInfo)
+    INT FileAr;
+    FLOAT TimePassed;
+    FLOAT TimeDilation;
+    FLOAT StartTime;
+    FLOAT LastSecTime;
+    FLOAT LastCycleTime;
+    FLOAT LastFrameTime;
+    FLOAT SquareSum;
+    INT FrameNum;
+    INT FrameLastSecond;
+    INT FrameLastCycle;
+    INT CycleCount;
+    INT QuitAfterCycles;
+    FStringNoInit CycleMessage;
+    FStringNoInit CycleResult;
+    BITFIELD bSaveToFile:1 GCC_PACK(4);
+    BITFIELD bFirstFrame:1;
+    FLOAT LastSec GCC_PACK(4);
+    FLOAT MinFPS;
+    FLOAT MaxFPS;
+    class AInterpolationPoint* OldPoint;
+    class ATimeDemoInterpolationPoint* NewPoint;
+    class UConsole* Console;
+    DECLARE_FUNCTION(execCloseFile);
+    DECLARE_FUNCTION(execWriteToFile);
+    DECLARE_FUNCTION(execOpenFile);
+    DECLARE_CLASS(ATimeDemo,AInfo,0)
+    NO_DEFAULT_CONSTRUCTOR(ATimeDemo)
 };
 
 
-class ENGINE_API AGameReplicationInfo : public AReplicationInfo
-{
-public:
-    FStringNoInit GameName;
-    FStringNoInit GameClass;
-    BITFIELD bTeamGame:1 GCC_PACK(4);
-    BITFIELD bClassicDeathMessages:1;
-    BITFIELD bStopCountDown:1;
-    INT RemainingTime GCC_PACK(4);
-    INT ElapsedTime;
-    INT RemainingMinute;
-    FLOAT SecondCount;
-    INT NumPlayers;
-    INT SumFrags;
-    FLOAT UpdateTimer;
-    FStringNoInit ServerName;
-    FStringNoInit ShortName;
-    FStringNoInit AdminName;
-    FStringNoInit AdminEmail;
-    INT Region;
-    FStringNoInit MOTDLine1;
-    FStringNoInit MOTDLine2;
-    FStringNoInit MOTDLine3;
-    FStringNoInit MOTDLine4;
-    FStringNoInit GameEndedComments;
-    class APlayerReplicationInfo* PRIArray[32];
-    DECLARE_CLASS(AGameReplicationInfo,AReplicationInfo,0|CLASS_Config|CLASS_NativeReplication)
-    #include "AGameReplicationInfo.h"
-};
-
-
-class ENGINE_API APlayerReplicationInfo : public AReplicationInfo
-{
-public:
-    FStringNoInit PlayerName;
-    FStringNoInit OldName;
-    INT PlayerID;
-    FStringNoInit TeamName;
-    BYTE Team;
-    INT TeamID;
-    FLOAT Score;
-    FLOAT Deaths;
-    class UClass* VoiceType;
-    class ADecoration* HasFlag;
-    INT Ping;
-    BYTE PacketLoss;
-    BITFIELD bIsFemale:1 GCC_PACK(4);
-    BITFIELD bIsABot:1;
-    BITFIELD bFeigningDeath:1;
-    BITFIELD bIsSpectator:1;
-    BITFIELD bWaitingPlayer:1;
-    BITFIELD bAdmin:1;
-    class UTexture* TalkTexture GCC_PACK(4);
-    class AZoneInfo* PlayerZone;
-    class Alocationid* PlayerLocation;
-    INT StartTime;
-    INT TimeAcc;
-    DECLARE_CLASS(APlayerReplicationInfo,AReplicationInfo,0|CLASS_NativeReplication)
-    #include "APlayerReplicationInfo.h"
-};
-
-
-struct AStatLog_eventLogGameSpecial2_Parms
-{
-    FString SpecialID;
-    FString SpecialParam;
-    FString SpecialParam2;
-};
-struct AStatLog_eventLogGameSpecial_Parms
-{
-    FString SpecialID;
-    FString SpecialParam;
-};
 class ENGINE_API AStatLog : public AInfo
 {
 public:
@@ -2139,40 +1900,11 @@ public:
     FStringNoInit GameCreator;
     FStringNoInit GameCreatorURL;
     FStringNoInit DecoderRingURL;
-    FStringNoInit LocalBatcherURL;
-    FStringNoInit LocalBatcherParams;
-    FStringNoInit LocalStatsURL;
-    FStringNoInit WorldBatcherURL;
-    FStringNoInit WorldBatcherParams;
-    FStringNoInit WorldStatsURL;
     FStringNoInit LocalLogDir;
     FStringNoInit WorldLogDir;
     DECLARE_FUNCTION(execGetMapFileName);
     DECLARE_FUNCTION(execGetGMTRef);
-    DECLARE_FUNCTION(execGetPlayerChecksum);
-    DECLARE_FUNCTION(execLogMutator);
-    DECLARE_FUNCTION(execInitialCheck);
-    DECLARE_FUNCTION(execBrowseRelativeLocalURL);
-    DECLARE_FUNCTION(execExecuteWorldLogBatcher);
-    DECLARE_FUNCTION(execBatchLocal);
-    DECLARE_FUNCTION(execExecuteSilentLogBatcher);
-    DECLARE_FUNCTION(execExecuteLocalLogBatcher);
-    void eventLogGameSpecial2(const FString& SpecialID, const FString& SpecialParam, const FString& SpecialParam2)
-    {
-        AStatLog_eventLogGameSpecial2_Parms Parms;
-        Parms.SpecialID=SpecialID;
-        Parms.SpecialParam=SpecialParam;
-        Parms.SpecialParam2=SpecialParam2;
-        ProcessEvent(FindFunctionChecked(ENGINE_LogGameSpecial2),&Parms);
-    }
-    void eventLogGameSpecial(const FString& SpecialID, const FString& SpecialParam)
-    {
-        AStatLog_eventLogGameSpecial_Parms Parms;
-        Parms.SpecialID=SpecialID;
-        Parms.SpecialParam=SpecialParam;
-        ProcessEvent(FindFunctionChecked(ENGINE_LogGameSpecial),&Parms);
-    }
-    DECLARE_CLASS(AStatLog,AInfo,0|CLASS_Config)
+    DECLARE_CLASS(AStatLog,AInfo,0)
     NO_DEFAULT_CONSTRUCTOR(AStatLog)
 };
 
@@ -2186,11 +1918,12 @@ public:
     FStringNoInit StatLogFinal;
     DECLARE_FUNCTION(execFileLog);
     DECLARE_FUNCTION(execFileFlush);
+    DECLARE_FUNCTION(execGetPlayerChecksum);
     DECLARE_FUNCTION(execGetChecksum);
     DECLARE_FUNCTION(execWatermark);
     DECLARE_FUNCTION(execCloseLog);
     DECLARE_FUNCTION(execOpenLog);
-    DECLARE_CLASS(AStatLogFile,AStatLog,0|CLASS_Config)
+    DECLARE_CLASS(AStatLogFile,AStatLog,0)
     NO_DEFAULT_CONSTRUCTOR(AStatLogFile)
 };
 
@@ -2203,6 +1936,38 @@ public:
 };
 
 
+class ENGINE_API AReplicationInfo : public AInfo
+{
+public:
+    DECLARE_CLASS(AReplicationInfo,AInfo,0)
+    NO_DEFAULT_CONSTRUCTOR(AReplicationInfo)
+};
+
+
+class ENGINE_API APlayerReplicationInfo : public AReplicationInfo
+{
+public:
+    FStringNoInit PlayerName;
+    INT PlayerID;
+    FStringNoInit TeamName;
+    BYTE Team;
+    INT TeamID;
+    FLOAT Score;
+    FLOAT Spree;
+    class UClass* VoiceType;
+    class ADecoration* HasFlag;
+    INT Ping;
+    BITFIELD bIsFemale:1 GCC_PACK(4);
+    BITFIELD bIsABot:1;
+    BITFIELD bFeigningDeath:1;
+    BITFIELD bIsSpectator:1;
+    class UTexture* TalkTexture GCC_PACK(4);
+    class AZoneInfo* PlayerZone;
+    DECLARE_CLASS(APlayerReplicationInfo,AReplicationInfo,0)
+    NO_DEFAULT_CONSTRUCTOR(APlayerReplicationInfo)
+};
+
+
 class ENGINE_API ASavedMove : public AInfo
 {
 public:
@@ -2212,11 +1977,8 @@ public:
     BITFIELD bRun:1 GCC_PACK(4);
     BITFIELD bDuck:1;
     BITFIELD bPressedJump:1;
-    BITFIELD bFire:1;
-    BITFIELD bAltFire:1;
-    BITFIELD bForceFire:1;
-    BITFIELD bForceAltFire:1;
     BYTE DodgeMove GCC_PACK(4);
+    BITFIELD bSent:1 GCC_PACK(4);
     DECLARE_CLASS(ASavedMove,AInfo,0)
     NO_DEFAULT_CONSTRUCTOR(ASavedMove)
 };
@@ -2246,7 +2008,7 @@ public:
     FName DamageType;
     FStringNoInit DamageString;
     FStringNoInit ZoneName;
-    class Alocationid* locationid;
+    FStringNoInit LocationStrings[4];
     INT MaxCarcasses;
     class USound* EntrySound;
     class USound* ExitSound;
@@ -2262,7 +2024,6 @@ public:
     BITFIELD bDestructive:1;
     BITFIELD bNoInventory:1;
     BITFIELD bMoveProjectiles:1;
-    BITFIELD bBounceVelocity:1;
     BYTE AmbientBrightness GCC_PACK(4);
     BYTE AmbientHue;
     BYTE AmbientSaturation;
@@ -2300,7 +2061,7 @@ public:
         Parms.Other=Other;
         ProcessEvent(FindFunctionChecked(ENGINE_ActorEntered),&Parms);
     }
-    DECLARE_CLASS(AZoneInfo,AInfo,0|CLASS_NativeReplication)
+    DECLARE_CLASS(AZoneInfo,AInfo,0)
     #include "AZoneInfo.h"
 };
 
@@ -2394,8 +2155,6 @@ public:
     BITFIELD bBegunPlay:1;
     BITFIELD bPlayersOnly:1;
     BITFIELD bHighDetailMode:1;
-    BITFIELD bDropDetail:1;
-    BITFIELD bAggressiveLOD:1;
     BITFIELD bStartup:1;
     BITFIELD bHumansOnly:1;
     BITFIELD bNoCheating:1;
@@ -2409,8 +2168,7 @@ public:
     class UTexture* DefaultTexture;
     INT HubStackLevel;
     BYTE LevelAction;
-    BITFIELD bNeverPrecache:1 GCC_PACK(4);
-    BYTE NetMode GCC_PACK(4);
+    BYTE NetMode;
     FStringNoInit ComputerName;
     FStringNoInit EngineVersion;
     FStringNoInit MinNetVersion;
@@ -2424,7 +2182,6 @@ public:
     INT AIProfile[8];
     FLOAT AvgAITime;
     BITFIELD bCheckWalkSurfaces:1 GCC_PACK(4);
-    class ASpawnNotify* SpawnNotify GCC_PACK(4);
     DECLARE_FUNCTION(execGetAddressURL);
     DECLARE_FUNCTION(execGetLocalURL);
     void eventServerTravel(const FString& URL, BITFIELD bItems)
@@ -2458,9 +2215,7 @@ struct AGameInfo_eventLogin_Parms
 struct AGameInfo_eventPreLogin_Parms
 {
     FString Options;
-    FString Address;
     FString Error;
-    FString FailCode;
 };
 struct AGameInfo_eventGetBeaconText_Parms
 {
@@ -2490,18 +2245,15 @@ public:
     BITFIELD bRestartLevel:1;
     BITFIELD bPauseable:1;
     BITFIELD bCoopWeaponMode:1;
-    BITFIELD bClassicDeathMessages:1;
+    BITFIELD bClassicDeathmessages:1;
     BITFIELD bLowGore:1;
     BITFIELD bCanChangeSkin:1;
     BITFIELD bTeamGame:1;
     BITFIELD bVeryLowGore:1;
     BITFIELD bNoCheating:1;
-    BITFIELD bAllowFOV:1;
     BITFIELD bDeathMatch:1;
     BITFIELD bGameEnded:1;
     BITFIELD bOverTime:1;
-    BITFIELD bAlternateMode:1;
-    BITFIELD bCanViewOthers:1;
     FLOAT AutoAim GCC_PACK(4);
     FLOAT GameSpeed;
     FLOAT StartTime;
@@ -2537,16 +2289,11 @@ public:
     FStringNoInit MaxedOutMessage;
     FStringNoInit WrongPassword;
     FStringNoInit NeedPassword;
-    FStringNoInit IPBanned;
     INT MaxPlayers;
     INT NumPlayers;
     INT CurrentID;
-    FStringNoInit IPPolicies[50];
-    class UClass* DeathMessageClass;
-    class UClass* DMMessageClass;
     class UClass* MutatorClass;
     class AMutator* BaseMutator;
-    class AMutator* DamageMutator;
     class UClass* WaterZoneType;
     FName DefaultPlayerState;
     class UClass* GameReplicationInfoClass;
@@ -2555,14 +2302,17 @@ public:
     class AStatLog* LocalLog;
     class AStatLog* WorldLog;
     BITFIELD bLocalLog:1 GCC_PACK(4);
+    BITFIELD bLocalLogQuery:1;
     BITFIELD bWorldLog:1;
-    BITFIELD bBatchLocal:1;
     BITFIELD bLoggingGame:1;
     FStringNoInit LocalLogFileName GCC_PACK(4);
     FStringNoInit WorldLogFileName;
-    class UClass* StatLogClass;
-    INT DemoBuild;
-    INT DemoHasTuts;
+    FStringNoInit LocalBatcherURL;
+    FStringNoInit LocalBatcherParams;
+    FStringNoInit LocalStatsURL;
+    FStringNoInit WorldBatcherURL;
+    FStringNoInit WorldBatcherParams;
+    FStringNoInit WorldStatsURL;
     DECLARE_FUNCTION(execParseKillMessage);
     DECLARE_FUNCTION(execGetNetworkNumber);
     void eventAcceptInventory(class APawn* PlayerPawn)
@@ -2589,16 +2339,13 @@ public:
         Error=Parms.Error;
         return Parms.ReturnValue;
     }
-    void eventPreLogin(const FString& Options, const FString& Address, FString& Error, FString& FailCode)
+    void eventPreLogin(const FString& Options, FString& Error)
     {
         AGameInfo_eventPreLogin_Parms Parms;
         Parms.Options=Options;
-        Parms.Address=Address;
         Parms.Error=Error;
-        Parms.FailCode=FailCode;
         ProcessEvent(FindFunctionChecked(ENGINE_PreLogin),&Parms);
         Error=Parms.Error;
-        FailCode=Parms.FailCode;
     }
     FString eventGetBeaconText()
     {
@@ -2627,31 +2374,9 @@ public:
 };
 
 
-struct AMutator_eventPostRender_Parms
-{
-    class UCanvas* Canvas;
-};
-class ENGINE_API AMutator : public AInfo
-{
-public:
-    class AMutator* NextMutator;
-    class AMutator* NextDamageMutator;
-    class UClass* DefaultWeapon;
-    void eventPostRender(class UCanvas* Canvas)
-    {
-        AMutator_eventPostRender_Parms Parms;
-        Parms.Canvas=Canvas;
-        ProcessEvent(FindFunctionChecked(ENGINE_PostRender),&Parms);
-    }
-    DECLARE_CLASS(AMutator,AInfo,0)
-    NO_DEFAULT_CONSTRUCTOR(AMutator)
-};
-
-
 struct ANavigationPoint_eventAccept_Parms
 {
     class AActor* Incoming;
-    class AActor* Source;
     BITFIELD ReturnValue;
 };
 struct ANavigationPoint_eventSpecialCost_Parms
@@ -2683,13 +2408,12 @@ public:
     BITFIELD bEndPointOnly:1;
     BITFIELD bSpecialCost:1;
     BITFIELD bOneWayPath:1;
-    BITFIELD bNeverUseStrafing:1;
+    BYTE PathDescription GCC_PACK(4);
     DECLARE_FUNCTION(execdescribeSpec);
-    BITFIELD eventAccept(class AActor* Incoming, class AActor* Source)
+    BITFIELD eventAccept(class AActor* Incoming)
     {
         ANavigationPoint_eventAccept_Parms Parms;
         Parms.Incoming=Incoming;
-        Parms.Source=Source;
         Parms.ReturnValue=0;
         ProcessEvent(FindFunctionChecked(ENGINE_Accept),&Parms);
         return Parms.ReturnValue;
@@ -2729,8 +2453,6 @@ public:
     class ATrigger* RecommendedTrigger;
     FLOAT LastTriggerTime;
     FLOAT MaxZDiffAdd;
-    FLOAT MaxDist2D;
-    FVector LiftOffset;
     DECLARE_CLASS(ALiftCenter,ANavigationPoint,0)
     NO_DEFAULT_CONSTRUCTOR(ALiftCenter)
 };
@@ -2798,7 +2520,6 @@ public:
     FVector TargetVelocity GCC_PACK(4);
     class AActor* TriggerActor;
     class AActor* TriggerActor2;
-    FLOAT LastFired;
     DECLARE_CLASS(ATeleporter,ANavigationPoint,0)
     NO_DEFAULT_CONSTRUCTOR(ATeleporter)
 };
@@ -2889,10 +2610,7 @@ public:
     INT Crosshair;
     class UClass* MainMenuType;
     FStringNoInit HUDConfigWindowType;
-    FColor WhiteColor;
     class AMenu* MainMenu;
-    class AMutator* HUDMutator;
-    class APlayerPawn* PlayerOwner;
     void eventPostRender(class UCanvas* Canvas)
     {
         AHUD_eventPostRender_Parms Parms;
@@ -2961,7 +2679,6 @@ public:
     BITFIELD bActive:1;
     BITFIELD bSleepTouch:1;
     BITFIELD bHeldItem:1;
-    BITFIELD bTossedOut:1;
     BITFIELD bAmbientGlow:1;
     BITFIELD bInstantRespawn:1;
     BITFIELD bRotatingPickup:1;
@@ -2989,10 +2706,7 @@ public:
     FLOAT MaxDesireability;
     class AInventorySpot* myMarker;
     BITFIELD bSteadyFlash3rd:1 GCC_PACK(4);
-    BITFIELD bFirstFrame:1;
     BITFIELD bMuzzleFlashParticles:1;
-    BITFIELD bToggleSteadyFlash:1;
-    BITFIELD bSteadyToggle:1;
     BYTE FlashCount GCC_PACK(4);
     BYTE OldFlashCount;
     BYTE MuzzleFlashStyle;
@@ -3007,8 +2721,6 @@ public:
     FStringNoInit M_Activated;
     FStringNoInit M_Selected;
     FStringNoInit M_Deactivated;
-    class UClass* PickupMessageClass;
-    class UClass* ItemMessageClass;
     FLOAT eventBotDesireability(class APawn* Bot)
     {
         AInventory_eventBotDesireability_Parms Parms;
@@ -3017,8 +2729,8 @@ public:
         ProcessEvent(FindFunctionChecked(ENGINE_BotDesireability),&Parms);
         return Parms.ReturnValue;
     }
-    DECLARE_CLASS(AInventory,AActor,0|CLASS_NativeReplication)
-    #include "AInventory.h"
+    DECLARE_CLASS(AInventory,AActor,0)
+    NO_DEFAULT_CONSTRUCTOR(AInventory)
 };
 
 
@@ -3041,13 +2753,12 @@ public:
     BITFIELD bSplashDamage:1;
     BITFIELD bCanThrow:1;
     BITFIELD bRecommendSplashDamage:1;
-    BITFIELD bRecommendAltSplashDamage:1;
     BITFIELD bWeaponStay:1;
     BITFIELD bOwnsCrosshair:1;
     BITFIELD bHideWeapon:1;
     BITFIELD bMeleeWeapon:1;
     BITFIELD bRapidFire:1;
-    BITFIELD bSpecialIcon:1;
+    BITFIELD bTossedOut:1;
     FLOAT FiringSpeed GCC_PACK(4);
     FVector FireOffset;
     class UClass* ProjectileClass;
@@ -3072,7 +2783,6 @@ public:
     class USound* Misc3Sound;
     FStringNoInit MessageNoAmmo;
     FStringNoInit DeathMessage;
-    FColor NameColor;
     FRotator AdjustedAim;
     BITFIELD bSetFlashTime:1 GCC_PACK(4);
     BITFIELD bDrawMuzzleFlash:1;
@@ -3092,6 +2802,32 @@ public:
 };
 
 
+class ENGINE_API AKeypoint : public AActor
+{
+public:
+    DECLARE_CLASS(AKeypoint,AActor,0)
+    NO_DEFAULT_CONSTRUCTOR(AKeypoint)
+};
+
+
+class ENGINE_API AInterpolationPoint : public AKeypoint
+{
+public:
+    INT Position;
+    FLOAT RateModifier;
+    FLOAT GameSpeedModifier;
+    FLOAT FovModifier;
+    BITFIELD bEndOfPath:1 GCC_PACK(4);
+    BITFIELD bSkipNextPath:1;
+    FLOAT ScreenFlashScale GCC_PACK(4);
+    FVector ScreenFlashFog;
+    class AInterpolationPoint* Prev;
+    class AInterpolationPoint* Next;
+    DECLARE_CLASS(AInterpolationPoint,AKeypoint,0)
+    NO_DEFAULT_CONSTRUCTOR(AInterpolationPoint)
+};
+
+
 class ENGINE_API AProjectile : public AActor
 {
 public:
@@ -3104,7 +2840,6 @@ public:
     class USound* ImpactSound;
     class USound* MiscSound;
     FLOAT ExploWallOut;
-    class UClass* ExplosionDecal;
     DECLARE_CLASS(AProjectile,AActor,0)
     NO_DEFAULT_CONSTRUCTOR(AProjectile)
 };
@@ -3133,12 +2868,8 @@ public:
 
 #endif
 
-AUTOGENERATE_FUNCTION(APlayerPawn,-1,execPasteFromClipboard);
-AUTOGENERATE_FUNCTION(APlayerPawn,-1,execCopyToClipboard);
 AUTOGENERATE_FUNCTION(APlayerPawn,-1,execConsoleCommand);
-AUTOGENERATE_FUNCTION(APlayerPawn,-1,execGetPlayerNetworkAddress);
 AUTOGENERATE_FUNCTION(APlayerPawn,-1,execGetEntryLevel);
-AUTOGENERATE_FUNCTION(APlayerPawn,-1,execGetDefaultURL);
 AUTOGENERATE_FUNCTION(APlayerPawn,546,execUpdateURL);
 AUTOGENERATE_FUNCTION(APlayerPawn,544,execResetKeyboard);
 AUTOGENERATE_FUNCTION(APlayerPawn,-1,execClientTravel);
@@ -3167,10 +2898,6 @@ AUTOGENERATE_FUNCTION(APawn,506,execStrafeFacing);
 AUTOGENERATE_FUNCTION(APawn,504,execStrafeTo);
 AUTOGENERATE_FUNCTION(APawn,502,execMoveToward);
 AUTOGENERATE_FUNCTION(APawn,500,execMoveTo);
-AUTOGENERATE_FUNCTION(AActor,552,execMultiply_ColorFloat);
-AUTOGENERATE_FUNCTION(AActor,551,execAdd_ColorColor);
-AUTOGENERATE_FUNCTION(AActor,550,execMultiply_FloatColor);
-AUTOGENERATE_FUNCTION(AActor,549,execSubtract_ColorColor);
 AUTOGENERATE_FUNCTION(AActor,312,execVisibleCollidingActors);
 AUTOGENERATE_FUNCTION(AActor,311,execVisibleActors);
 AUTOGENERATE_FUNCTION(AActor,310,execRadiusActors);
@@ -3186,14 +2913,11 @@ AUTOGENERATE_FUNCTION(AActor,545,execGetNextSkin);
 AUTOGENERATE_FUNCTION(AActor,539,execGetMapName);
 AUTOGENERATE_FUNCTION(AActor,532,execPlayerCanSeeMe);
 AUTOGENERATE_FUNCTION(AActor,512,execMakeNoise);
-AUTOGENERATE_FUNCTION(AActor,-1,execGetSoundDuration);
 AUTOGENERATE_FUNCTION(AActor,-1,execDemoPlaySound);
-AUTOGENERATE_FUNCTION(AActor,-1,execPlayOwnedSound);
 AUTOGENERATE_FUNCTION(AActor,264,execPlaySound);
 AUTOGENERATE_FUNCTION(AActor,280,execSetTimer);
 AUTOGENERATE_FUNCTION(AActor,279,execDestroy);
 AUTOGENERATE_FUNCTION(AActor,278,execSpawn);
-AUTOGENERATE_FUNCTION(AActor,548,execFastTrace);
 AUTOGENERATE_FUNCTION(AActor,277,execTrace);
 AUTOGENERATE_FUNCTION(AActor,3970,execSetPhysics);
 AUTOGENERATE_FUNCTION(AActor,301,execFinishInterpolation);
@@ -3216,24 +2940,18 @@ AUTOGENERATE_FUNCTION(AActor,262,execSetCollision);
 AUTOGENERATE_FUNCTION(AActor,256,execSleep);
 AUTOGENERATE_FUNCTION(AActor,233,execError);
 AUTOGENERATE_FUNCTION(AActor,-1,execConsoleCommand);
-AUTOGENERATE_FUNCTION(ADecal,-1,execDetachDecal);
-AUTOGENERATE_FUNCTION(ADecal,-1,execAttachDecal);
+AUTOGENERATE_FUNCTION(ATimeDemo,-1,execCloseFile);
+AUTOGENERATE_FUNCTION(ATimeDemo,-1,execWriteToFile);
+AUTOGENERATE_FUNCTION(ATimeDemo,-1,execOpenFile);
 AUTOGENERATE_FUNCTION(AStatLogFile,-1,execFileLog);
 AUTOGENERATE_FUNCTION(AStatLogFile,-1,execFileFlush);
+AUTOGENERATE_FUNCTION(AStatLogFile,-1,execGetPlayerChecksum);
 AUTOGENERATE_FUNCTION(AStatLogFile,-1,execGetChecksum);
 AUTOGENERATE_FUNCTION(AStatLogFile,-1,execWatermark);
 AUTOGENERATE_FUNCTION(AStatLogFile,-1,execCloseLog);
 AUTOGENERATE_FUNCTION(AStatLogFile,-1,execOpenLog);
 AUTOGENERATE_FUNCTION(AStatLog,-1,execGetMapFileName);
 AUTOGENERATE_FUNCTION(AStatLog,-1,execGetGMTRef);
-AUTOGENERATE_FUNCTION(AStatLog,-1,execGetPlayerChecksum);
-AUTOGENERATE_FUNCTION(AStatLog,-1,execLogMutator);
-AUTOGENERATE_FUNCTION(AStatLog,-1,execInitialCheck);
-AUTOGENERATE_FUNCTION(AStatLog,-1,execBrowseRelativeLocalURL);
-AUTOGENERATE_FUNCTION(AStatLog,-1,execExecuteWorldLogBatcher);
-AUTOGENERATE_FUNCTION(AStatLog,-1,execBatchLocal);
-AUTOGENERATE_FUNCTION(AStatLog,-1,execExecuteSilentLogBatcher);
-AUTOGENERATE_FUNCTION(AStatLog,-1,execExecuteLocalLogBatcher);
 AUTOGENERATE_FUNCTION(ANavigationPoint,519,execdescribeSpec);
 AUTOGENERATE_FUNCTION(AWarpZoneInfo,315,execUnWarp);
 AUTOGENERATE_FUNCTION(AWarpZoneInfo,314,execWarp);

@@ -25,6 +25,7 @@ class ENGINE_API UChannel : public UObject
 	INT				OpenedLocally;	// Whether channel was opened locally or by remote.
 	INT				OpenPacketId;	// Packet the spawn message was sent in.
 	UBOOL			OpenTemporary;	// Opened temporarily.
+	UBOOL			RecentNak;		// Recently received a Nak.
 	EChannelType	ChType;			// Type of this channel.
 	INT				NumInRec;		// Number of packets in InRec.
 	INT				NumOutRec;		// Number of packets in OutRec.
@@ -46,7 +47,6 @@ class ENGINE_API UChannel : public UObject
 	virtual void Close();
 	virtual FString Describe();
 	virtual void ReceivedBunch( FInBunch& Bunch )=0;
-	virtual void ReceivedNak( INT NakPacketId );
 	virtual void Tick();
 
 	// General channel functions.
@@ -98,6 +98,22 @@ class ENGINE_API UControlChannel : public UChannel, public FOutputDevice
 -----------------------------------------------------------------------------*/
 
 //
+// Information for tracking retirement and retransmission of a property.
+//
+struct FPropertyRetirement
+{
+	INT    InPacketId;		// Packet received on, INDEX_NONE=none.
+	INT    OutPacketId;		// Packet sent on, INDEX_NONE=none.
+	BYTE   Dirty;			// Whether it needs to be resent.
+	BYTE   Reliable;		// Whether it was sent reliably.
+	FPropertyRetirement()
+	:	OutPacketId	( INDEX_NONE )
+	,	InPacketId	( INDEX_NONE )
+	,	Dirty		( 0 )
+	{}
+};
+
+//
 // A channel for exchanging actor properties.
 //
 class ENGINE_API UActorChannel : public UChannel
@@ -113,7 +129,6 @@ class ENGINE_API UActorChannel : public UChannel
 	UBOOL   SpawnAcked;	    // Whether spawn has been acknowledged.
 	TArray<BYTE> Recent;	// Most recently sent values.
 	TArray<BYTE> RepEval;	// Evaluated replication conditions.
-	TArray<INT>  Dirty;     // Properties that are dirty and need resending.
 	TArray<FPropertyRetirement> Retirement; // Property retransmission.
 
 	// Constructor.
@@ -131,7 +146,6 @@ class ENGINE_API UActorChannel : public UChannel
 	// UChannel interface.
 	void SetClosingFlag();
 	void ReceivedBunch( FInBunch& Bunch );
-	void ReceivedNak( INT NakPacketId );
 	void Close();
 	void Tick();
 

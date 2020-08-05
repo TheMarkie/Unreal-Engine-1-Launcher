@@ -31,7 +31,6 @@ class UPendingLevel : public ULevelBase
 	// UPendingLevel interface.
 	virtual void Tick( FLOAT DeltaTime )=0;
 	virtual UNetDriver* GetDriver()=0;
-	virtual void SendJoin()=0;
 };
 
 /*-----------------------------------------------------------------------------
@@ -59,7 +58,6 @@ class UNetPendingLevel : public UPendingLevel
 	// UPendingLevel interface.
 	void Tick( FLOAT DeltaTime );
 	UNetDriver* GetDriver() { return NetDriver; }
-	void SendJoin();
 };
 
 /*-----------------------------------------------------------------------------

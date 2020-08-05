@@ -12,18 +12,6 @@
 //
 // Viewport console.
 //
-struct UConsole_eventMessage_Parms
-{
-	class APlayerReplicationInfo* PRI;
-	FString S;
-	class AZoneInfo* PZone;
-	FName N;
-};
-struct UConsole_eventConnectFailure_Parms
-{
-    FString FailCode;
-    FString URL;
-};
 class ENGINE_API UConsole : public UObject, public FOutputDevice
 {
 	DECLARE_CLASS(UConsole,UObject,CLASS_Transient)
@@ -40,12 +28,11 @@ class ENGINE_API UConsole : public UObject, public FOutputDevice
 
 	// Natives.
 	DECLARE_FUNCTION(execConsoleCommand);
-	DECLARE_FUNCTION(execSaveTimeDemo);
 
 	// Script events.
     void eventMessage(class APlayerReplicationInfo* PRI, const FString& S, class AZoneInfo* PZone, FName Name)
     {
-		UConsole_eventMessage_Parms Parms;
+        struct {class APlayerReplicationInfo* PRI; FString S; class AZoneInfo* PZone; FName N;} Parms;
 		Parms.PRI=PRI;
         Parms.S=S;
 		Parms.PZone=PZone;
@@ -57,10 +44,6 @@ class ENGINE_API UConsole : public UObject, public FOutputDevice
         struct {FLOAT DeltaTime; } Parms;
         Parms.DeltaTime=DeltaTime;
         ProcessEvent(FindFunctionChecked(ENGINE_Tick),&Parms);
-    }
-    void eventVideoChange()
-    {
-        ProcessEvent(FindFunctionChecked(NAME_VideoChange),NULL);
     }
     void eventPostRender(class UCanvas* C)
     {
@@ -96,17 +79,6 @@ class ENGINE_API UConsole : public UObject, public FOutputDevice
     {
         ProcessEvent(FindFunctionChecked(NAME_NotifyLevelChange),NULL);
     }
-    void eventConnectFailure(const FString& FailCode, const FString& URL)
-    {
-        UConsole_eventConnectFailure_Parms Parms;
-        Parms.FailCode=FailCode;
-        Parms.URL=URL;
-        ProcessEvent(FindFunctionChecked(NAME_ConnectFailure),&Parms);
-    }
-	UBOOL IsTimeDemo()
-	{
-		return bTimeDemo;
-	}
 private:
 	// Constants.
 	enum {MAX_BORDER     = 6};
@@ -114,65 +86,43 @@ private:
 	enum {MAX_HISTORY	 = 16};
 
 	// Variables.
-    class UViewport* Viewport;
-    INT HistoryTop;
-    INT HistoryBot;
-    INT HistoryCur;
-    FStringNoInit TypedStr;
-    FStringNoInit History[16];
-    INT Scrollback;
-    INT numLines;
-    INT TopLine;
-    INT TextLines;
-    FLOAT MsgTime;
-    FLOAT MsgTickTime;
-    FStringNoInit MsgText[64];
-    FName MsgType[64];
-    class APlayerReplicationInfo* MsgPlayer[64];
-    FLOAT MsgTick[64];
-    INT BorderSize;
-    INT ConsoleLines;
-    INT BorderLines;
-    INT BorderPixels;
-    FLOAT ConsolePos;
-    FLOAT ConsoleDest;
-    FLOAT FrameX;
-    FLOAT FrameY;
-    class UTexture* ConBackground;
-    class UTexture* Border;
-    BITFIELD bNoStuff:1 GCC_PACK(4);
-    BITFIELD bTyping:1;
-    BITFIELD bNoDrawWorld:1;
-    BITFIELD bTimeDemo:1;
-    BITFIELD bStartTimeDemo:1;
-    BITFIELD bRestartTimeDemo:1;
-	BITFIELD bSaveTimeDemoToFile:1;
-    FLOAT StartTime GCC_PACK(4);
-    FLOAT ExtraTime;
-    FLOAT LastFrameTime;
-    FLOAT LastSecondStartTime;
-    INT FrameCount;
-    INT LastSecondFrameCount;
-    FLOAT MinFPS;
-    FLOAT MaxFPS;
-    FLOAT LastSecFPS;
-	class UFont* Font;
-    FStringNoInit LoadingMessage;
-    FStringNoInit SavingMessage;
-    FStringNoInit ConnectingMessage;
-    FStringNoInit PausedMessage;
-    FStringNoInit PrecachingMessage;
-    FStringNoInit FrameRateText;
-    FStringNoInit AvgText;
-    FStringNoInit LastSecText;
-    FStringNoInit MinText;
-    FStringNoInit MaxText;
-    FStringNoInit fpsText;
-    FStringNoInit SecondsText;
-    FStringNoInit FramesText;
+	UViewport*		Viewport;
+	INT				HistoryTop;
+	INT				HistoryBot;
+	INT				HistoryCur;
+	FStringNoInit	TypedStr;
+	FStringNoInit	History[MAX_HISTORY];
+	INT				Scrollback;
+	INT				NumLines;
+	INT				TopLine;
+	INT				TextLines;
+	FLOAT			MsgTime;
+	FStringNoInit	MsgText[MAX_LINES];
+	FName			MsgType[MAX_LINES];
+	class APlayerReplicationInfo* MsgPlayer[MAX_LINES];
+	FLOAT			MsgTick[MAX_LINES];
+	INT				BorderSize;
+	INT				ConsoleLines;
+	INT				BorderLines;
+	INT				BorderPixels;
+	FLOAT			ConsolePos;
+	FLOAT			ConsoleDest;
+	FLOAT			FrameX;
+	FLOAT			FrameY;
+	UTexture*		ConBackground;
+	UTexture*		Border;
+    BITFIELD		bNoStuff:1;
+	BITFIELD		bTyping:1;
+	BITFIELD		bTimeDemo:1;
+	AInfo*			TimeDemo;
+	BITFIELD		bNoDrawWorld:1;
+    FStringNoInit	LoadingMessage;
+    FStringNoInit	SavingMessage;
+    FStringNoInit	ConnectingMessage;
+    FStringNoInit	PausedMessage;
+    FStringNoInit	PrecachingMessage;
 };
 
 /*------------------------------------------------------------------------------
 	The End.
 ------------------------------------------------------------------------------*/
-

@@ -31,11 +31,11 @@ class		UDemoPlayPendingLevel;
 // Up to this many reliable channel bunches may be buffered.
 enum {RELIABLE_BUFFER         = 128   }; // Power of 2 >= 1.
 #if ENGINE_VERSION<230
-	enum {MAX_PACKETID        = 65536 }; // Power of 2 >= 1, covering guaranteed loss/misorder time.
-	enum {MAX_CHSEQUENCE      = 65536 }; // Power of 2 >RELIABLE_BUFFER, covering loss/misorder time.
+	enum {MAX_PACKETID            = 65536 }; // Power of 2 >= 1, covering guaranteed loss/misorder time.
+	enum {MAX_CHSEQUENCE          = 65536 }; // Power of 2 >RELIABLE_BUFFER, covering loss/misorder time.
 #else
-	enum {MAX_PACKETID        = 16384 }; // Power of 2 >= 1, covering guaranteed loss/misorder time.
-	enum {MAX_CHSEQUENCE      = 1024  }; // Power of 2 >RELIABLE_BUFFER, covering loss/misorder time.
+	enum {MAX_PACKETID            = 16384 }; // Power of 2 >= 1, covering guaranteed loss/misorder time.
+	enum {MAX_CHSEQUENCE          = 1024  }; // Power of 2 >RELIABLE_BUFFER, covering loss/misorder time.
 #endif
 enum {MAX_BUNCH_HEADER_BITS   = 64    };
 enum {MAX_PACKET_HEADER_BITS  = 16    };

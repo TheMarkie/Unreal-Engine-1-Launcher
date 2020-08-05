@@ -250,6 +250,7 @@ class ENGINE_API UBitmap : public UObject
 	// UBitmap interface.
 	virtual void Lock( FTextureInfo& TextureInfo, DOUBLE Time, INT LOD, URenderDevice* RenDev )=0;
 	virtual void Unlock( FTextureInfo& TextureInfo )=0;
+	virtual INT GetNumMips()=0;
 	virtual FMipmapBase* GetMip( INT i )=0;
 };
 
@@ -279,13 +280,12 @@ class ENGINE_API UTexture : public UBitmap
 
 	// Flags.
 	DWORD		PolyFlags;			// Polygon flags to be applied to Bsp polys with texture (See PF_*).
-	BITFIELD	bHighColorQuality:1 GCC_PACK(4); // High color quality hint.
+	BITFIELD	bHighColorQuality:1; // High color quality hint.
 	BITFIELD	bHighTextureQuality:1; // High color quality hint.
 	BITFIELD	bRealtime:1;        // Texture changes in realtime.
 	BITFIELD	bParametric:1;      // Texture data need not be stored.
 	BITFIELD	bRealtimeChanged:1; // Changed since last render.
-	BITFIELD    bHasComp:1;         // Compressed version included?
-	BYTE        LODSet GCC_PACK(4); // Level of detail type.
+	BYTE        LODSet;				// Level of detail type.
 
 	// Animation related.
 	UTexture*	AnimNext;			// Next texture in looped animation sequence.
@@ -298,8 +298,8 @@ class ENGINE_API UTexture : public UBitmap
 
 	// Table of mipmaps.
 	TArray<FMipmap> Mips;			// Mipmaps in native format.
-	TArray<FMipmap> CompMips;		// Mipmaps in requested format.
-	BYTE            CompFormat;     // Decompressed texture format.
+	TArray<FMipmap> DecompMips;		// Mipmaps in requested format.
+	BYTE            DecompFormat;   // Decompressed texture format.
 
 	// Constructor.
 	UTexture();

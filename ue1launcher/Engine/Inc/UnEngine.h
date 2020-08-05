@@ -29,7 +29,6 @@ class ENGINE_API UEngine : public USubsystem
 	INT						TickCycles, GameCycles, ClientCycles;
 	INT						CacheSizeMegs;
 	BITFIELD				UseSound;
-	FLOAT					CurrentTickRate;
 
 	// Constructors.
 	UEngine();
@@ -39,17 +38,10 @@ class ENGINE_API UEngine : public USubsystem
 	void Serialize( FArchive& Ar );
 	void Destroy();
 
-#if !DEMOVERSION
-	virtual void vtPad1() {}
-	virtual void vtPad2() {}
-	virtual void vtPad3() {}
-#endif
-
 	// UEngine interface.
 	virtual void Init();
-	virtual void Exit();
 	virtual UBOOL Exec( const TCHAR* Cmd, FOutputDevice& Out=*GLog );
-	virtual void Flush( UBOOL AllowPrecache );
+	virtual void Flush();
 	virtual UBOOL Key( UViewport* Viewport, EInputKey Key );
 	virtual UBOOL InputEvent( UViewport* Viewport, EInputKey iKey, EInputAction State, FLOAT Delta=0.0 );
 	virtual void Tick( FLOAT DeltaSeconds )=0;
@@ -61,16 +53,9 @@ class ENGINE_API UEngine : public USubsystem
 	virtual INT ChallengeResponse( INT Challenge );
 	virtual FLOAT GetMaxTickRate();
 	virtual void SetProgress( const TCHAR* Str1, const TCHAR* Str2, FLOAT Seconds );
-	void InitAudio();
 
 	// Temporary!!
 	virtual int edcamMode( UViewport* Viewport ) {return 0;}
-
-#if !DEMOVERSION
-	virtual void vtPad4() {}
-	virtual void vtPad5() {}
-	virtual void vtPad6() {}
-#endif
 };
 
 /*-----------------------------------------------------------------------------

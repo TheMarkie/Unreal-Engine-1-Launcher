@@ -38,7 +38,6 @@ class ENGINE_API UAudioSubsystem : public USubsystem
 	virtual UBOOL GetLowQualitySetting()=0;
 	virtual UViewport* GetViewport()=0;
 	virtual void RenderAudioGeometry( FSceneNode* Frame )=0;
-	virtual void PostRender( FSceneNode* Frame )=0;
 };
 
 /*-----------------------------------------------------------------------------
@@ -53,7 +52,6 @@ class ENGINE_API FSoundData : public TLazyArray<BYTE>
 public:
 	USound* Owner;
 	void Load();
-	FLOAT GetPeriod();
 	FSoundData( USound* InOwner )
 	: Owner( InOwner )
 	{}
@@ -70,24 +68,13 @@ class ENGINE_API USound : public UObject
 	FSoundData	Data;
 	FName		FileType;
 	INT			OriginalSize;
-	FLOAT       Duration;
 	void*		Handle;
 	static UAudioSubsystem* Audio;
 
 	// Constructor.
 	USound()
 	: Data( this )
-	{
-		Duration = -1.f;
-	}
-
-	// Duration.
-	FLOAT GetDuration()
-	{
-		if ( Duration < 0.f )
-			Duration = Data.GetPeriod();
-		return Duration;
-	};
+	{}
 
 	// UObject interface.
 	void Serialize( FArchive& Ar );

@@ -3,13 +3,10 @@
 	Copyright 1997-1999 Epic Games, Inc. All Rights Reserved.
 =============================================================================*/
 
-	// AActor interface.
-	INT* GetOptimizedRepList( BYTE* InDefault, FPropertyRetirement* Retire, INT* Ptr, UPackageMap* Map );
-
 	// APlayerPawn interface.
 	void SetPlayer( UPlayer* Player );
-
-	// PlayerPawn Render Control Interface (RCI).
+#if 1 //MWP
+	// PlayerPawn Render Control Interface (RCI)
 	// override the operations in the game-specific PlayerPawn class to control rendering
 	virtual bool ClearScreen();
 	//{ return false; };
@@ -25,6 +22,7 @@
 	//{ return true; }
 	virtual bool IsActorVisible( const AActor* Actor );
 	//{ return true; }
+#endif
 
 /*-----------------------------------------------------------------------------
 	The End.

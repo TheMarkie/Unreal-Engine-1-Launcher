@@ -34,7 +34,7 @@ class ENGINE_API  UScriptedTexture : public UTexture
 	DECLARE_FUNCTION(execDrawTile)
 	DECLARE_FUNCTION(execDrawColoredText)
 	DECLARE_FUNCTION(execReplaceTexture)
-	DECLARE_FUNCTION(execTextSize)
+
 
 private:
 	UTexture*		OldSourceTex;

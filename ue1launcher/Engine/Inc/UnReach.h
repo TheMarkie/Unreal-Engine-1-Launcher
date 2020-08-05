@@ -18,16 +18,7 @@ public:
 	INT reachFlags; //see defined bits above
 	BYTE  bPruned;
 
-	/*
-	supports() -
-	 returns true if it supports the requirements of aPawn.  Distance is not considered.
-	*/
-	inline int supports (int iRadius, int iHeight, int moveFlags)
-	{
-		return ( (CollisionRadius >= iRadius) 
-			&& (CollisionHeight >= iHeight)
-			&& ((reachFlags & moveFlags) == reachFlags) );
-	}
+	GCC_OPT_INLINE int supports (int iRadius, int iHeight, int moveFlags);
 	FReachSpec operator+ (const FReachSpec &Spec) const;
 	int defineFor (AActor * begin, AActor * dest, APawn * Scout);
 	int operator<= (const FReachSpec &Spec);

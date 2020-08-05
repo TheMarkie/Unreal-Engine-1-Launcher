@@ -35,7 +35,6 @@ class ENGINE_API UGameEngine : public UEngine
 
 	// UEngine interface.
 	void Init();
-	void Exit();
 	void Tick( FLOAT DeltaSeconds );
 	void Draw( UViewport* Viewport, UBOOL Blit=1, BYTE* HitData=NULL, INT* HitSize=NULL );
 	UBOOL Exec( const TCHAR* Cmd, FOutputDevice& Ar=*GLog );

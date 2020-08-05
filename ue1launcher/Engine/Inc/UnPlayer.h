@@ -15,7 +15,7 @@
 //
 class ENGINE_API UPlayer : public UObject, public FOutputDevice, public FExec
 {
-	DECLARE_ABSTRACT_CLASS(UPlayer,UObject,CLASS_Transient|CLASS_Config)
+	DECLARE_ABSTRACT_CLASS(UPlayer,UObject,CLASS_Transient)
 
 	// Objects.
 	APlayerPawn*	Actor;
@@ -23,10 +23,8 @@ class ENGINE_API UPlayer : public UObject, public FOutputDevice, public FExec
 	
 	BITFIELD		bWindowsMouseAvailable:1;
 	BITFIELD		bShowWindowsMouse:1;
-	BITFIELD		bSuspendPrecaching:1;
 	FLOAT			WindowsMouseX;
 	FLOAT			WindowsMouseY;
-	INT				CurrentNetSpeed, ConfiguredInternetSpeed, ConfiguredLanSpeed;
 	BYTE			SelectedCursor;
 
 	// Constructor.

@@ -204,7 +204,7 @@ class ENGINE_API ULevel : public ULevelBase
 	virtual INT TickDemoRecord( FLOAT DeltaSeconds );
 	virtual INT TickDemoPlayback( FLOAT DeltaSeconds );
 	virtual void UpdateTime( ALevelInfo* Info );
-	virtual void WelcomePlayer( UNetConnection* Connection, TCHAR* Optional=TEXT("") );
+	virtual void WelcomePlayer( UNetConnection* Connection );
 
 	// FNetworkNotify interface.
 	EAcceptConnection NotifyAcceptingConnection();

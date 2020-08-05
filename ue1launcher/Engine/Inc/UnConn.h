@@ -28,17 +28,6 @@ enum EConnectionState
 	USOCK_Open      = 3, // Connection is open.
 };
 
-#if DO_ENABLE_NET_TEST
-//
-// A lagged packet
-//
-struct DelayedPacket
-{
-	TArray<BYTE> Data;
-	DOUBLE SendTime;
-};
-#endif
-
 //
 // A network connection.
 //
@@ -62,6 +51,7 @@ class ENGINE_API UNetConnection : public UPlayer
 	INT				MaxPacket;				// Maximum packet size.
 	INT				PacketOverhead;			// Bytes overhead per packet sent.
 	UBOOL			InternalAck;			// Internally ack all packets, for 100% reliable connections.
+	INT				ConnectionNetSpeed;		// Maximum bytes per second.
 	INT				Challenge;				// Server-generated challenge.
 	INT				NegotiatedVer;			// Negotiated version for new channels.
 	INT				UserFlags;				// User-specified flags.
@@ -91,20 +81,16 @@ class ENGINE_API UNetConnection : public UPlayer
 	FLOAT			InBunches, OutBunches;	// Bunch counts.
 	FLOAT			InLoss,    OutLoss;		// Packet loss percent.
 	FLOAT			InOrder,   OutOrder;	// Out of order incoming packets.
-	FLOAT			BestLag,   AvgLag;		// Lag.
+	FLOAT			BestLag;				// Lag.
 
 	// Stat accumulators.
-	FLOAT			LagAcc, BestLagAcc;		// Previous msec lag.
+	FLOAT			LagAcc;					// Previous msec lag.
 	INT				InLossAcc, OutLossAcc;	// Packet loss accumulator.
 	INT				InPktAcc,  OutPktAcc;	// Packet accumulator.
 	INT				InBunAcc,  OutBunAcc;	// Bunch accumulator.
 	INT				InByteAcc, OutByteAcc;	// Byte accumulator.
 	INT				InOrdAcc,  OutOrdAcc;	// Out of order accumulator.
-	INT				LagCount;				// Counter for lag measurement.
 	INT				HighLossCount;			// Counts high packet loss.
-	DOUBLE			LastTime, FrameTime;	// Monitors frame time.
-	DOUBLE			CumulativeTime, AverageFrameTime;
-	INT				CountedFrames;
 
 	// Packet.
 	FBitWriter		Out;					// Outgoing packet.
@@ -114,11 +100,16 @@ class ENGINE_API UNetConnection : public UPlayer
 	INT				OutPacketId;			// Most recently sent packet.
 	INT 			OutAckPacketId;			// Most recently acked outgoing packet.
 
+	// Acknowledgement tables.
+	BYTE  OutAcked[ MAX_PACKETID/8 ], OutNaked[ MAX_PACKETID/8 ];
+	UBOOL GetOutBit  ( BYTE* Tbl, INT i ) {return (Tbl[(i>>3)&(MAX_PACKETID/8-1)]  &  (1<<(i&7)))!=0;}
+	void  SetOutBit  ( BYTE* Tbl, INT i ) {        Tbl[(i>>3)&(MAX_PACKETID/8-1)] |=  (1<<(i&7));    }
+	void  ClearOutBit( BYTE* Tbl, INT i ) {        Tbl[(i>>3)&(MAX_PACKETID/8-1)] &= ~(1<<(i&7));    }
+
 	// Channel table.
 	UChannel*  Channels     [ MAX_CHANNELS ];
 	INT        OutReliable  [ MAX_CHANNELS ];
 	INT        InReliable   [ MAX_CHANNELS ];
-	TArray<INT> QueuedAcks, ResendAcks;
 	TArray<UChannel*> OpenChannels;
 	TArray<AActor*> SentTemporaries;
 	TMap<AActor*,UActorChannel*> ActorChannels;
@@ -128,8 +119,7 @@ class ENGINE_API UNetConnection : public UPlayer
 	INT				PktLoss;
 	INT				PktOrder;
 	INT				PktDup;
-	INT				PktLag;
-	TArray<DelayedPacket> Delayed;
+	TArray<TArray<BYTE>	> Delayed;
 #endif
 
 	// Constructors and destructors.
@@ -155,14 +145,12 @@ class ENGINE_API UNetConnection : public UPlayer
 	virtual void LowLevelSend( void* Data, INT Count )=0; //!! "Looks like an FArchive"
 	virtual void InitOut();
 	virtual void AssertValid();
-	virtual void SendAck( INT PacketId, UBOOL FirstTime=1 );
+	virtual void SendAck( INT PacketId );
 	virtual void FlushNet();
 	virtual void Tick();
-	virtual INT IsNetReady( UBOOL Saturate );
-	virtual void HandleClientPlayer( APlayerPawn* Pawn );
+	virtual INT IsNetReady();
 
 	// Functions.
-	void PurgeAcks();
 	void SendPackageMap();
 	void PreSend( INT SizeBits );
 	void PostSend();
@@ -172,7 +160,6 @@ class ENGINE_API UNetConnection : public UPlayer
 	class UControlChannel* GetControlChannel();
 	UChannel* CreateChannel( enum EChannelType Type, UBOOL bOpenedLocally, INT ChannelIndex=INDEX_NONE );
 	void ReceivedPacket( FBitReader& Reader );
-	void ReceivedNak( INT NakPacketId );
 	void ReceiveFile( INT PackageIndex );
 	void SlowAssertValid()
 	{

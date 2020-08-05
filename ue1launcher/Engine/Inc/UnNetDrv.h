@@ -53,7 +53,6 @@ class ENGINE_API UNetDriver : public USubsystem
 	UBOOL						ProfileStats;
 	UProperty*					RoleProperty;
 	UProperty*					RemoteRoleProperty;
-	INT							SendCycles, RecvCycles;
 
 	// Constructors.
 	UNetDriver();

@@ -34,7 +34,6 @@ class UDemoPlayPendingLevel : public UPendingLevel
 	// UPendingLevel interface.
 	void Tick( FLOAT DeltaTime );
 	UNetDriver* GetDriver() { return DemoRecDriver; }
-	void SendJoin() { SentJoin = 1; }
 };
 
 

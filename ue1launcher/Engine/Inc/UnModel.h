@@ -17,11 +17,7 @@ enum {MAX_NODES  = 65536};
 enum {MAX_POINTS = 128000};
 class ENGINE_API UModel : public UPrimitive
 {
-#ifndef NODECALS
-	DECLARE_CLASS(UModel,UPrimitive,0)
-#else
 	DECLARE_CLASS(UModel,UPrimitive,CLASS_RuntimeStatic)
-#endif /*NODECALS*/
 
 	// Arrays and subobjects.
 	UPolys*					Polys;
@@ -60,7 +56,6 @@ class ENGINE_API UModel : public UPrimitive
 
 	// UObject interface.
 	void Serialize( FArchive& Ar );
-	void PostLoad();
 
 	// UPrimitive interface.
 	UBOOL PointCheck

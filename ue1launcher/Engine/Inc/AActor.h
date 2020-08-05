@@ -8,8 +8,6 @@
 	void Destroy();
 
 	// UObject interface.
-	virtual INT* GetOptimizedRepList( BYTE* InDefault, FPropertyRetirement* Retire, INT* Ptr, UPackageMap* Map );
-	virtual UBOOL ShouldDoScriptReplication() {return 1;}
 	void ProcessEvent( UFunction* Function, void* Parms, void* Result=NULL );
 	void ProcessState( FLOAT DeltaSeconds );
 	UBOOL ProcessRemoteFunction( UFunction* Function, void* Parms, FFrame* Stack );
@@ -79,7 +77,6 @@
 
 	// AActor audio.
 	void MakeSound( USound *Sound, FLOAT Radius=0.f, FLOAT Volume=1.f, FLOAT Pitch=1.f );
-	void CheckHearSound(APawn* Hearer, INT Id, USound* Sound, FVector Parameters, FLOAT RadiusSquared);
 
 	// Physics functions.
 	void setPhysics(BYTE NewPhysics, AActor *NewFloor = NULL);
@@ -92,26 +89,7 @@
 	void physRolling(FLOAT deltaTime, INT Iterations);
 	void physicsRotation(FLOAT deltaTime);
 	int fixedTurn(int current, int desired, int deltaRate); 
-	inline void TwoWallAdjust(FVector &DesiredDir, FVector &Delta, FVector &HitNormal, FVector &OldHitNormal, FLOAT HitTime)
-	{
-		guard(AActor::TwoWallAdjust);
-
-		if ((OldHitNormal | HitNormal) <= 0) //90 or less corner, so use cross product for dir
-		{
-			FVector NewDir = (HitNormal ^ OldHitNormal);
-			NewDir = NewDir.SafeNormal();
-			Delta = (Delta | NewDir) * (1.0 - HitTime) * NewDir;
-			if ((DesiredDir | Delta) < 0)
-				Delta = -1 * Delta;
-		}
-		else //adjust to new wall
-		{
-			Delta = (Delta - HitNormal * (Delta | HitNormal)) * (1.0 - HitTime); 
-			if ((Delta | DesiredDir) <= 0)
-				Delta = FVector(0,0,0);
-		}
-		unguard;
-	}
+	void TwoWallAdjust(FVector &DesiredDir, FVector &Delta, FVector &HitNormal, FVector &OldHitNormal, FLOAT HitTime);
 	void physPathing(FLOAT DeltaTime);
 	void physMovingBrush(FLOAT DeltaTime);
 	void physTrailer(FLOAT DeltaTime);

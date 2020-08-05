@@ -3,24 +3,11 @@
 	Copyright 1997-1999 Epic Games, Inc. All Rights Reserved.
 =============================================================================*/
 
-	// Also defined in UnPath.h
-	enum EReachSpecFlags
-	{
-		R_WALK = 1,	//walking required
-		R_FLY = 2,   //flying required 
-		R_SWIM = 4,  //swimming required
-		R_JUMP = 8,   // jumping required
-		R_DOOR = 16,
-		R_SPECIAL = 32,
-		R_PLAYERONLY = 64
-	}; 
-
 	// Constructors.
 	APawn() {}
 
 	// AActor interface.
 	FLOAT GetNetPriority( AActor* Sent, FLOAT Time, FLOAT Lag );
-	INT* GetOptimizedRepList( BYTE* InDefault, FPropertyRetirement* Retire, INT* Ptr, UPackageMap* Map );
 
 	// Latent movement
 	void setMoveTimer(FLOAT MoveSize);
@@ -60,13 +47,7 @@
 	int TraverseFrom(AActor *startnode, int moveFlags);
 	int breadthPathFrom(AActor *startnode, AActor *&bestPath, int bSinglePath, int moveFlags);
 	FLOAT breadthPathToInventory(AActor *startnode, AActor *&bestPath, int moveFlags, FLOAT bestInventoryWeight, INT bPredictRespawns);
-	inline int calcMoveFlags()
-	{
-		guard(APawn::calcMoveFlags);
-		return ( bCanWalk * R_WALK + bCanFly * R_FLY + bCanSwim * R_SWIM + bCanJump * R_JUMP 
-				+ bCanOpenDoors * R_DOOR + bCanDoSpecial * R_SPECIAL + bIsPlayer * R_PLAYERONLY); 
-		unguard;
-	}
+	int calcMoveFlags();
 	void clearPaths();
 	void clearPath(ANavigationPoint *node);
 	void HandleSpecial(AActor *&bestPath);
