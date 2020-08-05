@@ -27,7 +27,6 @@ class ENGINE_API UPlayer : public UObject, public FOutputDevice, public FExec
 	FLOAT			WindowsMouseX;
 	FLOAT			WindowsMouseY;
 	INT				CurrentNetSpeed, ConfiguredInternetSpeed, ConfiguredLanSpeed;
-   FLOAT       StaticUpdateInterval, DynamicUpdateInterval;
 	BYTE			SelectedCursor;
 
 	// Constructor.

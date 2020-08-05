@@ -464,7 +464,6 @@ public:
 	FVector Vertices[4];	// Vertices of decal on surface (offset from the surface base).
 	ADecal*	Actor;			// ADecal actor associated with this decal.
 	TArray<INT> Nodes;		// The FBspNode indices on which this decal lies.
-	FRotator MoverRotation;	// DEUS_EX CNN - So we can properly rotate decals on movers, store the rotation of the mover at attach time
 
 	// Functions.
 	friend FArchive& operator<< (FArchive &Ar, FDecal &Decal)

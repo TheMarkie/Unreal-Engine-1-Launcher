@@ -59,10 +59,6 @@ ENGINE_API extern class FMemCache	GCache;
 #include "UnScrTex.h"			// Scripted textures.
 #include "UnRenderIterator.h"	// Enhanced Actor Render Interface
 
-// DEUS_EX STM
-#include "UnEventManager.h"   // AI event manager.
-
-
 /*-----------------------------------------------------------------------------
 	The End.
 -----------------------------------------------------------------------------*/

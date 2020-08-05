@@ -109,12 +109,6 @@ public:
 };
 extern ENGINE_API FPlane FGetHSV( BYTE H, BYTE S, BYTE V );
 
-// DEUS_EX CNN - Begin
-extern ENGINE_API INT GetNumTextures(void);
-extern ENGINE_API INT GetTextureMem(void);
-extern ENGINE_API void ResetTextureStats(void);
-// DEUS_EX CNN - End
-
 //
 // A palette object.  Holds NUM_PAL_COLORS unique FColor values, 
 // forming a 256-color palette which can be referenced by textures.

@@ -85,10 +85,6 @@ void InitSysDirs()
         appStrcpy( SysDir, ANSI_TO_TCHAR(ASysDir) );
         appStrcpy( WinDir, ANSI_TO_TCHAR(AWinDir) );
         appStrcpy( ThisFile, ANSI_TO_TCHAR(AThisFile) );
-
-        // DEUS_EX_OEM CNN - Dell/Sony OEM filename hack
-//      appStrcpy( ThisFile, TEXT("deusex.exe") );
-//      strcpy( AThisFile, "deusex.exe" );
     }
     else
 #endif
@@ -123,13 +119,7 @@ class WConfigWizard : public WWizardDialog
         guard(WStartupWizard::OnInitDialog);
         WWizardDialog::OnInitDialog();
         SendMessageX( *this, WM_SETICON, ICON_BIG, (WPARAM)LoadIconIdX(hInstance,IDICON_Mainframe) );
-
-        // DEUS_EX AJY - Created a second graphic for displaying in this dialog, since the splash
-        // screen graphic is too wide.  We can customize this later with something fancier to
-        // better distinguish the two graphics.
-//      LogoBitmap.LoadFile( TEXT("..\\Help\\Logo.bmp") );
-        LogoBitmap.LoadFile( TEXT("..\\Help\\LogoSmall.bmp") );
-
+        LogoBitmap.LoadFile( TEXT("..\\Help\\Logo.bmp") );
         SendMessageX( LogoStatic, STM_SETIMAGE, IMAGE_BITMAP, (LPARAM)LogoBitmap.GetBitmapHandle() );
         SetText( *Title );
         SetForegroundWindow( hWnd );
@@ -244,19 +234,16 @@ class WConfigPageDetail : public WWizardPage
         }
 
         // Sound quality.
-        // DEUS_EX CNN - change to 64 meg minimum
-        if( !GIsMMX || GPhysicalMemory <= 64*1024*1024 )
+        if( !GIsMMX || GPhysicalMemory <= 32*1024*1024 )
         {
             Info = Info + LocalizeGeneral(TEXT("SoundLow"),TEXT("Startup")) + TEXT("\r\n");
             GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("UseReverb"),       TEXT("False") );
             GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("OutputRate"),      TEXT("11025Hz") );
             GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("UseSpatial"),      TEXT("False") );
             GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("UseFilter"),       TEXT("False") );
-            // DEUS_EX CNN - remove 8 sound channels - always use 16 or more
-//          GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("EffectsChannels"), TEXT("8") );
-            // DEUS_EX CNN - remove botpack stuff
-//          GConfig->SetString( TEXT("Botpack.TournamentPlayer"),    TEXT("AnnouncerVolume"), TEXT("false") );
-//          GConfig->SetString( TEXT("Botpack.TournamentPlayer"),    TEXT("bNoVoiceTaunts"),  TEXT("true") );
+            GConfig->SetString( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("EffectsChannels"), TEXT("8") );
+            GConfig->SetString( TEXT("Botpack.TournamentPlayer"),    TEXT("AnnouncerVolume"), TEXT("false") );
+            GConfig->SetString( TEXT("Botpack.TournamentPlayer"),    TEXT("bNoVoiceTaunts"),  TEXT("true") );		
             GConfig->SetBool( TEXT("Galaxy.GalaxyAudioSubsystem"), TEXT("LowSoundQuality"), 1 );
         }
         else
@@ -287,14 +274,6 @@ class WConfigPageDetail : public WWizardPage
         }
 
         // Resolution.
-        // DEUS_EX CNN - no support for less than 640x480
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportX"),  TEXT("640") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportY"),  TEXT("480") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedColorBits"),  TEXT("16") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportX"), TEXT("640") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportY"), TEXT("480") );
-        // GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenColorBits"), TEXT("16") );
-
         // Snap the full screen resolution to native resolution.
         int width = 1280;
         int height = 720;
@@ -306,32 +285,8 @@ class WConfigPageDetail : public WWizardPage
         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportX" ), Max( width, 1280 ) );
         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenViewportY" ), Max( height, 720 ) );
         GConfig->SetInt( TEXT( "WinDrv.WindowsClient" ), TEXT( "FullscreenColorBits" ), 32 );
-/*
-        if( (!GIsMMX || !GIsPentiumPro) && Driver==TEXT("SoftDrv.SoftwareRenderDevice") )
-        {
-            Info = Info + LocalizeGeneral(TEXT("ResLow"),TEXT("Startup")) + TEXT("\r\n");
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportX"),  TEXT("320") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportY"),  TEXT("240") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedColorBits"),  TEXT("16") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportX"), TEXT("320") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportY"), TEXT("240") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenColorBits"), TEXT("16") );
-        }
-        else if( Driver==TEXT("SoftDrv.SoftwareRenderDevice") || (DescFlags&RDDESCF_LowDetailWorld) )
-        {
-            Info = Info + LocalizeGeneral(TEXT("ResLow"),TEXT("Startup")) + TEXT("\r\n");
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportX"),  TEXT("512") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedViewportY"),  TEXT("384") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("WindowedColorBits"),  TEXT("16") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportX"), TEXT("512") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenViewportY"), TEXT("384") );
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("FullscreenColorBits"), TEXT("16") );
-        }
-        else
-*/
-//      {
-            Info = Info + LocalizeGeneral(TEXT("ResHigh"),TEXT("Startup")) + TEXT("\r\n");
-//      }
+
+        Info = Info + LocalizeGeneral(TEXT("ResHigh"),TEXT("Startup")) + TEXT("\r\n");
         DetailEdit.SetText(*Info);
     }
     WWizardPage* GetNext()
@@ -773,7 +728,7 @@ static UEngine* InitEngine()
     GExec = &GLocalHook;
 
     // Create mutex so installer knows we're running.
-    CreateMutexX( NULL, 0, TEXT("DeusExIsRunning"));        // DEUS_EX CNN - Changed to DeusExIsRunning
+    CreateMutexX( NULL, 0, TEXT("UnrealIsRunning"));
     UBOOL AlreadyRunning = (GetLastError()==ERROR_ALREADY_EXISTS);
 
     // First-run menu.
@@ -841,8 +796,7 @@ static UEngine* InitEngine()
         WWizardPage* Page = NULL;
         if( ParseParam(appCmdLine(),TEXT("safe")) || appStrfind(appCmdLine(),TEXT("readini")) )
             {Page = new WConfigPageSafeMode(&D); D.Title=LocalizeGeneral(TEXT("SafeMode"),TEXT("Startup"));}
-        //else if( FirstRun<ENGINE_VERSION )
-      else if ( FirstRun<400 )
+        else if( FirstRun<ENGINE_VERSION )
             {Page = new WConfigPageRenderer(&D); D.Title=LocalizeGeneral(TEXT("FirstTime"),TEXT("Startup"));}
         else if( ParseParam(appCmdLine(),TEXT("changevideo")) )
             {Page = new WConfigPageRenderer(&D); D.Title=LocalizeGeneral(TEXT("Video"),TEXT("Startup"));}

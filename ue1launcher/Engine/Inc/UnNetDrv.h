@@ -49,8 +49,6 @@ class ENGINE_API UNetDriver : public USubsystem
 	INT							MaxClientRate;
 	INT							NetServerMaxTickRate;
 	INT							LanServerMaxTickRate;
-   INT                DynamicUpdateRate;
-   INT                StaticUpdateRate;
 	UBOOL						AllowDownloads;
 	UBOOL						ProfileStats;
 	UProperty*					RoleProperty;

@@ -31,7 +31,7 @@
 	// Seeing and hearing checks
 	void ShowSelf();
 	int CanHear(FVector NoiseLoc, FLOAT Loudness, APawn *Other); 
-	DWORD LineOfSightTo(AActor *Other, int bShowSelf = 0, bool bIgnoreDistance = false);
+	DWORD LineOfSightTo(AActor *Other, int bShowSelf = 0);
 	void CheckEnemyVisible();
 
 	int walkToward(const FVector &Destination, FLOAT Movesize);
@@ -83,20 +83,6 @@
 	void physicsRotation(FLOAT deltaTime, FVector OldVelocity);
 	void performPhysics(FLOAT DeltaSeconds);
 
-	// Additional AI functions - DEUS_EX STM
-	FLOAT AICanSee(AActor *Other, FLOAT visibility=1.0,
-	               UBOOL bCheckVisibility=true, UBOOL bCheckDir=true,
-	               UBOOL bCheckCylinder=false, UBOOL bCheckLOS=true);
-	FLOAT AICanHear(AActor *Other, FLOAT volume=1.0, FLOAT radius=-1.0);
-	FLOAT AICanSmell(AActor *Other, FLOAT smell=1.0);
-	UBOOL AIDirectionReachable(FVector focus, INT yaw, INT pitch, FLOAT minDist, FLOAT maxDist,
-	                           FLOAT threshold=15.0, FVector *pBestDest=NULL);
-	UBOOL AIPickRandomDestination(FLOAT minDist, FLOAT maxDist,
-	                              INT centralYaw=0, FLOAT yawDistribution=0.0,
-	                              INT centralPitch=0, FLOAT pitchDistribution=0.0,
-	                              INT tries=1, FLOAT multiplier=1.0,
-	                              FVector *pDest=NULL);
-
 	// Natives.
 	DECLARE_FUNCTION(execPollWaitForLanding)
 	DECLARE_FUNCTION(execPollMoveTo)
@@ -113,10 +99,6 @@ private:
 	void calcVelocity(FVector AccelDir, FLOAT deltaTime, FLOAT maxSpeed, FLOAT friction, INT bFluid, INT bBrake, INT bBuoyant);
 	int findNewFloor(FVector OldLocation, FLOAT deltaTime, FLOAT remainingTime, INT Iterations);
 	int checkFloor(FVector Dir, FCheckResult &Hit);
-
-	// Additional private functions -- DEUS_EX STM
-	INT GetPathnodeList(struct _FNavInfo *points, INT maxCount,
-	                    AActor *fromActor, UBOOL bUsePrunedPaths, UBOOL bSort);
 
 /*-----------------------------------------------------------------------------
 	The End.

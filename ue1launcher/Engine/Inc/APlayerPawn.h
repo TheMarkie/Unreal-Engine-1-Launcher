@@ -25,8 +25,6 @@
 	//{ return true; }
 	virtual bool IsActorVisible( const AActor* Actor );
 	//{ return true; }
-   virtual bool AddAdditionalView( AActor* Actor );
-   virtual void RemoveAdditionalView( const AActor* Actor ); 
 
 /*-----------------------------------------------------------------------------
 	The End.

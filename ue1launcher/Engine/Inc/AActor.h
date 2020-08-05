@@ -84,7 +84,6 @@
 	// Physics functions.
 	void setPhysics(BYTE NewPhysics, AActor *NewFloor = NULL);
 	void FindBase();
-	void SetSupportBase(AActor *NewBase);  // DEUS_EX STM
 	virtual void performPhysics(FLOAT DeltaSeconds);
 	void physProjectile(FLOAT deltaTime, INT Iterations);
 	void processHitWall(FVector HitNormal, AActor *HitActor);
@@ -121,16 +120,6 @@
 	// AI functions.
 	void CheckNoiseHearing(FLOAT Loudness);
 	int TestCanSeeMe(APlayerPawn *Viewer);
-
-	// Additional AI functions - DEUS_EX STM
-	FLOAT AIGetLightLevel(FVector Location);
-	FLOAT AIVisibility(UBOOL bIncludeVelocity=true);
-	UBOOL InStasis(void);
-	FRotator RandomBiasedRotation(INT centralYaw, FLOAT yawDistribution,
-	                              INT centralPitch, FLOAT pitchDistribution);
-	FLOAT ParabolicTrace(FVector &endLoc, FVector &startLoc, FVector &startVel, FLOAT maxTime,
-	                     FLOAT elasticity, UBOOL bBounce, FLOAT landingSpeed,
-	                     FVector &cylinder, UBOOL bCheckActors, FLOAT granularity=0.025);
 
 	// Natives.
 	DECLARE_FUNCTION(execPollSleep)

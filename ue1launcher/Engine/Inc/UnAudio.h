@@ -34,15 +34,11 @@ class ENGINE_API UAudioSubsystem : public USubsystem
 	virtual void UnregisterSound( USound* Sound )=0;
 	virtual void UnregisterMusic( UMusic* Music )=0;
 	virtual UBOOL PlaySound( AActor* Actor, INT Id, USound* Sound, FVector Location, FLOAT Volume, FLOAT Radius, FLOAT Pitch )=0;
-	virtual void StopSoundId( INT Id )=0;		// DEUS_EX CNN
 	virtual void NoteDestroy( AActor* Actor )=0;
 	virtual UBOOL GetLowQualitySetting()=0;
 	virtual UViewport* GetViewport()=0;
 	virtual void RenderAudioGeometry( FSceneNode* Frame )=0;
 	virtual void PostRender( FSceneNode* Frame )=0;
-	virtual void SetInstantSoundVolume( BYTE newSoundVolume )=0;		// DEUS_EX CNN - instantly sets the sound volume
-	virtual void SetInstantSpeechVolume( BYTE newSpeechVolume )=0;		// DEUS_EX CNN - instantly sets the speech volume
-	virtual void SetInstantMusicVolume( BYTE newMusicVolume )=0;		// DEUS_EX CNN - instantly sets the music volume
 };
 
 /*-----------------------------------------------------------------------------
@@ -57,7 +53,6 @@ class ENGINE_API FSoundData : public TLazyArray<BYTE>
 public:
 	USound* Owner;
 	void Load();
-	void LoadSpecial();		// DEUS_EX - AJY/CNN - added so we could force the data to LazyLoad without Load() discarding the data
 	FLOAT GetPeriod();
 	FSoundData( USound* InOwner )
 	: Owner( InOwner )

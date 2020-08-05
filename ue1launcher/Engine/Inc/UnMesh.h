@@ -10,43 +10,16 @@
 	FMeshVert.
 -----------------------------------------------------------------------------*/
 
-#define HIGH_PRECISION_MODELS  // DEUS_EX CNN
-
 // Packed mesh vertex point for skinned meshes.
 #define GET_MESHVERT_DWORD(mv) (*(DWORD*)&(mv))
 struct FMeshVert
 {
-
-// DEUS_EX CNN - new code
-#ifdef HIGH_PRECISION_MODELS
-
-		union
-		{
-			struct {INT X:16; INT Y:16; INT Z:16; INT PAD:16;};		// temp until this packing shit gets resolved - DEUS_EX CNN
-			struct {DWORD D1; DWORD D2;};
-		};
-
-#else
-
 	// Variables.
 #if __INTEL_BYTE_ORDER__
 	INT X:11; INT Y:11; INT Z:10;
 #else
 	INT Z:10; INT Y:11; INT X:11;
 #endif
-
-#endif	// HIGH_PRECISION_MODELS
-
-// DEUS_EX CNN - end new code
-
-/* DEUS_EX STM - original version
-	// Variables.
-#if __INTEL_BYTE_ORDER__
-	INT X:11; INT Y:11; INT Z:10;
-#else
-	INT Z:10; INT Y:11; INT X:11;
-#endif
-*/
 
 	// Constructor.
 	FMeshVert()
@@ -64,16 +37,7 @@ struct FMeshVert
 	// Serializer.
 	friend FArchive& operator<<( FArchive& Ar, FMeshVert& V )
 	{
-// DEUS_EX CNN - new code
-#ifdef HIGH_PRECISION_MODELS
-		return Ar << V.D1 << V.D2;
-#else
 		return Ar << GET_MESHVERT_DWORD(V);
-#endif	// HIGH_PRECISION_MODELS
-// DEUS_EX CNN - end new code
-
-// DEUS_EX STM - original version
-//		return Ar << GET_MESHVERT_DWORD(V);
 	}
 };
 

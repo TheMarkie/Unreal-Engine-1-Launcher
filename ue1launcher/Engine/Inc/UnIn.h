@@ -41,8 +41,8 @@ struct FAlias
 //
 class ENGINE_API UInput : public USubsystem
 {
+	static const TCHAR* StaticConfigName() {return TEXT("User");}
 	DECLARE_CLASS(UInput,USubsystem,CLASS_Transient|CLASS_Config)
-	static const TCHAR* StaticConfigName() {return TEXT("User");}  // DEUS_EX STM - moved this statement after DECLARE_CLASS
 
 	// Variables.
 	FAlias		  Aliases[ALIAS_MAX];//!!tarray

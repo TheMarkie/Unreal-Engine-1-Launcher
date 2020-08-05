@@ -56,8 +56,6 @@ public:
 		unguard;
 	};
 
-	// DEUS_EX STM - changed
-//	int findBestReachable(FVector &Start, FVector &Destination, APawn * Scout);
-	int findBestReachable(FVector &Start, FVector &Destination, FLOAT &StartOffset, FLOAT &DestOffset, APawn * Scout);
+	int findBestReachable(FVector &Start, FVector &Destination, APawn * Scout);
 };
 
