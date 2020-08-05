@@ -23,12 +23,6 @@
     <Filter Include="Engine\Src">
       <UniqueIdentifier>{fb589b0b-f399-404d-aca2-39390096bdff}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Extension">
-      <UniqueIdentifier>{fb03923b-62b8-41c8-b283-73b94a5d0c26}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Extension\Inc">
-      <UniqueIdentifier>{3fda7bc0-c85c-40b9-a23d-71305448a538}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Window">
       <UniqueIdentifier>{6ff9cb66-d38d-4126-ab40-62b5af58b8f7}</UniqueIdentifier>
     </Filter>
@@ -49,9 +43,6 @@
     </Filter>
     <Filter Include="Engine\Lib">
       <UniqueIdentifier>{9478b3f9-6ccb-4b4b-a6ae-ec7edd9e08a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Extension\Lib">
-      <UniqueIdentifier>{476453d0-920e-4d56-a67b-00606bad0981}</UniqueIdentifier>
     </Filter>
     <Filter Include="Window\Lib">
       <UniqueIdentifier>{0832c68a-e974-450b-9b57-99a4cc267557}</UniqueIdentifier>
@@ -360,102 +351,6 @@
     <ClInclude Include="Engine\Src\UnPath.h">
       <Filter>Engine\Src</Filter>
     </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtBorder.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtButton.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtCheckbox.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtClipWindow.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtComputerWindow.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtEdit.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\Extension.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtensionCore.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtFlag.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtFlagBase.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtGameEngine.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtGC.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtInput.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtLargeText.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtList.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtModal.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtObject.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtPlayerPawn.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtRadioBox.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtRoot.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtScale.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtScaleManager.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtScrollArea.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtString.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtTabGroup.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtText.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtTextLog.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtTile.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtToggle.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtViewport.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtWindow.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
-    <ClInclude Include="Extension\Inc\ExtWindowCore.h">
-      <Filter>Extension\Inc</Filter>
-    </ClInclude>
     <ClInclude Include="Window\Inc\afxres.h">
       <Filter>Window\Inc</Filter>
     </ClInclude>
@@ -497,9 +392,6 @@
     </Library>
     <Library Include="Engine\Lib\Engine.lib">
       <Filter>Engine\Lib</Filter>
-    </Library>
-    <Library Include="Extension\Lib\Extension.lib">
-      <Filter>Extension\Lib</Filter>
     </Library>
     <Library Include="Window\Lib\Window.lib">
       <Filter>Window\Lib</Filter>

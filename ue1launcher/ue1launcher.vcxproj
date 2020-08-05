@@ -34,6 +34,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Sources;$(ProjectDir)Launcher\Resources;$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)Core\Lib;$(ProjectDir)Engine\Lib;$(ProjectDir)Window\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -159,38 +160,6 @@
     <ClInclude Include="Engine\Src\Amd3d.h" />
     <ClInclude Include="Engine\Src\EnginePrivate.h" />
     <ClInclude Include="Engine\Src\UnPath.h" />
-    <ClInclude Include="Extension\Inc\ExtBorder.h" />
-    <ClInclude Include="Extension\Inc\ExtButton.h" />
-    <ClInclude Include="Extension\Inc\ExtCheckbox.h" />
-    <ClInclude Include="Extension\Inc\ExtClipWindow.h" />
-    <ClInclude Include="Extension\Inc\ExtComputerWindow.h" />
-    <ClInclude Include="Extension\Inc\ExtEdit.h" />
-    <ClInclude Include="Extension\Inc\Extension.h" />
-    <ClInclude Include="Extension\Inc\ExtensionCore.h" />
-    <ClInclude Include="Extension\Inc\ExtFlag.h" />
-    <ClInclude Include="Extension\Inc\ExtFlagBase.h" />
-    <ClInclude Include="Extension\Inc\ExtGameEngine.h" />
-    <ClInclude Include="Extension\Inc\ExtGC.h" />
-    <ClInclude Include="Extension\Inc\ExtInput.h" />
-    <ClInclude Include="Extension\Inc\ExtLargeText.h" />
-    <ClInclude Include="Extension\Inc\ExtList.h" />
-    <ClInclude Include="Extension\Inc\ExtModal.h" />
-    <ClInclude Include="Extension\Inc\ExtObject.h" />
-    <ClInclude Include="Extension\Inc\ExtPlayerPawn.h" />
-    <ClInclude Include="Extension\Inc\ExtRadioBox.h" />
-    <ClInclude Include="Extension\Inc\ExtRoot.h" />
-    <ClInclude Include="Extension\Inc\ExtScale.h" />
-    <ClInclude Include="Extension\Inc\ExtScaleManager.h" />
-    <ClInclude Include="Extension\Inc\ExtScrollArea.h" />
-    <ClInclude Include="Extension\Inc\ExtString.h" />
-    <ClInclude Include="Extension\Inc\ExtTabGroup.h" />
-    <ClInclude Include="Extension\Inc\ExtText.h" />
-    <ClInclude Include="Extension\Inc\ExtTextLog.h" />
-    <ClInclude Include="Extension\Inc\ExtTile.h" />
-    <ClInclude Include="Extension\Inc\ExtToggle.h" />
-    <ClInclude Include="Extension\Inc\ExtViewport.h" />
-    <ClInclude Include="Extension\Inc\ExtWindow.h" />
-    <ClInclude Include="Extension\Inc\ExtWindowCore.h" />
     <ClInclude Include="Launcher\Headers\DynamicArray.h" />
     <ClInclude Include="Launcher\Headers\Helper.h" />
     <ClInclude Include="Launcher\Headers\HookHelper.h" />
@@ -208,7 +177,6 @@
   <ItemGroup>
     <Library Include="Core\Lib\Core.lib" />
     <Library Include="Engine\Lib\Engine.lib" />
-    <Library Include="Extension\Lib\Extension.lib" />
     <Library Include="Window\Lib\Window.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
