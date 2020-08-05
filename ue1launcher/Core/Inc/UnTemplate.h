@@ -1564,7 +1564,8 @@ template<class T> void Sort( T* First, INT Num )
 			// Use simple bubble-sort.
 			while( Current.Max > Current.Min )
 			{
-				for( T *Max=Current.Min, *Item=Current.Min+1; Item<=Current.Max; Item++ )
+				T* Max, * Item;
+				for ( Max = Current.Min, Item = Current.Min + 1; Item <= Current.Max; Item++ )
 					if( Compare(*Item, *Max) > 0 )
 						Max = Item;
 				Exchange( *Max, *Current.Max-- );
