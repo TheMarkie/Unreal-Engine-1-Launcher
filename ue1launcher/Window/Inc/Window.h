@@ -119,7 +119,6 @@ inline LONG RegQueryValueExX( HKEY hKey, LPCTSTR lpValueName, LPDWORD lpReserved
 			HRESULT Result = SHGetSpecialFolderPathA( hwndOwner, ACh, nFolder, fCreate );
 #endif
 			MultiByteToWideChar( CP_ACP, 0, ACh, -1, lpszPath, MAX_PATH );
-			//MultiByteToWideChar( CP_OCP, 0, ACh, -1, lpszPath, MAX_PATH );//!!OCP experimental!!
 			return Result;
 		}
 		else return SHGetSpecialFolderPathWX( hwndOwner, lpszPath, nFolder, fCreate );
@@ -415,9 +414,7 @@ typedef void(FCommandTarget::*TDelegateInt)(INT);
 //
 // Simple bindings to an object and a member function of that object.
 //
-//struct WINDOW_API FDelegate
-// Markie
-struct FDelegate
+struct WINDOW_API FDelegate
 {
 	FCommandTarget* TargetObject;
 	void (FCommandTarget::*TargetInvoke)();
@@ -546,16 +543,15 @@ inline WINDOW_API UBOOL ToggleMenuItem( HMENU hMenu, UBOOL Item )
 class FWindowsBitmap
 {
 public:
-	INT SizeX, SizeY, Keep;
-	FWindowsBitmap( UBOOL InKeep=0 )
+	INT SizeX, SizeY;
+	FWindowsBitmap()
 	: hBitmap( NULL )
 	, SizeX( 0 )
 	, SizeY( 0 )
-	, Keep( InKeep )
 	{}
 	~FWindowsBitmap()
 	{
-		if( hBitmap && !Keep )
+		if( hBitmap )
 			DeleteObject( hBitmap );
 	}
 	UBOOL LoadFile( const TCHAR* Filename )
@@ -876,10 +872,6 @@ public FCommandTarget
 			{
 				OnInitDialog();
 			}
-			else if( Message==WM_ENTERIDLE )
-			{
-				OnEnterIdle();
-			}
 			else if( Message==WM_SETFOCUS )
 			{
 				OnSetFocus( (HWND)wParam );
@@ -1061,8 +1053,6 @@ public FCommandTarget
 	{}
 	virtual void OnInitDialog()
 	{}
-	virtual void OnEnterIdle()
-	{}
 	virtual void OnMouseEnter()
 	{}
 	virtual void OnMouseLeave()
@@ -1094,10 +1084,7 @@ public FCommandTarget
 	virtual void OnClose()
 	{
 		guard(WWindow::OnClose);
-		if( MdiChild )
-			SendMessage( OwnerWindow->hWnd, WM_MDIDESTROY, (WPARAM)hWnd, 0 );
-		else
-			DestroyWindow( *this );
+		DestroyWindow( *this );
 		unguard;
 	}
 	virtual void OnDestroy()
@@ -1107,8 +1094,7 @@ public FCommandTarget
 		if( PersistentName!=NAME_None )
 		{
 			FRect R = GetWindowRect();
-			if( !IsZoomed(hWnd) )
-				GConfig->SetString( TEXT("WindowPositions"), *PersistentName, *FString::Printf( TEXT("(X=%i,Y=%i,XL=%i,YL=%i)"), R.Min.X, R.Min.Y, R.Width(), R.Height() ) );
+			GConfig->SetString( TEXT("WindowPositions"), *PersistentName, *FString::Printf( TEXT("(X=%i,Y=%i,XL=%i,YL=%i)"), R.Min.X, R.Min.Y, R.Width(), R.Height() ) );
 		}
 		_Windows.RemoveItem( this );
 		hWnd = NULL;
@@ -1116,11 +1102,6 @@ public FCommandTarget
 	}
 
 	// WWindow functions.
-	void SaveWindowPos()
-	{
-		guard(WWindow::SaveWindowPos);
-		unguard;
-	}
 	void MaybeDestroy()
 	{
 		guard(WWindow::MaybeDestroy);
@@ -1179,24 +1160,24 @@ public FCommandTarget
 				// Move away.
 				x += Count*16;
 				y += Count*16;
-			}
 
-			// Clip size to screen.
-			RECT Desktop;
-			::GetWindowRect( GetDesktopWindow(), &Desktop );
-			if( x+nWidth  > Desktop.right  ) x = Desktop.right  - nWidth;
-			if( y+nHeight > Desktop.bottom ) y = Desktop.bottom - nHeight;
-			if( x<0 )
-			{
-				if( dwStyle & WS_SIZEBOX )
-					nWidth += x;
-				x=0;
-			}
-			if( y<0 )
-			{
-				if( dwStyle & WS_SIZEBOX )
-					nHeight += y;
-				y=0;
+				// Clip size to screen.
+				RECT Desktop;
+				::GetWindowRect( GetDesktopWindow(), &Desktop );
+				if( x+nWidth  > Desktop.right  ) x = Desktop.right  - nWidth;
+				if( y+nHeight > Desktop.bottom ) y = Desktop.bottom - nHeight;
+				if( x<0 )
+				{
+					if( dwStyle & WS_SIZEBOX )
+						nWidth += x;
+					x=0;
+				}
+				if( y<0 )
+				{
+					if( dwStyle & WS_SIZEBOX )
+						nHeight += y;
+					y=0;
+				}
 			}
 		}
 
@@ -2280,10 +2261,8 @@ class WINDOW_API WLog : public WTerminal
 			debugf( TEXT("WM_COPYDATA: %s"), (TCHAR*)CD->lpData );
 			Exec->Exec( TEXT("TakeFocus"), *GLogWindow );
 			TCHAR NewURL[1024];
-			//if
-			//(	ParseToken(*(TCHAR**)&CD->lpData,NewURL,ARRAY_COUNT(NewURL),0)
-			const TCHAR* arg = static_cast<const TCHAR*>( CD->lpData );
-			if ( ParseToken( arg, NewURL, ARRAY_COUNT( NewURL ), 0 )
+			if
+			(	ParseToken(*(TCHAR**)&CD->lpData,NewURL,ARRAY_COUNT(NewURL),0)
 			&&	NewURL[0]!='-')
 				Exec->Exec( *(US+TEXT("Open ")+NewURL),*GLogWindow );
 		}
@@ -3545,7 +3524,7 @@ public:
 		else
 		{
 			// Regular property.
-			Property->ExportText( 0, Str, ReadValue-Property->Offset, ReadValue-Property->Offset, PPF_Localized );
+			Property->ExportText( 0, Str, ReadValue-Property->Offset, ReadValue-Property->Offset, 1 );
 		}
 		unguard;
 	}
@@ -4661,7 +4640,7 @@ public:
 			OwnerProperties->NotifyHook->NotifyPreChange( OwnerProperties );
 		for( INT i=0; i<_Objects.Num(); i++ )
 		{
-			Property->ImportText( Value, GetAddress(Property,(BYTE*)_Objects(i),Offset), PPF_Localized );
+			Property->ImportText( Value, GetAddress(Property,(BYTE*)_Objects(i),Offset), 1 );
 			_Objects(i)->PostEditChange();
 		}
 		if( OwnerProperties->NotifyHook )
@@ -4801,7 +4780,7 @@ public:
 	void SetProperty( UProperty* Property, INT Offset, const TCHAR* Value )
 	{
 		guard(FObjectsItem::SetProperty);
-		Property->ImportText( Value, GetReadAddress(Property,Offset), PPF_Localized );
+		Property->ImportText( Value, GetReadAddress(Property,Offset), 1 );
 		BaseClass->SetFlags( RF_SourceModified );
 		unguard;
 	}
