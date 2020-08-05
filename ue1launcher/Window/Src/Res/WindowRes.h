@@ -133,12 +133,34 @@
 #define IDC_No                          1096
 #define IDC_DependenciesFrame           1096
 #define IDC_UninstallListEdit           1098
+#define IDC_DetailPrompt                1099
+#define IDC_DetailEdit                  1100
 #define IDC_NoDrop                      1101
+#define IDC_DetailNote                  1101
 #define IDC_SplitNS                     1102
 #define IDC_RenderPrompt                1102
 #define IDC_SplitWE                     1103
 #define IDC_RenderList                  1103
 #define IDC_RenderNote                  1104
+#define IDC_SafeModePrompt              1105
+#define IDC_SafeOptions                 1107
+#define IDC_Run                         1108
+#define IDC_NoSound                     1108
+#define IDC_SafeMode                    1109
+#define IDC_No3DSound                   1109
+#define IDC_Compatible                  1109
+#define IDC_Video                       1110
+#define IDC_No3dVideo                   1110
+#define IDC_All                         1110
+#define IDC_DriverText                  1110
+#define IDC_Res                         1111
+#define IDC_Card                        1111
+#define IDC_Window                      1112
+#define IDC_DriverInfo                  1112
+#define IDC_ResetConfig                 1113
+#define IDC_WebButton                   1113
+#define IDC_NoProcessor                 1114
+#define IDC_NoJoy                       1115
 #define IDC_Hand                        1190
 #define IDICON_PropertySheet            1206
 #define IDICON_Palette                  1257
@@ -157,6 +179,11 @@
 #define IDDIALOG_FilerPageUninstall     2015
 #define IDDIALOG_FilerPageUninstallComponents 2016
 #define IDDIALOG_ConfigPageRenderer     2017
+#define IDDIALOG_ConfigPageDetail       2018
+#define IDDIALOG_ConfigPageFirstTime    2019
+#define IDDIALOG_ConfigPageSafeMode     2020
+#define IDDIALOG_ConfigPageSafeOptions  2021
+#define IDDIALOG_ConfigPageDriver       2022
 #define IDICON_HomePage                 32536
 #define IDICON_FolderClosed             32544
 #define IDICON_FolderOpen               32545
@@ -175,7 +202,7 @@
 #define _APS_3D_CONTROLS                     1
 #define _APS_NEXT_RESOURCE_VALUE        150
 #define _APS_NEXT_COMMAND_VALUE         40008
-#define _APS_NEXT_CONTROL_VALUE         1099
+#define _APS_NEXT_CONTROL_VALUE         1114
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
