@@ -31,9 +31,6 @@ void AddNativeFunctions( NativeFunctionData data[], size_t count ) {
     }
 }
 
-// PreRenderWindows hook
-#include "RootWindowOverride.h"
-
 // Dynamic Array support
 #include "DynamicArray.h"
 

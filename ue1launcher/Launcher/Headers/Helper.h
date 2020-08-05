@@ -9,7 +9,6 @@
 #include <windowsx.h>
 
 #include <Engine.h>
-#include <Extension.h>
 
 extern HWND MainWindow;
 extern UViewport* Viewport;
