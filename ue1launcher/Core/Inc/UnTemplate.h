@@ -24,43 +24,43 @@ template <class T> struct TTypeInfoBase
 template <class T> struct TTypeInfo : public TTypeInfoBase<T>
 {
 };
-template <> struct TTypeInfo<BYTE> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<BYTE> : public TTypeInfoBase<BYTE>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<SBYTE> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<SBYTE> : public TTypeInfoBase<SBYTE>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<ANSICHAR> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<ANSICHAR> : public TTypeInfoBase<ANSICHAR>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<INT> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<INT> : public TTypeInfoBase<INT>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<DWORD> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<DWORD> : public TTypeInfoBase<DWORD>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<_WORD> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<_WORD> : public TTypeInfoBase<_WORD>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<SWORD> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<SWORD> : public TTypeInfoBase<SWORD>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<QWORD> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<QWORD> : public TTypeInfoBase<QWORD>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<SQWORD> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<SQWORD> : public TTypeInfoBase<SQWORD>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
-template <> struct TTypeInfo<FName> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<FName> : public TTypeInfoBase<FName>
 {
 	static UBOOL NeedsDestructor() {return 0;}
 };
@@ -1145,7 +1145,7 @@ inline DWORD GetTypeHash( const FString& S )
 	return appStrihash(*S);
 }
 #if _MSC_VER
-template <> struct TTypeInfo<FString> : public TTypeInfoBase<T>
+template <> struct TTypeInfo<FString> : public TTypeInfoBase<FString>
 {
 	typedef const TCHAR* ConstInitType;
 	static const TCHAR* ToInit( const FString& In ) {return *In;}

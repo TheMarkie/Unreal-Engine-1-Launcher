@@ -13,23 +13,17 @@
 //
 // Native function table.
 //
-#if _MSC_VER
-	extern CORE_API void (UObject::*GNatives[])( FFrame& TheStack, RESULT_DECL );
-	BYTE CORE_API GRegisterNative( INT iNative, void* Func );
-#else
-	typedef void (UObject::*Native)( FFrame& TheStack, RESULT_DECL );
-	extern CORE_API Native GNatives[];
-	BYTE CORE_API GRegisterNative( INT iNative, const Native& Func );
-#endif
+typedef void ( UObject::* Native )( FFrame& TheStack, RESULT_DECL );
+extern CORE_API Native GNatives[];
+BYTE CORE_API GRegisterNative( INT iNative, const Native& Func );
 
 //
 // Registering a native function.
 //
 #if _MSC_VER
 	#define IMPLEMENT_FUNCTION(cls,num,func) \
-		extern "C" DLL_EXPORT void (cls::*int##cls##func)( FFrame& TheStack, RESULT_DECL ); \
-		DLL_EXPORT void (cls::*int##cls##func)( FFrame& TheStack, RESULT_DECL ) = &cls::func; \
-		static BYTE cls##func##Temp = GRegisterNative(num,*(void**)&int##cls##func);
+		extern "C" DLL_EXPORT Native int##cls##func = (Native)&cls::func; \
+		static BYTE cls##func##Temp = GRegisterNative( num, int##cls##func );
 #else
 	#define IMPLEMENT_FUNCTION(cls,num,func) \
 		extern "C" DLL_EXPORT { Native int##cls##func = (Native)&cls::func; } \
