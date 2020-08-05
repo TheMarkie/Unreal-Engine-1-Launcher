@@ -414,7 +414,9 @@ typedef void(FCommandTarget::*TDelegateInt)(INT);
 //
 // Simple bindings to an object and a member function of that object.
 //
-struct WINDOW_API FDelegate
+//struct WINDOW_API FDelegate
+// Markie
+struct FDelegate
 {
 	FCommandTarget* TargetObject;
 	void (FCommandTarget::*TargetInvoke)();
@@ -543,11 +545,12 @@ inline WINDOW_API UBOOL ToggleMenuItem( HMENU hMenu, UBOOL Item )
 class FWindowsBitmap
 {
 public:
-	INT SizeX, SizeY;
-	FWindowsBitmap()
+	INT SizeX, SizeY, Keep;
+	FWindowsBitmap( UBOOL InKeep = 0 )
 	: hBitmap( NULL )
 	, SizeX( 0 )
 	, SizeY( 0 )
+	, Keep( InKeep )
 	{}
 	~FWindowsBitmap()
 	{
@@ -2261,8 +2264,8 @@ class WINDOW_API WLog : public WTerminal
 			debugf( TEXT("WM_COPYDATA: %s"), (TCHAR*)CD->lpData );
 			Exec->Exec( TEXT("TakeFocus"), *GLogWindow );
 			TCHAR NewURL[1024];
-			if
-			(	ParseToken(*(TCHAR**)&CD->lpData,NewURL,ARRAY_COUNT(NewURL),0)
+			const TCHAR* arg = static_cast< const TCHAR* >( CD->lpData );
+			if ( ParseToken( arg, NewURL, ARRAY_COUNT( NewURL ), 0 )
 			&&	NewURL[0]!='-')
 				Exec->Exec( *(US+TEXT("Open ")+NewURL),*GLogWindow );
 		}
@@ -4885,7 +4888,7 @@ public:
 		else if( Cast<UArrayProperty>(Property->GetOuter()) )
 		{
 			// Arrays.
-			Property->ImportText( Value, GetReadAddress(Property,Offset), PPF_Localized );
+			Property->ImportText( Value, GetReadAddress(Property,Offset), 1 );
 			Class->GetDefaultObject()->SaveConfig();
 		}
 		else
