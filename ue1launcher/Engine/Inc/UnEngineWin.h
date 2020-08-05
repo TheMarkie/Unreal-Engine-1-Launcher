@@ -252,26 +252,10 @@ class WConfigPageDetail : public WWizardPage
         }
 
         // Skins.
-        if( (GPhysicalMemory < 96*1024*1024) || (DescFlags&RDDESCF_LowDetailSkins) )
-        {
-            Info = Info + LocalizeGeneral(TEXT("SkinsLow"),TEXT("Startup")) + TEXT("\r\n");
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("SkinDetail"), TEXT("Medium") );
-        }
-        else
-        {
-            Info = Info + LocalizeGeneral(TEXT("SkinsHigh"),TEXT("Startup")) + TEXT("\r\n");
-        }
+        Info = Info + LocalizeGeneral(TEXT("SkinsHigh"),TEXT("Startup")) + TEXT("\r\n");
 
         // World.
-        if( (GPhysicalMemory < 64*1024*1024) || (DescFlags&RDDESCF_LowDetailWorld) )
-        {
-            Info = Info + LocalizeGeneral(TEXT("WorldLow"),TEXT("Startup")) + TEXT("\r\n");
-            GConfig->SetString( TEXT("WinDrv.WindowsClient"), TEXT("TextureDetail"), TEXT("Medium") );
-        }
-        else
-        {
-            Info = Info + LocalizeGeneral(TEXT("WorldHigh"),TEXT("Startup")) + TEXT("\r\n");
-        }
+        Info = Info + LocalizeGeneral(TEXT("WorldHigh"),TEXT("Startup")) + TEXT("\r\n");
 
         // Resolution.
         // Snap the full screen resolution to native resolution.
@@ -360,8 +344,6 @@ class WConfigPageRenderer : public WWizardPage
                 (   It->Autodetect!=TEXT("")
                 && (GFileManager->FileSize(*FString::Printf(TEXT("%s\\%s"), SysDir, *It->Autodetect))>=0
                 ||  GFileManager->FileSize(*FString::Printf(TEXT("%s\\%s"), WinDir, *It->Autodetect))>=0) )
-                    DoShow = Priority = 3;
-                else if( DescFlags & RDDESCF_Certified )
                     DoShow = Priority = 2;
                 else if( Path==TEXT("SoftDrv.SoftwareRenderDevice") )
                     DoShow = Priority = 1;
@@ -767,7 +749,6 @@ static UEngine* InitEngine()
         try
         {
             UClass* Cls = LoadClass<URenderDevice>( NULL, *Device, NULL, 0, NULL );
-            GConfig->SetInt(*Device,TEXT("DescFlags"),RDDESCF_Incompatible);
             GConfig->Flush(0);
             if( Cls )
             {
