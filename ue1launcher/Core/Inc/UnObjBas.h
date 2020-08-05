@@ -332,7 +332,7 @@ public: \
 			StaticConfigName(), \
 			RF_Public | RF_Standalone | RF_Transient | RF_Native, \
 			(void(*)(void*))TClass::InternalConstructor, \
-			&TClass::StaticConstructor \
+			(void(UObject::*)())TClass::StaticConstructor \
 		); \
 		extern "C" DLL_EXPORT UClass* autoclass##TClass;\
 		DLL_EXPORT UClass* autoclass##TClass = TClass::StaticClass();
@@ -407,7 +407,6 @@ private:
 	// Private systemwide variables.
 	static UBOOL			GObjInitialized;	// Whether initialized.
 	static UBOOL            GObjNoRegister;		// Registration disable.
-   static UBOOL         GObjInGarbageCollection; //whether in garbage collection or not.
 	static INT				GObjBeginLoadCount;	// Count for BeginLoad multiple loads.
 	static INT				GObjRegisterCount;  // ProcessRegistrants entry counter.
 	static INT				GImportCount;		// Imports for EndLoad optimization.
@@ -522,10 +521,6 @@ public:
 	{
 		return (ObjName.GetIndex() ^ Outer) & (ARRAY_COUNT(GObjHash)-1);
 	}
-   static UBOOL IsInGarbageCollection()
-   {
-      return GObjInGarbageCollection;
-   }
 
 	// Functions.
 	void AddToRoot();
@@ -820,7 +815,6 @@ public:
 	DECLARE_FUNCTION(execLog)
 	DECLARE_FUNCTION(execWarn)
 	DECLARE_FUNCTION(execNew)
-	DECLARE_FUNCTION(execCriticalDelete)	// DEUS_EX AJY
 	DECLARE_FUNCTION(execClassIsChildOf)
 	DECLARE_FUNCTION(execClassContext)
 	DECLARE_FUNCTION(execGoto)
@@ -829,15 +823,10 @@ public:
 	DECLARE_FUNCTION(execEnable)
 	DECLARE_FUNCTION(execDisable)
 	DECLARE_FUNCTION(execIterator)
-	DECLARE_FUNCTION(execAllObjects)		// DEUS_EX CNN
-	DECLARE_FUNCTION(execClock)           // DEUS_EX STM
-	DECLARE_FUNCTION(execUnclock)         // DEUS_EX STM
-	DECLARE_FUNCTION(execCyclesToSeconds) // DEUS_EX STM
 	DECLARE_FUNCTION(execLocalize)
 	DECLARE_FUNCTION(execNativeParm)
 	DECLARE_FUNCTION(execGetPropertyText)
 	DECLARE_FUNCTION(execSetPropertyText)
-   DECLARE_FUNCTION(execGetConfig)  // DEUS_EX CAC
 	DECLARE_FUNCTION(execSaveConfig)
 	DECLARE_FUNCTION(execStaticSaveConfig)
 	DECLARE_FUNCTION(execResetConfig)

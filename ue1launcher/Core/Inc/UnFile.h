@@ -198,9 +198,6 @@ CORE_API FString appFormat( FString Src, const TMultiMap<FString,FString>& Map )
 	Localization.
 -----------------------------------------------------------------------------*/
 
-// DEUS_EX CNN
-CORE_API UBOOL appCheckGermanSystem(void);
-
 CORE_API const TCHAR* Localize( const TCHAR* Section, const TCHAR* Key, const TCHAR* Package=GPackage, const TCHAR* LangExt=NULL, UBOOL Optional=0 );
 CORE_API const TCHAR* LocalizeError( const TCHAR* Key, const TCHAR* Package=GPackage, const TCHAR* LangExt=NULL );
 CORE_API const TCHAR* LocalizeProgress( const TCHAR* Key, const TCHAR* Package=GPackage, const TCHAR* LangExt=NULL );

@@ -118,9 +118,6 @@ class		UTextBuffer;
 class       URenderDevice;
 class		UPackageMap;
 
-// Special Magic not part of those other lame groupie object classes
-class UDebugSys;
-
 // Structs.
 class FName;
 class FArchive;
@@ -351,8 +348,6 @@ CORE_API extern UBOOL					GUnicodeOS;
 CORE_API extern class FGlobalMath		GMath;
 CORE_API extern	URenderDevice*			GRenderDevice;
 CORE_API extern class FArchive*         GDummySave;
-
-CORE_API extern UDebugSys               GDebugSys;
 
 // Per module globals.
 extern "C" DLL_EXPORT TCHAR GPackage[];
