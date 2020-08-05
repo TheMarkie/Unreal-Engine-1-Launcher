@@ -93,14 +93,6 @@ void InitRedirects() {
     // AStatLog
     SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execGetMapFileName, Stub, execStub );
     SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execGetGMTRef, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execGetPlayerChecksum, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execLogMutator, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execInitialCheck, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execBrowseRelativeLocalURL, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execExecuteWorldLogBatcher, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execBatchLocal, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execExecuteSilentLogBatcher, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execExecuteLocalLogBatcher, Stub, execStub );
 
     // AStatLogFile
     SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execFileLog, Stub, execStub );
@@ -112,7 +104,6 @@ void InitRedirects() {
 }
 
 void InitNativeFunctions() {
-    PreRenderWindowsHook preRenderWindowsHook;
     DynamicArray dynamicArray;
 }
 
