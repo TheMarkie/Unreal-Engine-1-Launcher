@@ -29,8 +29,8 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <ModName>VanillaMatters</ModName>
-    <ModDir>D:\_Games\Deus Ex\VanillaMatters\System\</ModDir>
+    <GameName>Unreal</GameName>
+    <GameDir>D:\_Programs\Steam\steamapps\common\Unreal Gold\System\</GameDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Sources;$(ProjectDir)Launcher\Resources;$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(IncludePath)</IncludePath>
@@ -213,10 +213,10 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
-    <Delete Files="$(ModDir)$(ModName).exe.old" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="$(ModDir)$(ModName).exe" DestinationFiles="$(ModDir)$(ModName).exe.old" OverwriteReadOnlyFiles="true" />
-    <Delete Files="$(ModDir)$(ModName).exe" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFiles="$(ModDir)$(ModName).exe" OverwriteReadOnlyFiles="true" />
+    <Delete Files="$(GameDir)$(GameName).exe.old" ContinueOnError="WarnAndContinue" />
+    <Copy SourceFiles="$(GameDir)$(GameName).exe" DestinationFiles="$(GameDir)$(GameName).exe.old" OverwriteReadOnlyFiles="true" />
+    <Delete Files="$(GameDir)$(GameName).exe" ContinueOnError="WarnAndContinue" />
+    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFiles="$(GameDir)$(GameName).exe" OverwriteReadOnlyFiles="true" />
   </Target>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
