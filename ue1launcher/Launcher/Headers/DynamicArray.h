@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef DYNAMIC_ARRAY
+
 #define P_GET_FARRAY_REF( var ) FArray var##T; GPropAddr = 0; Stack.Step( Stack.Object, &var##T ); FArray* var = GPropAddr ? ( FArray* )GPropAddr : &var##T;
 #define P_GET_TARRAY_REF( type, var ) TArray<type> var##T; GPropAddr = 0; Stack.Step( Stack.Object, &var##T ); TArray<type>* var = GPropAddr ? ( TArray<type>* ) GPropAddr : &var##T;
 
@@ -105,3 +107,5 @@ public:
         *( INT* ) Result = Array->Num();
     }
 };
+
+#endif // DYNAMIC_ARRAY

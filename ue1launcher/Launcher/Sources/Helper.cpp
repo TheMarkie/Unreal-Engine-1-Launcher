@@ -33,9 +33,6 @@ bool ResolutionChanged;
 void InitHelper() {
     GLog->Logf( L"Disabled DEP: %d", ToggleDEP( 0 ) );
 
-    // Redirect all the necessary functions before we do anything.
-    InitRedirects();
-
     FString package( appPackage() );
     package = package + L"Launcher";
     appStrcpy( SettingsPackage, *package );
@@ -86,25 +83,10 @@ void InitHelper() {
     InitNativeFunctions();
 }
 
-void InitRedirects() {
-    // UCommandlet
-    SUBSTITUTE_NATIVE_FUNCTION( Core, UCommandlet, execMain, Stub, execStub );
-
-    // AStatLog
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execGetMapFileName, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLog, execGetGMTRef, Stub, execStub );
-
-    // AStatLogFile
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execFileLog, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execFileFlush, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execGetChecksum, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execWatermark, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execCloseLog, Stub, execStub );
-    SUBSTITUTE_NATIVE_FUNCTION( Engine, AStatLogFile, execOpenLog, Stub, execStub );
-}
-
 void InitNativeFunctions() {
+#ifdef DYNAMIC_ARRAY
     DynamicArray dynamicArray;
+#endif
 }
 
 BOOL ToggleDEP( BOOL enable ) {

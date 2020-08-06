@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef ENABLE_NATIVE_HOOKS
+
 #ifndef HOOKHELPER_H
 #define HOOKHELPER_H
 
@@ -92,3 +94,5 @@ public:
 };
 
 #endif // !HOOKHELPER_H
+
+#endif // ENABLE_NATIVE_HOOKS

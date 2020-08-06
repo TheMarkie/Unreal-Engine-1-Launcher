@@ -14,7 +14,6 @@ extern HWND MainWindow;
 extern UViewport* Viewport;
 
 void InitHelper();
-void InitRedirects();
 void InitNativeFunctions();
 void CleanUpHelper();
 
