@@ -19,8 +19,6 @@ UBOOL UsesFullScreen;
 int FpsCap;
 int WindowedWidth, WindowedHeight, FullScreenWidth, FullScreenHeight;
 
-int DesktopWidth, DesktopHeight;
-
 int UIScale;
 
 bool IsFullScreen;
@@ -63,14 +61,15 @@ void InitHelper() {
     }
     IsFullScreen = UsesFullScreen;
 
-    GetDesktopResolution( DesktopWidth, DesktopHeight );
+    int desktopWidth, desktopHeight;
+    GetDesktopResolution( desktopWidth, desktopHeight );
 
     if ( !GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", FullScreenWidth ) ) {
-        FullScreenWidth = DesktopWidth;
+        FullScreenWidth = desktopWidth;
         GConfig->SetInt( L"WinDrv.WindowsClient", L"FullscreenViewportX", FullScreenWidth );
     }
     if ( !GConfig->GetInt( L"WinDrv.WindowsClient", L"FullscreenViewportY", FullScreenHeight ) ) {
-        FullScreenHeight = DesktopHeight;
+        FullScreenHeight = desktopHeight;
         GConfig->SetInt( L"WinDrv.WindowsClient", L"FullscreenViewportY", FullScreenHeight );
     }
     if ( !GConfig->GetInt( L"WinDrv.WindowsClient", L"WindowedViewportX", WindowedWidth ) ) {
@@ -138,16 +137,21 @@ void CleanUpHelper() {
 }
 
 void SetResolution( const int width, const int height, bool fullScreen ) {
-    int offsetX, offsetY;
+    HMONITOR monitor = MonitorFromWindow( MainWindow, MONITOR_DEFAULTTONEAREST );
+    MONITORINFO monitorInfo = { sizeof( MONITORINFO ) };
+    GetMonitorInfoW( monitor, &monitorInfo );
+    RECT monitorRect = monitorInfo.rcMonitor;
+
+    int x = monitorRect.left;
+    int y = monitorRect.top;
+    int w, h;
 
     if ( fullScreen ) {
         FullScreenWidth = width > 0 ? width : FullScreenWidth;
         FullScreenHeight = height > 0 ? height : FullScreenHeight;
 
-        offsetX = Max( ( DesktopWidth - width ) / 2, 0 );
-        offsetY = Max( ( DesktopHeight - height ) / 2, 0 );
-
-        SetWindowPos( MainWindow, NULL, offsetX, offsetY, FullScreenWidth, FullScreenHeight, 0 );
+        w = FullScreenWidth;
+        h = FullScreenHeight;
     }
     else {
         WindowedWidth = width > 0 ? width : WindowedWidth;
@@ -155,17 +159,19 @@ void SetResolution( const int width, const int height, bool fullScreen ) {
 
         RECT rect = { 0, 0, width, height };
         LONG_PTR style = GetWindowLongPtr( MainWindow, GWL_STYLE );
-
         AdjustWindowRect( &rect, style, TRUE );
-
         int actualWidth = rect.right - rect.left;
         int actualHeight = rect.bottom - rect.top - 20;
 
-        offsetX = Max( ( DesktopWidth - actualWidth ) / 2, 0 );
-        offsetY = Max( ( DesktopHeight - actualHeight - 22 ) / 2, 0 );
-
-        SetWindowPos( MainWindow, NULL, offsetX, offsetY, WindowedWidth, WindowedHeight, 0 );
+        x += monitorRect.right - actualWidth;
+        x /= 2;
+        y += monitorRect.bottom - actualHeight - 22;
+        y /= 2;
+        w = WindowedWidth;
+        h = WindowedHeight;
     }
+
+    SetWindowPos( MainWindow, NULL, x, y, w, h, 0 );
 }
 
 void SetAllResolution( const int fullWidth, const int fullHeight, const int windowedWidth, const int windowedHeight ) {
@@ -176,30 +182,35 @@ void SetAllResolution( const int fullWidth, const int fullHeight, const int wind
 }
 
 void SetWindowMode( const bool borderless, int w, int h ) {
-    int offsetX, offsetY;
+    HMONITOR monitor = MonitorFromWindow( MainWindow, MONITOR_DEFAULTTONEAREST );
+    MONITORINFO monitorInfo = { sizeof( MONITORINFO ) };
+    GetMonitorInfoW( monitor, &monitorInfo );
+    RECT monitorRect = monitorInfo.rcMonitor;
+
+    int x = monitorRect.left;
+    int y = monitorRect.top;
 
     LONG_PTR style = GetWindowLongPtr( MainWindow, GWL_STYLE );
     if ( borderless ) {
         style = style & ~BORDER_STYLE;
-
-        offsetY = Max( ( DesktopHeight - h ) / 2, 0 );
+        y += monitorRect.bottom - h;
     }
     else {
-        style = style | BORDER_STYLE;
-
         RECT rect = { 0, 0, w, h };
+        style = style | BORDER_STYLE;
         AdjustWindowRect( &rect, style, TRUE );
-
         w = rect.right - rect.left;
         h = rect.bottom - rect.top - 20;
 
-        offsetY = Max( ( DesktopHeight - h - 22 ) / 2, 0 );
+        y += monitorRect.bottom - h - 22;
     }
 
-    offsetX = Max( ( DesktopWidth - w ) / 2, 0 );
+    x += monitorRect.right - w;
+    x /= 2;
+    y /= 2;
 
     SetWindowLongPtr( MainWindow, GWL_STYLE, style );
-    SetWindowPos( MainWindow, NULL, offsetX, offsetY, w, h, SWP_FRAMECHANGED );
+    SetWindowPos( MainWindow, NULL, x, y, w, h, SWP_FRAMECHANGED );
 }
 
 void ToggleWindowMode( const bool fullScreen ) {
