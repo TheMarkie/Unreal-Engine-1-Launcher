@@ -113,6 +113,7 @@ void InitRedirects() {
 void InitNativeFunctions() {
     PreRenderWindowsHook preRenderWindowsHook;
     DynamicArray dynamicArray;
+    UnrealScriptUtilities unrealScriptUtilities;
 }
 
 BOOL ToggleDEP( BOOL enable ) {
