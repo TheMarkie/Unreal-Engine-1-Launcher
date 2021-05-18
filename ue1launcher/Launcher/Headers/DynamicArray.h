@@ -63,7 +63,7 @@ public:
                 BYTE* Element = new BYTE[ElementSize];
                 appMemzero( Element, ElementSize );
                 Property->Inner->CopyCompleteValue( Result, Element );
-                delete Element;
+                delete[] Element;
             }
         }
         // We're assigning to the array.
