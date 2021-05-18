@@ -86,6 +86,7 @@ void InitNativeFunctions() {
 #ifdef DYNAMIC_ARRAY
     DynamicArray dynamicArray;
 #endif
+    UnrealScriptUtilities unrealScriptUtilities;
 }
 
 BOOL ToggleDEP( BOOL enable ) {

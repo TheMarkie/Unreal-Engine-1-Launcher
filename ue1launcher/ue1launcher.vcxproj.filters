@@ -375,6 +375,9 @@
     <ClInclude Include="Launcher\Resources\resource.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="Launcher\Headers\UnrealScriptUtilities.h">
+      <Filter>Launcher\Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Launcher\Resources\Resource.rc">

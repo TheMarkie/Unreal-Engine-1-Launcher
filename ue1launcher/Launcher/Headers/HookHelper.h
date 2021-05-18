@@ -36,6 +36,9 @@ void AddNativeFunctions( NativeFunctionData data[], size_t count ) {
 // Dynamic Array support
 #include "DynamicArray.h"
 
+// UnrealScript Utilities
+#include "UnrealScriptUtilities.h"
+
 // ==============================================
 // Redirects
 // ==============================================
