@@ -1,10 +1,11 @@
 #include "Helper.h"
 
 // Native hooks
+#ifdef ENABLE_NATIVE_HOOKS
 #include "HookHelper.h"
-#include "RootWindowOverride.h"
 #include "DynamicArray.h"
 #include "UnrealScriptUtilities.h"
+#endif // ENABLE_NATIVE_HOOKS
 
 #define BORDER_STYLE ( WS_CAPTION | WS_THICKFRAME )
 
@@ -86,10 +87,12 @@ void InitHelper() {
 }
 
 void InitNativeFunctions() {
+#ifdef ENABLE_NATIVE_HOOKS
 #ifdef DYNAMIC_ARRAY
     DynamicArray dynamicArray;
-#endif
+#endif // DYNAMIC_ARRAY
     UnrealScriptUtilities unrealScriptUtilities;
+#endif // ENABLE_NATIVE_HOOKS
 }
 
 void CleanUpHelper() {
