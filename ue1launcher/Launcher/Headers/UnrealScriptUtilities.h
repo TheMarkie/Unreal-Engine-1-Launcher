@@ -1,33 +1,23 @@
 #pragma once
 
-#include <stdio.h>
-
 class UnrealScriptUtilities {
-    enum UnrealScriptUtilitiesFunction {
-        Sprintf = 2300
+    enum UnrealScriptUtilitiesFunctionId {
+        Id_Sprintf = 2400,
+        Id_FormatFloat = 2401
     };
 
 public:
     UnrealScriptUtilities() {
         NativeFunctionData data[] = {
-            DECLARE_NATIVE_FUNCTION( Sprintf, UnrealScriptUtilities, execSprintf )
+            DECLARE_NATIVE_FUNCTION( Id_Sprintf, UnrealScriptUtilities, execSprintf ),
+            DECLARE_NATIVE_FUNCTION( Id_FormatFloat, UnrealScriptUtilities, execFormatFloat )
         };
 
-        AddNativeFunctions( data, 1 );
+        AddNativeFunctions( data, 2 );
     }
 
-    void execSprintf( FFrame& Stack, RESULT_DECL ) {
-        P_GET_STR( format );
-        P_GET_STR( s0 );
-        P_GET_STR( s1 );
-        P_GET_STR( s2 );
-        P_GET_STR( s3 );
-        P_FINISH;
+    void execSprintf( FFrame& Stack, RESULT_DECL );
+    void execFormatFloat( FFrame& Stack, RESULT_DECL );
 
-        int length = format.Len();
-        TCHAR* buffer = new TCHAR[length];
-        swprintf( buffer, length, *format, *s0, *s1, *s2, *s3 );
-
-        *( FString* ) Result = FString( buffer );
-    }
+    FString FormatFloat( FLOAT value, INT precision );
 };
