@@ -64,6 +64,12 @@
     <ClCompile Include="Launcher\Sources\Launcher.cpp">
       <Filter>Launcher\Sources</Filter>
     </ClCompile>
+    <ClCompile Include="Launcher\Sources\UnrealScriptUtilities.cpp">
+      <Filter>Launcher\Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="Launcher\Sources\HookHelper.cpp">
+      <Filter>Launcher\Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Inc\Core.h">
