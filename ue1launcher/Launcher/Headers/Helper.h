@@ -17,25 +17,22 @@ void InitHelper();
 void InitNativeFunctions();
 void CleanUpHelper();
 
-BOOL ToggleDEP( BOOL );
-
 void SetResolution( const int, const int, bool );
 void SetAllResolution( const int, const int, const int, const int );
 void SetWindowMode( const bool, int, int );
 void ToggleWindowMode( const bool );
 void ToggleWindowMode();
-void SetFPSCap( const int );
-void SetUIScale( const int );
-
-void RegisterRawInput();
-
-int GetFPSCap();
-int GetUIScale();
 bool IsUsingBorderless();
 bool IsUsingFullScreen();
 bool IsInFullScreen();
-
 void GetDesktopResolution( int&, int& );
 bool StringToResolution( const TCHAR*, int&, int& );
+
+void RegisterRawInput();
+BOOL ToggleDEP( BOOL );
+int GetFPSCap();
+void SetFPSCap( const int );
+int GetUIScale();
+void SetUIScale( const int );
 
 #endif // !HELPER_H
