@@ -1,5 +1,10 @@
 #include "Helper.h"
+
+// Native hooks
 #include "HookHelper.h"
+#include "RootWindowOverride.h"
+#include "DynamicArray.h"
+#include "UnrealScriptUtilities.h"
 
 #define BORDER_STYLE ( WS_CAPTION | WS_THICKFRAME )
 
