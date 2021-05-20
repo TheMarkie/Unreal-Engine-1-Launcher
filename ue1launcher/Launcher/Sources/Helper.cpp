@@ -16,17 +16,15 @@ TCHAR SettingsPackage[72];
 UBOOL UsesBorderless;
 UBOOL UsesFullScreen;
 
-int FpsCap;
 int WindowedWidth, WindowedHeight, FullScreenWidth, FullScreenHeight;
 
+int FpsCap;
 int UIScale;
 
 bool IsFullScreen;
 
-bool ResolutionChanged;
-
 // ==============================================
-// Functions to set stuff
+// Init
 // ==============================================
 void InitHelper() {
     GLog->Logf( L"Disabled DEP: %d", ToggleDEP( 0 ) );
@@ -116,18 +114,6 @@ void InitNativeFunctions() {
     UnrealScriptUtilities unrealScriptUtilities;
 }
 
-BOOL ToggleDEP( BOOL enable ) {
-    const HMODULE module = GetModuleHandleW( L"Kernel32.dll" );
-    if ( module ) {
-        const auto procSet = reinterpret_cast< BOOL( WINAPI* const )( DWORD ) >( GetProcAddress( module, "SetProcessDEPPolicy" ) );
-        if ( procSet ) {
-            return procSet( enable );
-        }
-    }
-
-    return 0;
-}
-
 void CleanUpHelper() {
     GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", IsInFullScreen() );
 
@@ -137,6 +123,9 @@ void CleanUpHelper() {
     }
 }
 
+// ==============================================
+// Display Management
+// ==============================================
 void SetResolution( const int width, const int height, bool fullScreen ) {
     HMONITOR monitor = MonitorFromWindow( MainWindow, MONITOR_DEFAULTTONEAREST );
     MONITORINFO monitorInfo = { sizeof( MONITORINFO ) };
@@ -229,63 +218,6 @@ void ToggleWindowMode() {
     ToggleWindowMode( !IsInFullScreen() );
 }
 
-void SetFPSCap( const int cap ) {
-    if ( cap >= 0 ) {
-        FpsCap = cap;
-
-        GConfig->SetInt( SettingsPackage, L"FPSCap", FpsCap );
-    }
-}
-
-void SetUIScale( const int n ) {
-    if ( n >= 1 ) {
-        UIScale = n;
-
-        GConfig->SetInt( SettingsPackage, L"UIScale", UIScale );
-    }
-}
-
-// ==============================================
-// Miscellaneous functions.
-// ==============================================
-void RegisterRawInput() {
-    if ( !MainWindow ) {
-        return;
-    }
-
-    RAWINPUTDEVICE Rid[1];
-
-    Rid[0].usUsagePage = 0x01;
-    Rid[0].usUsage = 0x02;
-    Rid[0].dwFlags = 0;
-    Rid[0].hwndTarget = MainWindow;
-
-    RegisterRawInputDevices( Rid, 1, sizeof( Rid[0] ) );
-}
-
-// ==============================================
-// Functions to get stuff
-// ==============================================
-int GetFPSCap() {
-    return FpsCap;
-}
-
-int GetUIScale() {
-    return UIScale;
-}
-
-bool IsUsingBorderless() {
-    return UsesBorderless;
-}
-
-bool IsUsingFullScreen() {
-    return UsesFullScreen;
-}
-
-bool IsInFullScreen() {
-    return IsFullScreen;
-}
-
 void GetDesktopResolution( int& width, int& height ) {
     const HWND hDesktop = GetDesktopWindow();
     RECT rect;
@@ -303,9 +235,70 @@ bool StringToResolution( const TCHAR* str, int& w, int& h ) {
 
     w = -1;
     h = -1;
-
     w = appAtoi( *fstrW );
     h = appAtoi( *fstrH );
 
     return ( w > 0 && h > 0 );
+}
+
+bool IsUsingBorderless() {
+    return UsesBorderless;
+}
+bool IsUsingFullScreen() {
+    return UsesFullScreen;
+}
+bool IsInFullScreen() {
+    return IsFullScreen;
+}
+
+// ==============================================
+// Misc
+// ==============================================
+BOOL ToggleDEP( BOOL enable ) {
+    const HMODULE module = GetModuleHandleW( L"Kernel32.dll" );
+    if ( module ) {
+        const auto procSet = reinterpret_cast< BOOL( WINAPI* const )( DWORD ) >( GetProcAddress( module, "SetProcessDEPPolicy" ) );
+        if ( procSet ) {
+            return procSet( enable );
+        }
+    }
+
+    return 0;
+}
+
+void RegisterRawInput() {
+    if ( !MainWindow ) {
+        return;
+    }
+
+    RAWINPUTDEVICE Rid[1];
+
+    Rid[0].usUsagePage = 0x01;
+    Rid[0].usUsage = 0x02;
+    Rid[0].dwFlags = 0;
+    Rid[0].hwndTarget = MainWindow;
+
+    RegisterRawInputDevices( Rid, 1, sizeof( Rid[0] ) );
+}
+
+int GetFPSCap() {
+    return FpsCap;
+}
+void SetFPSCap( const int cap ) {
+    if ( cap >= 0 ) {
+        FpsCap = cap;
+
+        GConfig->SetInt( SettingsPackage, L"FPSCap", FpsCap );
+    }
+}
+
+int GetUIScale() {
+    return UIScale;
+}
+void SetUIScale( const int n ) {
+    if ( n >= 1 ) {
+        UIScale = n;
+
+        GConfig->SetInt( SettingsPackage, L"UIScale", UIScale );
+    }
 }
