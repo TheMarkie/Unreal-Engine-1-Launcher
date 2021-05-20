@@ -219,9 +219,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="AfterBuild">
     <Delete Files="$(GameDir)$(GameName).exe.old" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="$(GameDir)$(GameName).exe" DestinationFiles="$(GameDir)$(GameName).exe.old" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="$(GameDir)$(GameName).exe" DestinationFiles="$(GameDir)$(GameName).exe.old" OverwriteReadOnlyFiles="true" ContinueOnError="WarnAndContinue" />
     <Delete Files="$(GameDir)$(GameName).exe" ContinueOnError="WarnAndContinue" />
-    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFiles="$(GameDir)$(GameName).exe" OverwriteReadOnlyFiles="true" />
+    <Copy SourceFiles="$(OutDir)$(TargetFileName)" DestinationFiles="$(GameDir)$(GameName).exe" OverwriteReadOnlyFiles="true" ContinueOnError="WarnAndContinue" />
   </Target>
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
