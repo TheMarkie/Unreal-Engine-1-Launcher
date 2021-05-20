@@ -58,7 +58,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Launcher\Sources\Helper.cpp" />
+    <ClCompile Include="Launcher\Sources\HookHelper.cpp" />
     <ClCompile Include="Launcher\Sources\Launcher.cpp" />
+    <ClCompile Include="Launcher\Sources\UnrealScriptUtilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Inc\Core.h" />
@@ -164,6 +166,8 @@
     <ClInclude Include="Launcher\Headers\Helper.h" />
     <ClInclude Include="Launcher\Headers\HookHelper.h" />
     <ClInclude Include="Launcher\Headers\Launcher.h" />
+    <ClInclude Include="Launcher\Headers\RootWindowOverride.h" />
+    <ClInclude Include="Launcher\Headers\UnrealScriptUtilities.h" />
     <ClInclude Include="Launcher\Resources\resource.h" />
     <ClInclude Include="Window\Inc\afxres.h" />
     <ClInclude Include="Window\Inc\Window.h" />
