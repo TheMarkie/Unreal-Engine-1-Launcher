@@ -6,15 +6,15 @@
 #define P_GET_TARRAY_REF( type, var ) TArray<type> var##T; GPropAddr = 0; Stack.Step( Stack.Object, &var##T ); TArray<type>* var = GPropAddr ? ( TArray<type>* ) GPropAddr : &var##T;
 
 class DynamicArray {
-    enum DynamicArrayFunction {
-        ArrayCount = 3200
+    enum DynamicArrayFunctionId {
+        Id_ArrayCount = 2300
     };
 
 public:
     DynamicArray() {
         NativeFunctionData data[] = {
             DECLARE_NATIVE_FUNCTION( EX_DynArrayElement, DynamicArray, execDynArrayElement ),
-            DECLARE_NATIVE_FUNCTION( ArrayCount, DynamicArray, execArrayCount ),
+            DECLARE_NATIVE_FUNCTION( Id_ArrayCount, DynamicArray, execArrayCount ),
         };
 
         AddNativeFunctions( data, 2 );
