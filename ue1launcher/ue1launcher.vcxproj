@@ -29,8 +29,6 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros">
-    <GameName>Unreal</GameName>
-    <GameDir>D:\_Programs\Steam\steamapps\common\Unreal Gold\System\</GameDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>$(ProjectDir)Launcher\Headers;$(ProjectDir)Launcher\Sources;$(ProjectDir)Launcher\Resources;$(ProjectDir)Core\Inc;$(ProjectDir)Engine\Inc;$(ProjectDir)Window\Inc;$(ProjectDir)Window\Src\Res;$(IncludePath)</IncludePath>
@@ -166,7 +164,6 @@
     <ClInclude Include="Launcher\Headers\Helper.h" />
     <ClInclude Include="Launcher\Headers\HookHelper.h" />
     <ClInclude Include="Launcher\Headers\Launcher.h" />
-    <ClInclude Include="Launcher\Headers\RootWindowOverride.h" />
     <ClInclude Include="Launcher\Headers\UnrealScriptUtilities.h" />
     <ClInclude Include="Launcher\Resources\resource.h" />
     <ClInclude Include="Window\Inc\afxres.h" />
