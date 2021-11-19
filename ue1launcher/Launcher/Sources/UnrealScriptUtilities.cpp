@@ -14,7 +14,7 @@ void UnrealScriptUtilities::execSprintf( FFrame& Stack, RESULT_DECL ) {
     P_GET_STR( s3 );
     P_FINISH;
 
-    int length = format.Len();
+    int length = _scwprintf( *format, *s0, *s1, *s2, *s3 ) + 1;
     TCHAR* buffer = new TCHAR[length];
     swprintf( buffer, length, *format, *s0, *s1, *s2, *s3 );
 
