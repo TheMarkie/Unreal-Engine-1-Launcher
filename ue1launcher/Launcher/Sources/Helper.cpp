@@ -50,12 +50,6 @@ void InitHelper() {
     }
     FpsCap = Max( FpsCap, 0 );
 
-    if ( !GConfig->GetInt( SettingsPackage, L"UIScale", UIScale ) ) {
-        UIScale = 1;
-        GConfig->SetInt( SettingsPackage, L"UIScale", UIScale );
-    }
-    UIScale = Max( UIScale, 1 );
-
     if ( !GConfig->GetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", UsesFullScreen ) ) {
         UsesFullScreen = false;
         GConfig->SetBool( L"WinDrv.WindowsClient", L"StartupFullscreen", UsesFullScreen );
@@ -81,6 +75,12 @@ void InitHelper() {
         WindowedHeight = 720;
         GConfig->GetInt( L"WinDrv.WindowsClient", L"WindowedViewportY", WindowedHeight );
     }
+
+    if (!GConfig->GetInt(SettingsPackage, L"UIScale", UIScale)) {
+        UIScale = appCeil((FLOAT) min(desktopWidth, desktopHeight) / 1080);
+        GConfig->SetInt(SettingsPackage, L"UIScale", UIScale);
+    }
+    UIScale = Max(UIScale, 1);
 
     // Override native functions.
     InitNativeFunctions();
